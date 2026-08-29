@@ -21,19 +21,22 @@
    TOKENS
    ============================================================ */
 :root{
-  --ink:#0b0b0c;
-  --ink-2:#151515;
-  --ink-3:#1e1e1e;
-  --paper:#f6f5f2;
-  --paper-dim:#e7e5df;
-  --gold:#c39a5c;
-  --gold-soft:#dcc294;
-  --line:rgba(246,245,242,0.14);
-  --line-strong:rgba(246,245,242,0.28);
-  --muted:rgba(246,245,242,0.62);
-  --muted-2:rgba(246,245,242,0.42);
-  --radius:2px;
-  --maxw:1120px;
+  --ink:#0a0a10;
+  --ink-2:#131320;
+  --ink-3:#1b1b2c;
+  --paper:#f7f4ee;
+  --paper-dim:#e6e2d5;
+  --gold:#c9713f;
+  --gold-soft:#e2a173;
+  --gold-deep:#8f4d28;
+  --teal:#2f6e64;
+  --teal-soft:#74c3b1;
+  --line:rgba(247,244,238,0.13);
+  --line-strong:rgba(247,244,238,0.27);
+  --muted:rgba(247,244,238,0.62);
+  --muted-2:rgba(247,244,238,0.42);
+  --radius:3px;
+  --maxw:1180px;
   --ease:cubic-bezier(.22,.68,.35,1);
   --dur-fast:.2s;
   --dur:.6s;
@@ -84,7 +87,7 @@ section{position:relative;}
    ============================================================ */
 .nav{
   position:fixed; inset-inline:0; top:0; z-index:50;
-  background:rgba(11,11,12,0.82);
+  background:rgba(10,10,16,0.82);
   backdrop-filter:blur(10px);
   -webkit-backdrop-filter:blur(10px);
   border-bottom:1px solid var(--line);
@@ -137,8 +140,8 @@ section{position:relative;}
   display:flex; flex-direction:column; justify-content:center;
   padding-top:130px; padding-bottom:80px;
   background:
-    radial-gradient(ellipse 900px 600px at 82% -10%, rgba(195,154,92,0.16), transparent 60%),
-    radial-gradient(ellipse 700px 500px at 10% 110%, rgba(195,154,92,0.08), transparent 60%),
+    radial-gradient(ellipse 900px 600px at 82% -10%, rgba(201,113,63,0.18), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 6% 106%, rgba(47,110,100,0.16), transparent 60%),
     var(--ink);
   overflow:hidden;
 }
@@ -159,10 +162,16 @@ section{position:relative;}
 }
 .hero-eyebrow .rule{width:40px;height:1px;background:var(--gold-soft);display:inline-block;}
 .hero h1{
-  font-size:clamp(44px,7vw,88px);
-  font-weight:700; margin:0 0 6px; letter-spacing:-.01em; line-height:1.05;
+  font-family:"Plex Serif Display",serif;
+  font-size:clamp(52px,8.6vw,108px);
+  font-weight:600; margin:0 0 6px; letter-spacing:-.01em; line-height:0.98;
 }
-.hero h1 .who{ display:block; }
+[dir="rtl"] .hero h1{ font-family:"Plex Arabic"; font-weight:700; }
+.hero h1 .who{
+  display:block;
+  background:linear-gradient(100deg, var(--paper) 30%, var(--gold-soft) 62%, var(--teal-soft) 96%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
 .hero-role{
   font-size:clamp(18px,2.4vw,26px); color:var(--gold-soft); font-weight:500;
   margin:14px 0 28px;
@@ -193,7 +202,7 @@ section{position:relative;}
   position:relative;
 }
 .btn-primary{background:var(--paper); color:var(--ink);}
-.btn-primary:hover{transform:translateY(-2px); box-shadow:0 14px 30px -12px rgba(195,154,92,0.4);}
+.btn-primary:hover{transform:translateY(-2px); box-shadow:0 14px 30px -12px rgba(201,113,63,0.4);}
 .btn-ghost{border:1px solid var(--line-strong); color:var(--paper);}
 .btn-ghost:hover{border-color:var(--gold); color:var(--gold-soft); transform:translateY(-2px);}
 .btn svg{width:18px;height:18px;flex:none;}
@@ -292,32 +301,31 @@ section{position:relative;}
 .cred h3{margin:0 0 8px; font-size:17px; font-weight:600;}
 .cred p{margin:0; color:var(--muted); font-size:14.5px;}
 
-/* ============================================================
-   FOCUS AREAS
-   ============================================================ */
-.focus-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:16px;}
-@media (max-width:980px){ .focus-grid{grid-template-columns:repeat(2,1fr);} }
-@media (max-width:520px){ .focus-grid{grid-template-columns:1fr;} }
-.focus-card{
-  border:1px solid var(--line); padding:28px 22px; transition:border-color var(--dur-fast) ease, transform var(--dur-fast) ease;
-}
-.focus-card:hover{border-color:var(--gold-soft); transform:translateY(-4px);}
-.focus-card .icon{width:30px;height:30px;color:var(--gold-soft); margin-bottom:18px;}
-.focus-card h3{font-size:15.5px; margin:0 0 8px; font-weight:600;}
-.focus-card p{font-size:13.5px; color:var(--muted); margin:0;}
+/* Focus Areas now use .focus-rail (numbered rail) — see below. */
 
 /* ============================================================
    TRUST / RECOGNITION
    ============================================================ */
-.trust-wrap{display:flex; align-items:center; gap:40px; flex-wrap:wrap;}
-.trust-score{
-  display:flex; align-items:baseline; gap:6px;
-  font-family:"Plex Serif Display",serif; font-size:56px; color:var(--gold-soft); font-weight:600;
+.trust-panel{
+  position:relative; overflow:hidden; border-radius:22px; padding:56px 48px;
+  background:
+    radial-gradient(ellipse 620px 420px at 88% 12%, rgba(201,113,63,0.16), transparent 62%),
+    radial-gradient(ellipse 520px 380px at 6% 100%, rgba(47,110,100,0.14), transparent 60%),
+    var(--ink-2);
+  box-shadow:0 0 0 1px var(--line);
 }
-.trust-score span{font-size:20px; color:var(--muted); font-family:"Plex Arabic";}
-.trust-stars{display:flex; gap:4px; margin-top:10px;}
-.trust-stars svg{width:16px;height:16px; color:var(--gold);}
-.trust-note{color:var(--muted); font-size:14px; max-width:340px;}
+@media (max-width:640px){ .trust-panel{padding:40px 26px;} }
+.trust-wrap{position:relative; z-index:1; display:flex; align-items:center; gap:48px; flex-wrap:wrap;}
+.trust-score{
+  display:flex; align-items:baseline; gap:8px;
+  font-family:"Plex Serif Display",serif; font-size:clamp(64px,7vw,84px); color:var(--gold-soft); font-weight:600;
+  line-height:1;
+}
+.trust-score span{font-size:22px; color:var(--muted); font-family:"Plex Arabic";}
+.trust-stars{display:flex; gap:5px; margin-top:14px;}
+.trust-stars svg{width:20px;height:20px; color:var(--gold);}
+.trust-note{color:var(--muted); font-size:15px; max-width:360px;}
+.trust-note strong{ color:var(--paper); font-weight:600; }
 
 /* ============================================================
    CONTACT
@@ -326,7 +334,7 @@ section{position:relative;}
 @media (max-width:860px){ .contact-grid{grid-template-columns:1fr; gap:40px;} }
 .contact-card{
   border:1px solid var(--line-strong); padding:40px; display:flex; flex-direction:column; gap:22px;
-  background:linear-gradient(160deg, rgba(195,154,92,0.06), transparent);
+  background:linear-gradient(160deg, rgba(201,113,63,0.07), rgba(47,110,100,0.04) 70%, transparent);
 }
 .contact-card h3{margin:0; font-size:22px; font-weight:600;}
 .contact-line{display:flex; align-items:center; gap:14px; font-size:15px;}
@@ -353,7 +361,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
    ============================================================ */
 .wa-float{
   position:fixed; bottom:26px; inset-inline-end:26px; z-index:60;
-  width:58px; height:58px; border-radius:50%; background:#25D366; color:#0b0b0c;
+  width:58px; height:58px; border-radius:50%; background:#25D366; color:#0a0a10;
   display:flex; align-items:center; justify-content:center; box-shadow:0 10px 26px -8px rgba(0,0,0,.5);
   transition:transform var(--dur-fast) var(--ease);
 }
@@ -391,75 +399,79 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 .src-cite svg{width:13px;height:13px;flex:none;color:var(--gold-soft);}
 
 /* ============================================================
-   HERO — split layout with real device-framed video
+   HERO — split layout with a borderless cinematic video panel
+   (explicitly NOT a phone/device mockup — see HANDOFF v5)
    ============================================================ */
 .hero-split{
   display:grid; grid-template-columns:1.05fr .95fr; gap:56px; align-items:center;
 }
-@media (max-width:980px){ .hero-split{grid-template-columns:1fr; gap:64px;} }
+@media (max-width:980px){ .hero-split{grid-template-columns:1fr; gap:48px;} }
 .hero-stage{
   position:relative; display:flex; align-items:center; justify-content:center;
-  min-height:520px;
+  min-height:560px;
 }
-@media (max-width:980px){ .hero-stage{min-height:0; padding:20px 0 8px;} }
+@media (max-width:980px){ .hero-stage{min-height:0; padding:8px 0;} }
 .hero-stage::before{
-  content:""; position:absolute; width:420px; height:420px; border-radius:50%;
-  background:radial-gradient(circle, rgba(195,154,92,0.22), transparent 68%);
-  filter:blur(6px); z-index:0;
+  content:""; position:absolute; width:520px; height:520px; border-radius:50%;
+  background:
+    radial-gradient(circle at 35% 30%, rgba(201,113,63,0.30), transparent 55%),
+    radial-gradient(circle at 68% 70%, rgba(47,110,100,0.28), transparent 58%);
+  filter:blur(10px); z-index:0;
 }
-.phone-mock{
-  position:relative; z-index:1; width:min(280px,72vw); aspect-ratio:9/19.3;
-  border-radius:40px; padding:9px; background:linear-gradient(160deg,#2a2a2a,#0c0c0c);
-  box-shadow:0 40px 80px -24px rgba(0,0,0,0.65), 0 0 0 1px rgba(246,245,242,0.06);
-  transform:rotate(-3.5deg);
-  transition:transform .5s var(--ease);
+.cine-panel{
+  position:relative; z-index:1; width:min(400px,84vw); aspect-ratio:3/4;
+  border-radius:22px; overflow:hidden; background:#0c0c10;
+  box-shadow:0 50px 100px -30px rgba(0,0,0,0.7), 0 0 0 1px rgba(247,244,238,0.08);
+  transition:transform .6s var(--ease);
 }
-.phone-mock:hover{ transform:rotate(-1deg) translateY(-4px); }
-[data-reduce-motion="true"] .phone-mock{transform:none;}
-.phone-mock .screen{
-  position:relative; width:100%; height:100%; border-radius:32px; overflow:hidden; background:#111;
-}
-.phone-mock .screen video, .phone-mock .screen img{
+.cine-panel:hover{ transform:translateY(-6px); }
+[data-reduce-motion="true"] .cine-panel{transform:none;}
+.cine-panel video, .cine-panel img{
   width:100%; height:100%; object-fit:cover; display:block;
 }
-.phone-mock .notch{
-  position:absolute; top:0; inset-inline-start:50%; transform:translateX(-50%);
-  width:38%; height:22px; background:#0c0c0c; border-radius:0 0 14px 14px; z-index:2;
+.cine-panel .cine-scrim{
+  position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(to top, rgba(6,6,9,0.92) 0%, rgba(6,6,9,0.15) 42%, transparent 62%);
 }
-[dir="rtl"] .phone-mock .notch{ transform:translateX(50%); }
-.phone-badge{
-  position:absolute; z-index:2; bottom:14%; inset-inline-start:-8%;
-  background:rgba(11,11,12,0.92); border:1px solid var(--line-strong); backdrop-filter:blur(8px);
-  padding:12px 16px; border-radius:12px; max-width:210px;
-  display:flex; align-items:center; gap:10px;
-  box-shadow:0 16px 32px -12px rgba(0,0,0,0.5);
+.cine-panel .cine-cite{
+  position:absolute; z-index:2; bottom:18px; inset-inline:18px;
+  display:flex; align-items:center; gap:9px;
+  font-size:12px; color:var(--paper);
 }
-@media (max-width:980px){ .phone-badge{inset-inline-start:2%; bottom:8%;} }
-@media (max-width:460px){ .phone-badge{display:none;} }
-.phone-badge svg{width:22px;height:22px;color:var(--gold-soft);flex:none;}
-.phone-badge b{display:block;font-size:12.5px;font-weight:600;}
-.phone-badge span{display:block;font-size:11px;color:var(--muted);}
+.cine-panel .cine-cite svg{width:18px;height:18px;color:var(--gold-soft);flex:none;}
+.cine-panel .cine-cite b{display:block;font-size:12.5px;font-weight:600;}
+.cine-panel .cine-cite span{display:block;font-size:11px;color:var(--muted);}
+.hero-stage .cine-panel{ width:min(360px,78vw); }
 
 /* ============================================================
-   IN PRACTICE — real conference photo + real video quote
+   IN PRACTICE — editorial full-panel photo + cinematic video
    ============================================================ */
-.practice-grid{display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:start;}
-@media (max-width:900px){ .practice-grid{grid-template-columns:1fr; gap:52px;} }
-.practice-photo-frame{
-  position:relative; border:1px solid var(--line-strong); padding:14px; background:var(--ink-2);
-}
-.practice-photo-frame img{ width:100%; display:block; }
-.practice-photo-cap{ padding:16px 4px 4px; }
-.practice-photo-cap h3{ margin:0 0 6px; font-size:16px; font-weight:600; }
-.practice-photo-cap p{ margin:0; font-size:13.5px; color:var(--muted); }
+.practice-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:56px; align-items:start;}
+@media (max-width:900px){ .practice-grid{grid-template-columns:1fr; gap:44px;} }
 
-.practice-video-col{display:flex; flex-direction:column; gap:26px; align-items:flex-start;}
-.practice-phone{ width:min(230px,60vw); aspect-ratio:9/19.3; border-radius:34px; padding:8px;
-  background:linear-gradient(160deg,#2a2a2a,#0c0c0c);
-  box-shadow:0 30px 60px -20px rgba(0,0,0,0.55), 0 0 0 1px rgba(246,245,242,0.06);
+.editorial-photo{
+  position:relative; border-radius:20px; overflow:hidden;
+  box-shadow:0 40px 90px -30px rgba(0,0,0,0.65), 0 0 0 1px rgba(247,244,238,0.08);
 }
-.practice-phone .screen{position:relative;width:100%;height:100%;border-radius:27px;overflow:hidden;background:#111;}
-.practice-phone .screen video, .practice-phone .screen img{width:100%;height:100%;object-fit:cover;display:block;}
+.editorial-photo img{ width:100%; display:block; will-change:transform; }
+.editorial-photo .grade{
+  position:absolute; inset:0; pointer-events:none;
+  background:
+    linear-gradient(160deg, rgba(201,113,63,0.16), rgba(47,110,100,0.12) 55%, transparent 85%);
+  mix-blend-mode:overlay;
+}
+.editorial-photo .cine-scrim{
+  position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(to top, rgba(6,6,9,0.94) 0%, rgba(6,6,9,0.05) 46%, transparent 60%);
+}
+.editorial-photo .ed-cap{
+  position:absolute; z-index:2; inset-inline:22px; bottom:20px;
+}
+.editorial-photo .ed-cap h3{ margin:0 0 6px; font-size:18px; font-weight:600; color:var(--paper); }
+.editorial-photo .ed-cap p{ margin:0 0 10px; font-size:13px; color:var(--muted); max-width:420px; }
+
+.practice-video-col{display:flex; flex-direction:column; gap:26px; align-items:stretch;}
+.practice-video-col .cine-panel{ width:100%; aspect-ratio:3/4; max-width:340px; align-self:center; }
 
 .quote-block{ max-width:480px; }
 .quote-mark{
@@ -505,6 +517,112 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   display:flex; align-items:center; gap:10px;
 }
 .edu-final b{ color:var(--gold-soft); }
+
+/* ============================================================
+   SIGNATURE 3D — self-hosted Three.js, capability-gated
+   ============================================================ */
+.sig3d-section{
+  position:relative; overflow:hidden;
+  background:
+    radial-gradient(ellipse 900px 620px at 14% 8%, rgba(47,110,100,0.20), transparent 60%),
+    radial-gradient(ellipse 800px 560px at 90% 96%, rgba(201,113,63,0.20), transparent 60%),
+    var(--ink-2);
+}
+.sig3d-grid{ display:grid; grid-template-columns:.85fr 1.15fr; gap:56px; align-items:center; }
+@media (max-width:940px){ .sig3d-grid{grid-template-columns:1fr; gap:40px;} }
+.sig3d-copy p{ color:var(--muted); font-size:16.5px; margin:0 0 20px; max-width:460px; }
+.sig3d-facts{ display:flex; gap:28px; margin-top:8px; flex-wrap:wrap; }
+.sig3d-facts div b{ display:block; font-family:"Plex Serif Display",serif; font-size:30px; color:var(--gold-soft); }
+.sig3d-facts div span{ font-size:12.5px; color:var(--muted); }
+.sig3d-stage{
+  position:relative; width:100%; max-width:520px; aspect-ratio:1/1; margin-inline:auto;
+  border-radius:24px; overflow:hidden;
+  background:radial-gradient(circle at 50% 50%, rgba(201,113,63,0.10), transparent 70%);
+}
+.sig3d-stage canvas{ position:absolute; inset:0; width:100% !important; height:100% !important; display:block; }
+.sig3d-fallback{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+}
+.sig3d-fallback svg{ width:64%; height:64%; opacity:.9; }
+.sig3d-stage:not(.on) canvas{ opacity:0; }
+.sig3d-stage.on .sig3d-fallback{ display:none; }
+
+/* ============================================================
+   TESTIMONIALS — real, video-verified patient quotes
+   ============================================================ */
+.tmn-grid{ display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+@media (max-width:860px){ .tmn-grid{grid-template-columns:1fr;} }
+.tmn-card{
+  display:grid; grid-template-columns:150px 1fr; gap:20px;
+  border:1px solid var(--line); border-radius:16px; padding:20px;
+  background:linear-gradient(160deg, rgba(201,113,63,0.05), rgba(47,110,100,0.04));
+  transition:border-color var(--dur-fast) ease, transform var(--dur-fast) ease;
+}
+.tmn-card:hover{ border-color:var(--line-strong); transform:translateY(-3px); }
+@media (max-width:520px){ .tmn-card{grid-template-columns:1fr;} }
+.tmn-media{
+  position:relative; width:150px; aspect-ratio:3/4; border-radius:12px; overflow:hidden; flex:none;
+  background:#0c0c10;
+}
+@media (max-width:520px){ .tmn-media{width:100%; max-width:200px;} }
+.tmn-media video, .tmn-media img{ width:100%; height:100%; object-fit:cover; display:block; }
+.tmn-media .cine-scrim{ position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(to top, rgba(6,6,9,0.7) 0%, transparent 55%); }
+.tmn-media.text-only{
+  position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(116,195,177,0.20), transparent 55%),
+    linear-gradient(160deg, var(--gold-deep), var(--ink-3) 70%);
+}
+.tmn-media.text-only::before{
+  content:""; position:absolute; inset:0; opacity:.5;
+  background-image:radial-gradient(rgba(247,244,238,0.16) 1px, transparent 1px);
+  background-size:14px 14px;
+  mask-image:linear-gradient(to bottom, transparent, black 40%, black 70%, transparent);
+}
+.tmn-media.text-only .quote-mark{ position:relative; z-index:1; margin:0; font-size:52px; opacity:.9; text-shadow:0 4px 24px rgba(0,0,0,0.4); }
+.tmn-play-badge{
+  position:absolute; z-index:2; top:10px; inset-inline-start:10px;
+  font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--paper);
+  background:rgba(6,6,9,0.55); border:1px solid rgba(247,244,238,0.2); border-radius:999px;
+  padding:3px 9px;
+}
+.tmn-body blockquote{ margin:0 0 12px; font-size:18px; line-height:1.55; font-weight:500; }
+[data-lang="ar"] .tmn-body blockquote{ font-family:"Plex Arabic"; }
+.tmn-attrib{ font-size:13px; color:var(--muted); margin:0 0 10px; }
+.tmn-attrib b{ color:var(--gold-soft); font-weight:600; }
+.tmn-note{
+  margin-top:36px; font-size:13px; color:var(--muted-2); max-width:640px;
+  display:flex; gap:10px; align-items:flex-start;
+}
+.tmn-note svg{ width:16px; height:16px; color:var(--teal-soft); flex:none; margin-top:2px; }
+
+/* ============================================================
+   FOCUS AREAS — numbered rail (replaces the old flat grid)
+   ============================================================ */
+.focus-rail{ border-top:1px solid var(--line); }
+.focus-row{
+  display:grid; grid-template-columns:110px 1fr 40px; align-items:center; gap:24px;
+  padding:30px 4px; border-bottom:1px solid var(--line);
+  transition:background var(--dur-fast) ease;
+}
+.focus-row:hover, .focus-row.is-active{ background:rgba(201,113,63,0.05); }
+@media (max-width:700px){ .focus-row{grid-template-columns:60px 1fr; gap:16px;} .focus-row .focus-arrow{display:none;} }
+.focus-num{
+  font-family:"Plex Serif Display",serif; font-weight:600; font-size:clamp(28px,3.2vw,44px);
+  color:var(--muted-2); line-height:1; transition:color var(--dur-fast) ease;
+}
+.focus-row:hover .focus-num, .focus-row.is-active .focus-num{ color:var(--gold-soft); }
+.focus-content h3{ margin:0 0 8px; font-size:19px; font-weight:600; display:flex; align-items:center; gap:10px; }
+.focus-content .icon{ width:22px; height:22px; color:var(--gold-soft); flex:none; }
+.focus-content p{ margin:0; color:var(--muted); font-size:14.5px; max-width:560px; }
+.focus-arrow{ width:18px; height:18px; color:var(--muted-2); transform:rotate(135deg); transition:transform var(--dur-fast) ease, color var(--dur-fast) ease; }
+[dir="rtl"] .focus-arrow{ transform:rotate(45deg); }
+.focus-row:hover .focus-arrow, .focus-row.is-active .focus-arrow{ color:var(--gold-soft); transform:rotate(180deg); }
+[dir="rtl"] .focus-row:hover .focus-arrow, [dir="rtl"] .focus-row.is-active .focus-arrow{ transform:rotate(0deg); }
+
+/* count-up numerals (JS toggles .counted once animated; CSS-only, no layout dependency) */
+[data-count]{ font-variant-numeric:tabular-nums; }
 </style>
 </head>
 <body data-lang="ar">
@@ -525,6 +643,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
     <nav class="nav-links" aria-label="Primary">
       <a href="#about"><span class="ar-only">نبذة</span><span class="en-only">About</span></a>
       <a href="#practice"><span class="ar-only">في الميدان</span><span class="en-only">In Practice</span></a>
+      <a href="#testimonials"><span class="ar-only">آراء حقيقية</span><span class="en-only">Testimonials</span></a>
       <a href="#journey"><span class="ar-only">المسيرة المهنية</span><span class="en-only">Journey</span></a>
       <a href="#education"><span class="ar-only">التعليم والزمالات</span><span class="en-only">Education</span></a>
       <a href="#focus"><span class="ar-only">مجالات التركيز</span><span class="en-only">Focus</span></a>
@@ -590,25 +709,23 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
           </a>
         </div>
       </div>
-      <div class="hero-stage">
-        <div class="phone-mock">
-          <span class="notch" aria-hidden="true"></span>
-          <div class="screen">
-            <video class="reel-video" data-reel
-              poster="media/reel-augmentation-talk-poster.jpg"
-              muted loop playsinline autoplay preload="none"
-              data-src="media/reel-augmentation-talk.mp4">
-            </video>
+      <div class="hero-stage reveal-3d">
+        <div class="cine-panel">
+          <video class="reel-video" data-reel
+            poster="media/reel-augmentation-talk-poster.jpg"
+            muted loop playsinline autoplay preload="none"
+            data-src="media/reel-augmentation-talk.mp4">
+          </video>
+          <div class="cine-scrim" aria-hidden="true"></div>
+          <div class="cine-cite">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+            <span>
+              <b class="ar-only">من حسابه الحقيقي على إنستغرام</b>
+              <b class="en-only">From his real Instagram account</b>
+              <span class="ar-only">@dr.ahmed_awad_plastic_surgeon</span>
+              <span class="en-only">@dr.ahmed_awad_plastic_surgeon</span>
+            </span>
           </div>
-        </div>
-        <div class="phone-badge">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
-          <span>
-            <b class="ar-only">من حسابه الحقيقي على إنستغرام</b>
-            <b class="en-only">From his real Instagram account</b>
-            <span class="ar-only">@dr.ahmed_awad_plastic_surgeon</span>
-            <span class="en-only">@dr.ahmed_awad_plastic_surgeon</span>
-          </span>
         </div>
       </div>
     </div>
@@ -632,10 +749,44 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
       </div>
       <div class="reveal">
         <div class="stat-list">
-          <div class="stat"><b class="ltr">20+</b><span class="ar-only">عاماً من الممارسة الجراحية المتواصلة</span><span class="en-only">years of continuous surgical practice</span></div>
-          <div class="stat"><b class="ltr">2006</b><span class="ar-only">بداية المسيرة في القطاع الحكومي</span><span class="en-only">career start, public sector</span></div>
-          <div class="stat"><b class="ltr">3</b><span class="ar-only">محطات مهنية: مستشفى، عيادة خاصة، استشارات</span><span class="en-only">career chapters: hospital, private practice, consultancy</span></div>
-          <div class="stat"><b class="ltr">5</b><span class="ar-only">مؤهلات وزمالات أكاديمية موثقة</span><span class="en-only">documented academic qualifications</span></div>
+          <div class="stat"><b class="ltr"><span data-count="20">20</span>+</b><span class="ar-only">عاماً من الممارسة الجراحية المتواصلة</span><span class="en-only">years of continuous surgical practice</span></div>
+          <div class="stat"><b class="ltr"><span data-count="2006" data-count-noease="1">2006</span></b><span class="ar-only">بداية المسيرة في القطاع الحكومي</span><span class="en-only">career start, public sector</span></div>
+          <div class="stat"><b class="ltr"><span data-count="3">3</span></b><span class="ar-only">محطات مهنية: مستشفى، عيادة خاصة، استشارات</span><span class="en-only">career chapters: hospital, private practice, consultancy</span></div>
+          <div class="stat"><b class="ltr"><span data-count="5">5</span></b><span class="ar-only">مؤهلات وزمالات أكاديمية موثقة</span><span class="en-only">documented academic qualifications</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ SIGNATURE 3D — precision, materialized -->
+<section class="section-pad sig3d-section" id="signature">
+  <div class="wrap">
+    <div class="sig3d-grid">
+      <div class="sig3d-copy reveal">
+        <div class="kicker"><span class="rule"></span><span class="ar-only">معيار العمل</span><span class="en-only">The Standard</span></div>
+        <h2 style="font-size:clamp(28px,3.6vw,42px); margin:0 0 18px; font-weight:700; letter-spacing:-.01em;">
+          <span class="ar-only">دقة تُقاس، لا تُدّعى</span>
+          <span class="en-only">Precision you can measure, not just claim</span>
+        </h2>
+        <p class="ar-only">عشرون عاماً من الجراحة الدقيقة — من نحت الجسم إلى الجراحة المجهرية — تختصر في فكرة واحدة: كل وجه، كل زاوية، يجب أن يوضع في مكانه الصحيح تماماً.</p>
+        <p class="en-only">Two decades of precise surgery — from body contouring to hand &amp; microsurgery — come down to one idea: every facet, every angle, has to sit exactly where it belongs.</p>
+        <div class="sig3d-facts">
+          <div><b class="ltr">20+</b><span class="ar-only">عاماً من الدقة الجراحية</span><span class="en-only">years of surgical precision</span></div>
+          <div><b class="ltr">2</b><span class="ar-only">تخصصان دقيقان: نحت وترميم</span><span class="en-only">precision disciplines: contouring &amp; reconstruction</span></div>
+        </div>
+      </div>
+      <div class="sig3d-stage reveal" id="sig3dStage">
+        <div class="sig3d-fallback" aria-hidden="true">
+          <svg viewBox="0 0 200 200" fill="none">
+            <polygon points="100,14 178,60 178,140 100,186 22,140 22,60" stroke="var(--gold-soft)" stroke-width="1.2" fill="rgba(201,113,63,0.08)"/>
+            <polygon points="100,14 178,60 100,100" stroke="var(--teal-soft)" stroke-width="1" fill="rgba(47,110,100,0.10)"/>
+            <polygon points="178,60 178,140 100,100" stroke="var(--gold-soft)" stroke-width="1" fill="rgba(201,113,63,0.06)"/>
+            <polygon points="178,140 100,186 100,100" stroke="var(--teal-soft)" stroke-width="1" fill="rgba(47,110,100,0.08)"/>
+            <polygon points="100,186 22,140 100,100" stroke="var(--gold-soft)" stroke-width="1" fill="rgba(201,113,63,0.06)"/>
+            <polygon points="22,140 22,60 100,100" stroke="var(--teal-soft)" stroke-width="1" fill="rgba(47,110,100,0.10)"/>
+            <polygon points="22,60 100,14 100,100" stroke="var(--gold-soft)" stroke-width="1" fill="rgba(201,113,63,0.08)"/>
+          </svg>
         </div>
       </div>
     </div>
@@ -651,11 +802,11 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
       <p><span class="ar-only">كل ما يلي مأخوذ من حساباته الحقيقية على وسائل التواصل — بلا تلفيق أو استبدال.</span><span class="en-only">Everything below is pulled directly from his own real social accounts — nothing staged, nothing substituted.</span></p>
     </div>
     <div class="practice-grid reveal">
-      <div>
-        <div class="practice-photo-frame">
-          <img src="media/conference-mesei-riyadh.jpg" width="1080" height="1080" loading="lazy" alt="Dr. Ahmed Awad at the Middle East Symposium of Ergonomix Implants, Riyadh">
-        </div>
-        <div class="practice-photo-cap">
+      <div class="editorial-photo" data-parallax>
+        <img src="media/conference-mesei-riyadh.jpg" width="1080" height="1080" loading="lazy" alt="Dr. Ahmed Awad at the Middle East Symposium of Ergonomix Implants, Riyadh">
+        <div class="grade" aria-hidden="true"></div>
+        <div class="cine-scrim" aria-hidden="true"></div>
+        <div class="ed-cap">
           <h3><span class="ar-only">مؤتمر موتيفا لجراحات الثدي المتقدمة — الرياض</span><span class="en-only">Motiva Advanced Breast Surgery Conference — Riyadh</span></h3>
           <p><span class="ar-only">من فعاليات "الملتقى الشرق أوسطي لزراعات إرجونوميكس" (MESEI)، فبراير <span class="ltr">2026</span>. حضور علمي موثّق، لا مجرد ادعاء.</span><span class="en-only">From the Middle East Symposium of Ergonomix® Implants (MESEI), February <span class="ltr">2026</span>. Documented scientific attendance, not just a claim.</span></p>
           <p class="src-cite">
@@ -666,14 +817,13 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
         </div>
       </div>
       <div class="practice-video-col">
-        <div class="practice-phone">
-          <div class="screen">
-            <video class="reel-video" data-reel
-              poster="media/reel-or-marking-poster.jpg"
-              muted loop playsinline autoplay preload="none"
-              data-src="media/reel-or-marking.mp4">
-            </video>
-          </div>
+        <div class="cine-panel">
+          <video class="reel-video" data-reel
+            poster="media/reel-or-marking-poster.jpg"
+            muted loop playsinline autoplay preload="none"
+            data-src="media/reel-or-marking.mp4">
+          </video>
+          <div class="cine-scrim" aria-hidden="true"></div>
         </div>
         <div class="quote-block">
           <h3><span class="ar-only">شدّ الجفون — تعليم ما قبل الجراحة</span><span class="en-only">Eyelid Lift — Pre-Operative Marking</span></h3>
@@ -877,36 +1027,66 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
       <h2><span class="ar-only">حيث يتركز عمله</span><span class="en-only">Where his practice concentrates</span></h2>
       <p><span class="ar-only">كما وصفها بنفسه — بلا مبالغة أو قائمة إجراءات تسويقية.</span><span class="en-only">As described in his own words — not a marketing procedure list.</span></p>
     </div>
-    <div class="focus-grid reveal">
-      <div class="focus-card">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3a4 4 0 100 8 4 4 0 000-8zM5 21c0-4 3-7 7-7s7 3 7 7"/></svg>
-        <h3><span class="ar-only">نحت الجسم</span><span class="en-only">Body Contouring</span></h3>
-        <p class="ar-only">إعادة تشكيل ملامح الجسم بمقاربة جراحية دقيقة.</p>
-        <p class="en-only">Surgical reshaping of body contours with precision.</p>
+    <div class="focus-rail reveal" id="focusRail">
+      <div class="focus-row" data-index="0">
+        <span class="focus-num">01</span>
+        <div class="focus-content">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3a4 4 0 100 8 4 4 0 000-8zM5 21c0-4 3-7 7-7s7 3 7 7"/></svg>
+            <span class="ar-only">نحت الجسم</span><span class="en-only">Body Contouring</span>
+          </h3>
+          <p class="ar-only">إعادة تشكيل ملامح الجسم بمقاربة جراحية دقيقة.</p>
+          <p class="en-only">Surgical reshaping of body contours with precision.</p>
+        </div>
+        <svg class="focus-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </div>
-      <div class="focus-card">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 13V6a2 2 0 114 0v6m0-4a2 2 0 114 0v5m0-3a2 2 0 114 0v6a6 6 0 01-6 6h-1a6 6 0 01-5-2.7L6 15c-.6-.9-.3-2 .6-2.5.8-.4 1.7-.2 2.3.5"/></svg>
-        <h3><span class="ar-only">جراحة اليد والمجهرية</span><span class="en-only">Hand &amp; Microsurgery</span></h3>
-        <p class="ar-only">تخصص دقيق مبني على ماجستير الجراحة الميكروسكوبية في برشلونة.</p>
-        <p class="en-only">A precise specialty grounded in the Barcelona microsurgery master's.</p>
+      <div class="focus-row" data-index="1">
+        <span class="focus-num">02</span>
+        <div class="focus-content">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 13V6a2 2 0 114 0v6m0-4a2 2 0 114 0v5m0-3a2 2 0 114 0v6a6 6 0 01-6 6h-1a6 6 0 01-5-2.7L6 15c-.6-.9-.3-2 .6-2.5.8-.4 1.7-.2 2.3.5"/></svg>
+            <span class="ar-only">جراحة اليد والمجهرية</span><span class="en-only">Hand &amp; Microsurgery</span>
+          </h3>
+          <p class="ar-only">تخصص دقيق مبني على ماجستير الجراحة الميكروسكوبية في برشلونة.</p>
+          <p class="en-only">A precise specialty grounded in the Barcelona microsurgery master's.</p>
+        </div>
+        <svg class="focus-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </div>
-      <div class="focus-card">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>
-        <h3><span class="ar-only">الحشوات التجميلية</span><span class="en-only">Aesthetic Fillers</span></h3>
-        <p class="ar-only">إجراءات غير جراحية لتحسين ملامح الوجه.</p>
-        <p class="en-only">Non-surgical procedures to refine facial features.</p>
+      <div class="focus-row" data-index="2">
+        <span class="focus-num">03</span>
+        <div class="focus-content">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>
+            <span class="ar-only">الحشوات التجميلية</span><span class="en-only">Aesthetic Fillers</span>
+          </h3>
+          <p class="ar-only">إجراءات غير جراحية لتحسين ملامح الوجه.</p>
+          <p class="en-only">Non-surgical procedures to refine facial features.</p>
+        </div>
+        <svg class="focus-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </div>
-      <div class="focus-card">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 19V5a2 2 0 012-2h9l5 5v11a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>
-        <h3><span class="ar-only">البحث السريري</span><span class="en-only">Clinical Research</span></h3>
-        <p class="ar-only">اهتمام مستمر بالمستجدات العلمية في التخصص.</p>
-        <p class="en-only">A continued interest in the specialty's evolving evidence base.</p>
+      <div class="focus-row" data-index="3">
+        <span class="focus-num">04</span>
+        <div class="focus-content">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 19V5a2 2 0 012-2h9l5 5v11a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>
+            <span class="ar-only">البحث السريري</span><span class="en-only">Clinical Research</span>
+          </h3>
+          <p class="ar-only">اهتمام مستمر بالمستجدات العلمية في التخصص.</p>
+          <p class="en-only">A continued interest in the specialty's evolving evidence base.</p>
+        </div>
+        <svg class="focus-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </div>
-      <div class="focus-card">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 4L2 9l10 5 10-5-10-5z"/><path d="M6 11.5V17c0 1.5 3 3 6 3s6-1.5 6-3v-5.5"/></svg>
-        <h3><span class="ar-only">التعليم الطبي</span><span class="en-only">Medical Education</span></h3>
-        <p class="ar-only">مشاركة في نقل الخبرة ضمن الأوساط الطبية.</p>
-        <p class="en-only">Involvement in passing on expertise within medical circles.</p>
+      <div class="focus-row" data-index="4">
+        <span class="focus-num">05</span>
+        <div class="focus-content">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 4L2 9l10 5 10-5-10-5z"/><path d="M6 11.5V17c0 1.5 3 3 6 3s6-1.5 6-3v-5.5"/></svg>
+            <span class="ar-only">التعليم الطبي</span><span class="en-only">Medical Education</span>
+          </h3>
+          <p class="ar-only">مشاركة في نقل الخبرة ضمن الأوساط الطبية.</p>
+          <p class="en-only">Involvement in passing on expertise within medical circles.</p>
+        </div>
+        <svg class="focus-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </div>
     </div>
   </div>
@@ -919,7 +1099,8 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
       <div class="kicker"><span class="rule"></span><span class="ar-only">التقييم</span><span class="en-only">Recognition</span></div>
       <h2><span class="ar-only">تقييم موثّق على خرائط جوجل</span><span class="en-only">A verified rating on Google</span></h2>
     </div>
-    <div class="trust-wrap reveal">
+    <div class="trust-panel reveal">
+    <div class="trust-wrap">
       <div>
         <div class="trust-score"><span class="ltr">4.8</span><span class="ar-only">من 5</span><span class="en-only">/ 5</span></div>
         <div class="trust-stars" aria-hidden="true">
@@ -931,10 +1112,132 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
         </div>
       </div>
       <p class="trust-note">
-        <span class="ar-only"><span class="ltr">38</span> تقييماً على خرائط Google، بحسب آخر رصد في أغسطس <span class="ltr">2026</span>. الرقم قابل للتغير مع تقييمات جديدة.</span>
-        <span class="en-only"><span class="ltr">38</span> reviews on Google Maps, as last checked in August <span class="ltr">2026</span>. This figure may change as new reviews are added.</span>
+        <span class="ar-only"><strong><span class="ltr">38</span> تقييماً</strong> على خرائط Google، بحسب آخر رصد في أغسطس <span class="ltr">2026</span>. الرقم قابل للتغير مع تقييمات جديدة — والأقوى منه أدناه: مراجعات فيديو حقيقية بصوت المريضات أنفسهن.</span>
+        <span class="en-only"><strong><span class="ltr">38</span> reviews</strong> on Google Maps, as last checked in August <span class="ltr">2026</span>. This figure may change as new reviews are added — and stronger still, below: real video reviews in patients' own voices.</span>
       </p>
     </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ TESTIMONIALS — real, video-verified patient quotes -->
+<section class="section-pad band" id="testimonials">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="kicker"><span class="rule"></span><span class="ar-only">قالوا بأنفسهم</span><span class="en-only">In Their Own Words</span></div>
+      <h2><span class="ar-only">مراجعات حقيقية، لا نجوم مجردة</span><span class="en-only">Real reviews, not just stars</span></h2>
+      <p><span class="ar-only">أربع مريضات تحدثن أمام الكاميرا بعد عملياتهن الحقيقية — وجوههن محمية دائماً، وكلماتهن كما قيلت تماماً، منقولة حرفياً من الترجمة الظاهرة في الفيديو الأصلي.</span><span class="en-only">Four real patients spoke on camera after their real procedures — their faces protected throughout, their words exactly as said, transcribed verbatim from the burned-in captions in the original footage.</span></p>
+    </div>
+
+    <div class="tmn-grid reveal">
+      <!-- Card 1: real video clip — office consultation, breast lift + autologous augmentation -->
+      <div class="tmn-card">
+        <div class="tmn-media">
+          <span class="tmn-play-badge ar-only">فيديو حقيقي</span>
+          <span class="tmn-play-badge en-only">Real video</span>
+          <video class="reel-video" data-reel
+            poster="media/testimonial-lift-clip-poster.jpg"
+            muted loop playsinline autoplay preload="none"
+            data-src="media/testimonial-lift-clip.mp4">
+          </video>
+          <div class="cine-scrim" aria-hidden="true"></div>
+        </div>
+        <div class="tmn-body">
+          <blockquote>
+            <span class="ar-only">«هذي العملية الـ٣ معاك دكتور»</span>
+            <span class="en-only">&ldquo;This is my third procedure with you, doctor.&rdquo;</span>
+          </blockquote>
+          <p class="tmn-attrib">
+            <span class="ar-only"><b>مريضة حقيقية</b> — رفع وتكبير الثدي ذاتياً (نقل دهون)، لقاء في العيادة</span>
+            <span class="en-only"><b>Real patient</b> — breast lift with autologous (fat-transfer) augmentation, in-office interview</span>
+          </p>
+          <p class="src-cite">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+            <span class="ar-only">مقطع مقابلة حقيقي، عيادات لمسة</span>
+            <span class="en-only">Real interview clip, Lamsa Clinics</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 2: real video clip — home follow-up visit -->
+      <div class="tmn-card">
+        <div class="tmn-media">
+          <span class="tmn-play-badge ar-only">فيديو حقيقي</span>
+          <span class="tmn-play-badge en-only">Real video</span>
+          <video class="reel-video" data-reel
+            poster="media/testimonial-home-clip-poster.jpg"
+            muted loop playsinline autoplay preload="none"
+            data-src="media/testimonial-home-clip.mp4">
+          </video>
+          <div class="cine-scrim" aria-hidden="true"></div>
+        </div>
+        <div class="tmn-body">
+          <blockquote>
+            <span class="ar-only">«ما أقدر أوصف يعني»</span>
+            <span class="en-only">&ldquo;I honestly can't put it into words.&rdquo;</span>
+          </blockquote>
+          <p class="tmn-attrib">
+            <span class="ar-only"><b>مريضة حقيقية</b> — زيارة متابعة منزلية بعد الجراحة</span>
+            <span class="en-only"><b>Real patient</b> — home follow-up visit after surgery</span>
+          </p>
+          <p class="src-cite">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+            <span class="ar-only">مقطع مقابلة حقيقي، زيارة منزلية</span>
+            <span class="en-only">Real interview clip, home visit</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 3: quote-only — breast augmentation with implants -->
+      <div class="tmn-card">
+        <div class="tmn-media text-only">
+          <span class="quote-mark" aria-hidden="true">&ldquo;</span>
+        </div>
+        <div class="tmn-body">
+          <blockquote>
+            <span class="ar-only">«الدكتور أحمد معايا متابع»</span>
+            <span class="en-only">&ldquo;Dr. Ahmed stays with me, following up.&rdquo;</span>
+          </blockquote>
+          <p class="tmn-attrib">
+            <span class="ar-only"><b>مريضة حقيقية</b> — تكبير الصدر بالإمبلانت</span>
+            <span class="en-only"><b>Real patient</b> — breast augmentation with implants</span>
+          </p>
+          <p class="src-cite">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+            <span class="ar-only">من ترجمة فيديو حقيقي (لم يُعرض المقطع هنا)</span>
+            <span class="en-only">From a real video's captions (clip not shown here)</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 4: quote-only — liposuction, contouring, abdominoplasty -->
+      <div class="tmn-card">
+        <div class="tmn-media text-only">
+          <span class="quote-mark" aria-hidden="true">&ldquo;</span>
+        </div>
+        <div class="tmn-body">
+          <blockquote>
+            <span class="ar-only">«شفط ونحت وقص البطن... ويقعد يشرح، يعني لا تترددوا»</span>
+            <span class="en-only">&ldquo;Liposuction, contouring, a tummy tuck&hellip; he takes the time to explain. Honestly, don't hesitate.&rdquo;</span>
+          </blockquote>
+          <p class="tmn-attrib">
+            <span class="ar-only"><b>مريضة حقيقية</b> — شفط دهون ونحت وشدّ للبطن</span>
+            <span class="en-only"><b>Real patient</b> — liposuction, body contouring &amp; abdominoplasty</span>
+          </p>
+          <p class="src-cite">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+            <span class="ar-only">من ترجمة فيديو حقيقي (لم يُعرض المقطع هنا)</span>
+            <span class="en-only">From a real video's captions (clip not shown here)</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <p class="tmn-note reveal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>
+      <span class="ar-only">جميع المقاطع من مقابلات حقيقية أجرتها عيادات لمسة مع مريضات حقيقيات بعد عملياتهن الفعلية — لا تمثيل ولا تعويض بممثلين. تم اختيار الاقتباسات بعد مشاهدة كامل مدة كل فيديو (من <span class="ltr">43</span> إلى <span class="ltr">99</span> ثانية).</span>
+      <span class="en-only">All clips are from real interviews Lamsa Clinics conducted with real patients after their actual procedures — nothing staged, no actors. Quotes were selected after watching each video's full duration (<span class="ltr">43</span>&ndash;<span class="ltr">99</span> seconds).</span>
+    </p>
   </div>
 </section>
 
@@ -1014,6 +1317,9 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 <a class="wa-float" href="https://wa.me/966563681087" target="_blank" rel="noopener" aria-label="WhatsApp">
   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.5s-.6-1.5-.9-2c-.2-.5-.5-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3c1.5.8 3.2 1.3 5.1 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.5.9.9-3.4-.2-.3C3.5 14.4 3 12.7 3 10.9 3 6 6.9 2 11.9 2c5 0 9 4 9 9s-4 9-9 9z"/></svg>
 </a>
+
+<script src="vendor/gsap.min.js" defer></script>
+<script src="vendor/ScrollTrigger.min.js" defer></script>
 
 <script>
 (function(){
@@ -1173,8 +1479,8 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   /* ---------- nav background on scroll ---------- */
   var navEl = document.querySelector(".nav");
   function updateNav(){
-    if(window.scrollY > 20){ navEl.style.background = "rgba(11,11,12,0.94)"; }
-    else { navEl.style.background = "rgba(11,11,12,0.82)"; }
+    if(window.scrollY > 20){ navEl.style.background = "rgba(10,10,16,0.94)"; }
+    else { navEl.style.background = "rgba(10,10,16,0.82)"; }
   }
   window.addEventListener("scroll", updateNav, {passive:true});
   updateNav();
@@ -1205,6 +1511,234 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
     if(w > vw + 1){ console.warn("[QA] horizontal overflow detected:", w, ">", vw); }
   }
   window.addEventListener("load", checkOverflow);
+
+  /* ---------- GPU capability check, shared by the 3D scene ----------
+     Mirrors the same technique already used/documented on the agency's
+     De Praxes build: don't even attempt a WebGL context on a connection
+     that can't afford the bytes, and don't attempt it at all if the
+     browser has no WebGL support. */
+  function gpuCapable(){
+    if(reduce) return false;
+    var slowNet = navigator.connection && /2g/.test(navigator.connection.effectiveType || "");
+    if(slowNet) return false;
+    try{
+      var c = document.createElement("canvas");
+      return !!(window.WebGLRenderingContext && (c.getContext("webgl2") || c.getContext("webgl")));
+    }catch(e){ return false; }
+  }
+
+  /* ---------- stat counters: real numbers only, JS animates the count-up ----------
+     Every value counted here is already present as static real text in the
+     raw HTML (see the About section) — this only adds a count-up animation
+     on scroll-into-view; it never invents or changes a number. */
+  function initCounters(){
+    var nodes = Array.prototype.slice.call(document.querySelectorAll("[data-count]"));
+    if(!nodes.length) return;
+    function animateNode(el){
+      var target = parseFloat(el.getAttribute("data-count"));
+      if(isNaN(target)) return;
+      if(reduce){ el.textContent = el.getAttribute("data-count"); return; }
+      var dur = el.hasAttribute("data-count-noease") ? 900 : 1100;
+      var start = null;
+      var settled = false;
+      function finish(){
+        if(settled) return;
+        settled = true;
+        el.textContent = el.getAttribute("data-count");
+      }
+      function step(ts){
+        if(settled) return;
+        if(start === null) start = ts;
+        var p = Math.min(1, (ts - start) / dur);
+        var eased = 1 - Math.pow(1 - p, 3);
+        var val = Math.round(target * eased);
+        el.textContent = val;
+        if(p < 1){ requestAnimationFrame(step); } else { finish(); }
+      }
+      requestAnimationFrame(step);
+      /* Hard backstop independent of rAF pacing: a backgrounded/throttled
+         tab (verified during this build's own QA — see HANDOFF) can pause
+         rAF indefinitely mid-animation, freezing the counter on a partial
+         value forever. setTimeout is throttled far less aggressively, so
+         this guarantees the real final number lands regardless. */
+      setTimeout(finish, dur + 500);
+    }
+    if("IntersectionObserver" in window){
+      var cio = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting){ animateNode(entry.target); cio.unobserve(entry.target); }
+        });
+      }, {threshold:0.4});
+      nodes.forEach(function(el){ cio.observe(el); });
+    } else {
+      nodes.forEach(animateNode);
+    }
+  }
+  initCounters();
+
+  /* ---------- Focus Areas numbered rail: active-row tracking on scroll ---------- */
+  (function initFocusRail(){
+    var rail = document.getElementById("focusRail");
+    if(!rail) return;
+    var rows = Array.prototype.slice.call(rail.querySelectorAll(".focus-row"));
+    if(!rows.length) return;
+    if("IntersectionObserver" in window && !reduce){
+      var fio = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting){ entry.target.classList.add("is-active"); }
+          else { entry.target.classList.remove("is-active"); }
+        });
+      }, {threshold:0.5, rootMargin:"-10% 0px -10% 0px"});
+      rows.forEach(function(r){ fio.observe(r); });
+    }
+  })();
+
+  /* ---------- Editorial photo parallax (GSAP + ScrollTrigger if available,
+     otherwise a plain rAF/scroll-ratio fallback so the page never depends
+     on the CDN-free vendor libs actually loading) ---------- */
+  function initParallax(){
+    if(reduce) return;
+    var targets = Array.prototype.slice.call(document.querySelectorAll("[data-parallax] img"));
+    if(!targets.length) return;
+    if(window.gsap && window.ScrollTrigger){
+      gsap.registerPlugin(ScrollTrigger);
+      targets.forEach(function(img){
+        gsap.fromTo(img, {yPercent:-6}, {
+          yPercent:6, ease:"none",
+          scrollTrigger:{ trigger: img.closest("[data-parallax]"), scrub:true, start:"top bottom", end:"bottom top" }
+        });
+      });
+    } else {
+      var ticking = false;
+      function onScroll(){
+        if(ticking) return;
+        ticking = true;
+        requestAnimationFrame(function(){
+          targets.forEach(function(img){
+            var wrap = img.closest("[data-parallax]");
+            var r = wrap.getBoundingClientRect();
+            var vh = window.innerHeight;
+            var ratio = Math.max(-1, Math.min(1, (r.top + r.height/2 - vh/2) / vh));
+            img.style.transform = "translateY(" + (ratio * -14) + "px) scale(1.06)";
+          });
+          ticking = false;
+        });
+      }
+      window.addEventListener("scroll", onScroll, {passive:true});
+      onScroll();
+    }
+  }
+  initParallax();
+
+  /* ---------- GSAP stagger enhancement on top of the existing IO reveal
+     system. The .reveal / IntersectionObserver mechanism above is the
+     guaranteed baseline (works with zero dependencies); when GSAP has
+     actually loaded, elements inside a common parent get a small
+     staggered delay instead of firing in lockstep, which is the one
+     visible difference this adds. Never blocks or replaces the base
+     reveal — purely additive, and skipped entirely under reduced motion
+     or if the vendor script failed to load for any reason. */
+  function initStagger(){
+    if(reduce || !window.gsap) return;
+    var groups = document.querySelectorAll(".tmn-grid, .cred-grid, .stat-list");
+    groups.forEach(function(group, gi){
+      var items = Array.prototype.slice.call(group.children);
+      items.forEach(function(el, i){
+        el.style.transitionDelay = (i * 70) + "ms";
+      });
+    });
+  }
+  initStagger();
+
+  /* ---------- SIGNATURE 3D — self-hosted Three.js, lazy + capability-gated ----------
+     No CDN: vendor/three.module.min.js is a local, self-hosted copy of the
+     same MIT-licensed build already vetted for this agency's De Praxes
+     build. Mounted only when the stage scrolls into view, only on a
+     WebGL-capable / not-reduced-motion / not-low-memory / not-save-data
+     connection (gpuCapable() above already folds in `reduce`, which itself
+     already folds in prefers-reduced-motion + deviceMemory<4 + saveData).
+     A static faceted-icosahedron SVG (already in the raw HTML) is the
+     fallback for every gated-off visitor, so the section is never empty. */
+  (function initSignature3D(){
+    var stage = document.getElementById("sig3dStage");
+    if(!stage) return;
+    var mounted = false;
+    function mount(){
+      if(mounted || !gpuCapable()) return;
+      mounted = true;
+      import("./vendor/three.module.min.js").then(function(THREE){
+        var width = stage.clientWidth, height = stage.clientHeight;
+        var renderer = new THREE.WebGLRenderer({ alpha:true, antialias:true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        renderer.setSize(width, height);
+        stage.appendChild(renderer.domElement);
+
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
+        camera.position.set(0, 0, 6.4);
+
+        var ambient = new THREE.AmbientLight(0x2b2430, 1.1);
+        scene.add(ambient);
+        var copperLight = new THREE.PointLight(0xe2a173, 14, 20);
+        copperLight.position.set(3.2, 2.4, 3.5);
+        scene.add(copperLight);
+        var tealLight = new THREE.PointLight(0x74c3b1, 10, 20);
+        tealLight.position.set(-3, -2, 2.6);
+        scene.add(tealLight);
+
+        var coreGeo = new THREE.IcosahedronGeometry(1.55, 1);
+        var coreMat = new THREE.MeshStandardMaterial({
+          color: 0xc9713f, metalness: 0.72, roughness: 0.28, flatShading: true
+        });
+        var core = new THREE.Mesh(coreGeo, coreMat);
+        scene.add(core);
+
+        var wireGeo = new THREE.IcosahedronGeometry(2.05, 1);
+        var wireMat = new THREE.MeshBasicMaterial({ color: 0x74c3b1, wireframe: true, transparent: true, opacity: 0.35 });
+        var wire = new THREE.Mesh(wireGeo, wireMat);
+        scene.add(wire);
+
+        var clock = new THREE.Clock();
+        var raf = null;
+        var visible = true;
+        function tick(){
+          raf = requestAnimationFrame(tick);
+          if(!visible) return;
+          var dt = clock.getDelta();
+          core.rotation.y += dt * 0.22;
+          core.rotation.x += dt * 0.07;
+          wire.rotation.y -= dt * 0.14;
+          wire.rotation.x -= dt * 0.05;
+          renderer.render(scene, camera);
+        }
+        tick();
+        stage.classList.add("on");
+
+        var pio = new IntersectionObserver(function(entries){
+          entries.forEach(function(e){ visible = e.isIntersecting; });
+        }, {threshold:0.05});
+        pio.observe(stage);
+
+        window.addEventListener("resize", function(){
+          var w = stage.clientWidth, h = stage.clientHeight;
+          if(!w || !h) return;
+          renderer.setSize(w, h);
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+        });
+      }).catch(function(){ /* stays on the static SVG fallback, no error surfaced to the visitor */ });
+    }
+    if("IntersectionObserver" in window){
+      var sio = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting){ mount(); sio.unobserve(entry.target); }
+        });
+      }, {threshold:0.15});
+      sio.observe(stage);
+    } else {
+      mount();
+    }
+  })();
 })();
 </script>
 </body>
