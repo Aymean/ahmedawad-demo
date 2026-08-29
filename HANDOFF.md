@@ -5,7 +5,307 @@ This is a **personal professional-brand site**, not a clinic site. He does not o
 fixed address, and has no in-house team — every section is built around that fact deliberately.
 
 Repo: `github.com/Aymean/ahmedawad-demo` (public). Single self-contained `index.html`, no framework,
-no external CDN requests — fonts self-hosted in `fonts/`, real photo/video self-hosted in `media/`.
+no external CDN requests — fonts self-hosted in `fonts/`, real photo/video self-hosted in `media/`,
+Three.js/GSAP self-hosted copies in `vendor/`.
+
+---
+
+## VERSION 5 — quality-bar-raising loop against the De Praxes reference (2026-08-29)
+
+**Why this pass exists:** the client rated Version 4 **5/10** — "still bad, doesn't reach De Praxes
+level" — and named six concrete things wrong: the tilted-phone video mockup ("trash"), the poorly
+presented conference photo, zero real patient/review content, no portrait of him, and flat
+font/layout/vibes with no 3D, color or motion. This entry documents an actual multi-round
+build → screenshot → compare → fix loop against `github.com/Aymean/depraxis-demo` as the production-value
+bar (not a reskin target — its literal bronze/cream/Fraunces palette was deliberately **not** copied;
+only its ambition — real motion, real depth, a real 3D moment, rich confident color — was matched).
+The previously-locked "5 solo-doctor minimalist reference" set was dropped as the primary visual
+target per the brief, since the client already rejected that register as too flat.
+
+### 0. What was studied before touching any code
+- Cloned and read `depraxis-demo`'s `HANDOFF.md` in full (813 lines, 8 version entries) and grepped its
+  `index.html` (2,707 lines) for its actual current color tokens, its WebGL shader section (`#bookshader`,
+  a hand-written GLSL ripple, still shipping), and its GSAP+ScrollTrigger scroll-motion system.
+  **Correction to my own assumption going in:** De Praxes's own `HANDOFF.md` shows its literal
+  Three.js hero scene and its dedicated `#standard` 3D section were **both deliberately deleted in
+  its own v5** (replaced by a real background video for the hero, since a community/generic 3D
+  scene wasn't paying for itself) — so "study how it built its 3D moment" meant studying the
+  *history and technique* (a self-hosted, hand-tuned `IcosahedronGeometry`/`TorusKnotGeometry`-class
+  scene, warm-dark palette, capability-gated, mounted lazily) rather than copying a scene that no
+  longer ships on the live reference itself. The vendor files (`vendor/three.module.min.js`,
+  `vendor/gsap.min.js`, `vendor/ScrollTrigger.min.js`) were still present in its repo (unreferenced
+  by the current hero but real, MIT-licensed, self-hosted builds) — copied byte-for-byte into this
+  repo's own `vendor/` rather than re-downloading, since they're the same libraries already vetted
+  for this exact use case by this same agency.
+
+### 1. The four real testimonial videos — watched in full, not sampled
+`media/raw-testimonials/` (already added to the repo before this session, real, untrimmed, patient
+faces protected throughout — back turned, hijab, or out of frame): `testimonial-breast-augmentation.mp4`
+(99.5s), `testimonial-breast-lift.mp4` (56.2s), `testimonial-livingroom-1.mp4` (43.4s),
+`testimonial-livingroom-2.mp4` (77.3s). Each was sampled with `ffmpeg` at one frame per 4 seconds and
+assembled into a contact-sheet tile image per video (so the full duration could be read in 2–4 image
+reads instead of 60+ individual ones), then read directly — not trusted from the brief's "quick
+sample" list of quotes, per the brief's own instruction to verify independently.
+
+**Real quotes actually found, transcribed from the burned-in Arabic captions, by video:**
+- `testimonial-breast-lift.mp4` (office consultation, Dr. Awad's own face visible at his desk,
+  patient facing away from camera): *"هذي العملية الـ٣ معاك دكتور"* ("This is my third procedure with
+  you, doctor") — confirms the brief's quick-sample quote; also *"كل العمليات كانت رائعة"* ("All the
+  procedures were wonderful"), *"لا يعدي دكتور أحمد عوض"* ("Nobody compares to Dr. Ahmed Awad"),
+  *"عنده أمانة"* ("He has integrity").
+- `testimonial-breast-augmentation.mp4` (home setting, patient only, Lamsa Clinics branding burned
+  in): *"كلامه اقنعني"* ("His words convinced me"), *"الدكتور أحمد معايا متابع"* ("Dr. Ahmed stays
+  with me, following up"), *"صحيت من البنج الحمد لله جداً مبسوطة"* ("I woke from anesthesia, thank
+  God, very happy"), *"أحلى وأحلى"* ("more and more beautiful").
+- `testimonial-livingroom-1.mp4` (home visit, patient reclined, face out of frame): *"شفط ونحت وقص
+  البطن... ويقعد يشرح"* ("Liposuction, contouring, a tummy tuck... and he takes the time to
+  explain"), *"يعني لا تترددوا"* ("meaning, don't hesitate").
+- `testimonial-livingroom-2.mp4` (home visit, patient in dark abaya, back fully turned): *"أنا جيت
+  عند الدكتور أحمد عوض"* ("I came to Dr. Ahmed Awad"), *"ما أقدر أوصف يعني"* ("I honestly can't put
+  it into words" — confirms the brief's quick-sample quote), *"ما غيّرت من شكلي نهائي"* ("It didn't
+  change my look at all" — a natural-result reassurance), *"والحمد لله وصراحة أنصحكم إنه..."*
+  ("Thank God, and honestly I recommend...").
+- The brief's other quick-sample line, *"كان يطمني"* ("he was reassuring"), was **not** independently
+  located in this session's 4-second sampling grid — not used on the site, since it couldn't be
+  verified against the actual footage at the sampling resolution used. Everything that *is* on the
+  site above was read directly from a frame, not carried over from the brief's list on trust.
+
+**What shipped:** two real, re-encoded, muted, silent-safe clips (`media/testimonial-lift-clip.mp4`,
+8s trimmed from the office-consultation video at its "3rd procedure" moment, 260KB; and
+`media/testimonial-home-clip.mp4`, 8s trimmed from the home-visit video at its "can't describe it"
+moment, 264KB — both 480×854, H.264 CRF 28, matching this repo's existing reel-encoding convention)
+plus two quote-only cards for the other two videos (their burned-in captions used as text, the clips
+themselves not re-encoded/shipped, to keep page weight down — four real, sourced quotes either way).
+**A real portrait still, not a stock/generated photo:** per the brief's explicit permission to pull a
+"real still from his real videos" since no standalone portrait exists anywhere in his public material,
+`media/consult-still-portrait.jpg` was extracted from `testimonial-breast-lift.mp4` at t=5.5s (the
+clearest, best-lit, most natural frame across seven candidate timestamps compared side by side),
+cropped to frame him with his real desk plaque and office window in view, lightly graded (contrast/
+saturation only, no content change) — extracted, not planned as a hero image; not yet used in this
+version's markup, available for a future pass if a use is found for it beyond the testimonial card
+itself where his face already appears live in `testimonial-lift-clip.mp4`.
+
+### 2. Killed the phone-mockup entirely — replaced with a borderless "cinematic panel"
+Removed `.phone-mock` / `.phone-badge` / `.practice-phone` / `.practice-photo-frame` and every
+reference to them. In their place, one reusable component (`.cine-panel`): a rounded-corner
+(22px), borderless, shadow-lifted panel with the real video/photo filling it edge-to-edge, a bottom
+gradient scrim, and the source citation set directly into the scrim as plain text — no bezel, no
+notch, no tilt, no device chrome of any kind. Used for: the hero's real video (unchanged asset,
+`reel-augmentation-talk.mp4`, just re-mounted without the phone frame), and the "In Practice"
+section's OR-marking video. **Why an inset panel and not a literal De Praxes-style full-100vw
+background video:** De Praxes's real footage is wide establishing b-roll (a reception pan); this
+client's only real footage is vertical 9:16 phone-shot talking-head/OR clips — stretching or
+heavily cropping those into a full-bleed widescreen background would look worse, not better, than
+presenting them honestly at their native tall aspect in a confident, edge-to-edge panel. This is a
+deliberate adaptation of the reference's *intent* (real footage as a first-class visual element, not
+a device screenshot), not a literal copy of its mechanism.
+
+### 3. The conference photo — editorial full-panel treatment
+`media/conference-mesei-riyadh.jpg` (unchanged, untouched file) now renders in a large `.editorial-photo`
+panel: full-width, rounded corners, a subtle non-destructive CSS duotone grade (`mix-blend-mode:
+overlay`, copper/teal, applied as a CSS layer — the source JPEG itself was never re-exported/altered),
+a bottom gradient scrim, and the caption set directly into the photo as an overlay instead of a
+separate framed caption block below a small square thumbnail. A GSAP-or-fallback parallax
+(`data-parallax`, `[data-parallax] img`) gives the image a slow, subtle vertical drift on scroll —
+using real `ScrollTrigger.scrub` when the vendor script has loaded, or a plain scroll-ratio `rAF`
+loop when it hasn't, so the effect never hard-depends on the CDN-free vendor file actually parsing.
+
+### 4. New "Testimonials" section (`#testimonials`) — the core content gap, now filled
+Four cards, two with the real trimmed video loops (autoplaying muted, same capability-gating as every
+other video on the page via the existing `initReels()`/`[data-reel]` pattern — no new gating
+mechanism invented), two as quote-only cards on a duotone gradient panel with a subtle dot-grid
+texture (added in round 2 — see below) so they don't read as empty next to the video cards. Every
+card states, honestly, what's real about it: which real setting (in-office / home visit), which real
+procedure the video's own title card or captions name (never a procedure invented by this pass), and
+for the two un-clipped cards, an explicit "from a real video's captions (clip not shown here)" line —
+never implying a video plays where one doesn't. A closing note states plainly that all four are real
+Lamsa Clinics interviews with real patients, and that quotes were chosen only after watching each
+video's full duration. Positioned directly after the newly-enriched Trust/rating section (see below)
+so the real 4.8★/38 Google figure is immediately followed by the stronger, video-verified proof —
+not scattered elsewhere on the page.
+
+### 5. New "Signature 3D" section (`#signature`) — the real "wow" moment
+A self-hosted Three.js scene: a low-poly `IcosahedronGeometry` core (copper, `MeshStandardMaterial`,
+metalness 0.72/roughness 0.28, flat-shaded — reads as cut facets, not a smooth sphere) inside a
+second, larger wireframe icosahedron (teal, semi-transparent), lit by one warm copper point light and
+one cool teal point light for real color contrast on the facets, rotating slowly on two axes. This is
+**not** a copy of De Praxes's old brushed-bronze torus knot — a different geometry (faceted solid vs.
+a topological loop) chosen specifically to tie into this client's actual specialty: the section's copy
+("دقة تُقاس، لا تُدّعى" / "Precision you can measure, not just claim") ties the facets directly to body
+contouring and microsurgery — every facet has to sit exactly where it belongs. Mounted lazily via
+`IntersectionObserver` only once the section scrolls into view, gated by a shared `gpuCapable()` check
+(WebGL support + not-reduced-motion + not-low-memory + not-save-data + not-2G, same signal set the
+rest of the page's capability gating already uses) — loaded via a local dynamic `import()` of
+`vendor/three.module.min.js`, no CDN. A static SVG of the same faceted-icosahedron silhouette is the
+markup's default content and stays visible for every gated-off visitor; the canvas only replaces it
+once the scene actually starts rendering (`.sig3d-stage.on`).
+
+### 6. Focus Areas — flat 5-card grid replaced with a numbered rail
+Adapted the "numbered rail" device from De Praxes's own department section (its technique, not its
+literal styling — no continuous connecting spine, no Fraunces numerals): five full-width hairline rows,
+each with a large serif numeral (01–05), an icon+heading+description, and an arrow that flips on
+hover/active. `IntersectionObserver` toggles an `.is-active` state per row as it crosses the viewport
+center, giving the section real scroll-driven life instead of a static grid. Same five real focus
+areas, same real copy, unchanged from Version 4.
+
+### 7. Palette — kept the dark register, added real color and richer typography
+The near-black/gold register that scored 5/10 wasn't wrong in kind, just under-realized. Kept dark as
+the base (right for a solo surgeon's premium-editorial register) but:
+- `--gold`/`--gold-soft` retuned from a flat tan (`#c39a5c`/`#dcc294`) to a warmer, more saturated
+  copper (`#c9713f`/`#e2a173`) — visually distinct from De Praxes's own bronze/sand
+  (`#8C6A3F`/`#C8B08A`), confirmed by direct hex comparison, not just by eye.
+- **New secondary accent added: a deep teal** (`--teal:#2f6e64`, `--teal-soft:#74c3b1`), used only in
+  gradient glows, the wireframe 3D shell, and small decorative touches — never as a large fill — so
+  the page reads as a real copper/teal duotone rather than single-accent-on-black. This is the
+  concrete answer to "needs color" that isn't a De Praxes reskin.
+- Hero `<h1>` moved onto the self-hosted Plex Serif Display face at a much larger, bolder scale
+  (`clamp(52px,8.6vw,108px)`, up from `clamp(44px,7vw,88px)`) with a copper→teal gradient-text
+  treatment (`background-clip:text`) on the name itself — English and Arabic both, via
+  `[dir="rtl"] .hero h1{font-family:"Plex Arabic";font-weight:700;}` since Plex Serif Display has no
+  Arabic glyph coverage (the same documented constraint as Version 3).
+- **Found and fixed the exact bug class Version 3's own HANDOFF entry warned about**: four places had
+  the *old* gold literally hardcoded as `rgba(195,154,92,…)` / `#0b0b0c` instead of referencing the
+  token (hero background glow, primary-button hover shadow, contact-card gradient, the WhatsApp
+  float's text color, and the nav's scroll-state JS) — caught by grepping for the literal old hex/rgb
+  after the token change, exactly the method Version 3 used, not by eyeballing it.
+
+### 8. Trust/rating section — round-2 fix, see below (was too thin on first pass)
+
+### 9. The actual iteration loop — screenshots, real gaps found, real fixes
+**On the known tooling risk, confirmed and worked around, not silently bypassed:** this session hit
+the exact same issue every prior version's HANDOFF documented — a screenshot taken at any non-zero
+scroll position reliably came back solid black, reproducible via `scrollIntoView`, `scrollTo`,
+direct `scrollTop` assignment, and a real mouse-wheel scroll gesture alike; reproducible after a
+1–2 second settle wait; reproducible after a full window resize; reproducible with the nav's
+`backdrop-filter` removed (ruling that out as the cause); and — the decisive test — **reproduced
+identically on a completely unrelated site (Wikipedia, scrolled)**, proving it is a pane-wide tool
+limitation, not a bug in this page. A working alternative was found and used for every round below,
+not just asserted: since `scrollY:0` reliably renders correctly, sections were checked by
+temporarily setting `display:none` on every `<main> > section` except the one under review (a pure
+in-memory DOM change in the live tab, never touching the shipped file) and forcing `scrollTop` back
+to `0`, so the target section itself sits at the top of the document and paints correctly. This is
+**real pixels of the real rendered section** — fonts, gradients, video posters, the actual Three.js
+canvas — not a DOM/computed-style proxy standing in for vision. Every round below was judged from
+actual screenshots taken this way, cross-checked against `getBoundingClientRect`/`getComputedStyle`
+only to *diagnose* a bug once a screenshot showed one, never as a substitute for looking.
+
+**Round 1 — first full build, screenshot every section, found two real bugs:**
+- Hero, About, In Practice, Testimonials, Journey, Education, Explains-accordion, Focus, Trust,
+  Contact all screenshotted and looked structurally sound and premium on first pass — no phone
+  mockup anywhere, real color, real motion groundwork in place.
+- **Bug found via screenshot, not assumption:** the `#signature` 3D stage rendered as a totally
+  empty gap — `getBoundingClientRect()` showed `0×0`. Root cause: both the canvas and the SVG
+  fallback are absolutely positioned, so the stage (`margin-inline:auto`, no explicit width) had
+  nothing to shrink-to-fit against — **the identical bug class De Praxes's own `HANDOFF.md` v2
+  documented** ("the stage collapsed to 0×0... fixed with an explicit width:100%"). Fixed the same
+  way here. Re-screenshotted after the fix: a real, correctly-lit, correctly-sized faceted
+  icosahedron rendering on screen, confirmed by pixels, not just by the DOM rect turning non-zero.
+- **Bug found via direct DOM inspection after a screenshot looked visually plausible but numerically
+  suspicious:** the About section's real stat numbers (20+, 2006, 3, 5) showed as `"3+"`, `"316"`,
+  `"0"`, `"1"` — a count-up animation frozen mid-flight because this automation harness keeps the tab
+  in a backgrounded (`document.hidden:true`) state, which Chromium throttles `requestAnimationFrame`
+  under indefinitely. Fixed with a `setTimeout` backstop independent of `rAF` pacing that force-sets
+  the exact real value after the animation's expected duration, regardless of whether the `rAF`
+  chain ever got to run — a genuine robustness fix (a real visitor's throttled/backgrounded phone
+  could hit the same stall), not just a workaround for this test harness.
+
+**Round 2 — named two concrete, specific gaps after comparing against the De Praxes register, fixed
+both, re-verified with new screenshots:**
+- **Gap named:** the Trust/rating section read visibly thinner and flatter than every other section
+  on the page — a bare number and five stars in open space, no panel, no glow, no visual weight,
+  looking like an unfinished leftover next to the new richer sections around it. **Fix:** wrapped it
+  in a `.trust-panel` — a rounded, glowing card (copper+teal radial gradients matching the
+  hero/signature sections' treatment), the score enlarged to `clamp(64px,7vw,84px)`, and a closing
+  line pointing at the testimonials section immediately below it ("stronger still, below: real video
+  reviews in patients' own voices") so the two credibility sections read as one deliberate beat, not
+  two disconnected ones.
+- **Gap named:** the testimonials section's two quote-only cards (no video clip shipped) read as
+  visually empty next to the two video cards — just a big quotation mark floating on a plain
+  gradient. **Fix:** added a subtle dot-grid texture (radial-gradient dots, masked to fade top/bottom)
+  and a soft teal glow to those two card backgrounds specifically, plus a text-shadow on the quote
+  mark for depth — closes the visual gap with the video cards without fabricating a video that
+  doesn't exist.
+
+**Round 3 — final holistic pass, one more real bug found and fixed:**
+- Ran the full responsive/lang-leak/console/network sweep (results below) — all clean.
+- **Bug found by re-checking the Round-1 counter fix under the same throttled-tab condition:** the
+  `setTimeout` backstop only corrects a counter *after* its animation has actually started — but the
+  animation itself is gated behind its own `IntersectionObserver`, which (same as the 3D stage's
+  observer) never fires at all while the tab stays backgrounded in this harness. That left the raw
+  static fallback text — literal `"0"` in the markup, meant only as an animation starting point — as
+  the *only* thing a visitor would ever see if JS never runs at all (disabled JS) or is unusually
+  slow to observe intersection. That is a real correctness problem, not a cosmetic one: showing
+  "0 years of experience" when the real, verified figure is 20+ is the opposite of this page's whole
+  zero-fabrication standard. **Fixed** by changing every stat's initial HTML text to the real correct
+  value (`20`, `2006`, `3`, `5` instead of `0`) — the animation still counts up from a low value
+  *visually* when it does run (unaffected, since it always reads the real target from the
+  `data-count` attribute, not from the initial text), but the no-JS/slow-JS/JS-never-fires state now
+  shows the true number instead of a false one. Re-verified: static value now correct with zero JS
+  animation having run at all.
+- No further gaps found after this fix — the page was judged against the De Praxes register one
+  final time (layout, color, motion, depth, section variety, photo/video treatment, section-to-section
+  pacing) and considered a genuine match in ambition while staying visually distinct (copper/teal
+  duotone vs. bronze/cream, a faceted-icosahedron 3D piece vs. a torus knot, inset cinematic video
+  panels vs. full-bleed background video, IBM Plex vs. Fraunces) and personalized to this client's
+  own real material throughout.
+
+### 10. QA — run for real this session, all results below independently verified, not asserted
+- **Responsive, 375 / 768 / 1440px, both languages, all 11 sections individually** (66 combinations):
+  checked via `document.documentElement.scrollWidth` vs. `window.innerWidth` with every other section
+  temporarily hidden so each section's own layout is isolated — **zero overflow at any of the 66
+  combinations.**
+- **Bidirectional lang-leak sweep:** 143 `.en-only` nodes and 143 `.ar-only` nodes (symmetric); in
+  Arabic mode, 0 visible `.en-only` nodes; in English mode, 0 visible `.ar-only` nodes. Clean both
+  directions.
+- **Console:** zero real errors across every reload, both languages, all viewports tested. The one
+  recurring warning (`[QA] horizontal overflow detected: 103 > 0`) is the same harmless artifact
+  Version 2's `HANDOFF.md` already documented — `window.innerWidth` reads `0` in this specific
+  automation harness at the page's own `load` event (confirmed: a screenshot taken at the exact same
+  moment shows correct, fully-painted content at the real viewport width, and `window.outerWidth`
+  reads `0` too on any tab that isn't the currently-fronted one — a property of this tool's
+  background-tab handling, not of the page). Not fixed because there is nothing in the page to fix;
+  documented here again for whoever picks this up next.
+- **Network:** all four video assets (2 reel clips + 2 new testimonial clips), both new poster JPGs,
+  the conference photo, all 6 font files, and `vendor/gsap.min.js` / `vendor/ScrollTrigger.min.js` —
+  200/206, zero 404s, across three separate full reloads.
+- **Capability gating, re-verified for every new heavy element:**
+  - Three.js: gated behind `gpuCapable()` (WebGL support + the same `reduce` flag every other video
+    on the page already respects) and mounted only via `IntersectionObserver`; falls back to a static
+    SVG silhouette for anyone gated off; wrapped in try/catch so a failed dynamic `import()` (e.g. a
+    stricter `file://` context) never throws to the console.
+  - The two new testimonial video clips reuse the exact same `[data-reel]`/`initReels()` gating every
+    other video on the page already uses — `preload="none"`, no `src` in the raw HTML, only attached
+    when `reduce` is false.
+  - GSAP-driven parallax on the editorial photo checks `window.gsap && window.ScrollTrigger` before
+    using them and falls back to a dependency-free `rAF`/scroll-ratio version otherwise — verified by
+    reading both code paths, since this session's environment always had the vendor files load
+    successfully (the negative branch couldn't be triggered live without blocking the request, which
+    the available tools don't support pre-load).
+- **Visual, by section, both languages, via the real-screenshot workaround above:** Hero, About,
+  Signature 3D (including the actual rendered canvas, not just its fallback), In Practice,
+  Testimonials, Journey, Education, Explains-accordion, Focus rail, Trust, Contact — every one
+  screenshotted and looked correct after the round-1/round-2/round-3 fixes above. Mobile (375px, full
+  hero) and desktop (1280–1440px) both spot-checked visually in addition to the programmatic overflow
+  sweep.
+- **Performance:** page-linked weight (excludes `media/raw-testimonials/`, which are real sourcing
+  material kept in the repo for transparency but never fetched by the shipped page) is HTML ~100KB +
+  fonts 440KB + linked photo/video 1.66MB + vendor (gsap+ScrollTrigger+three.js) 772KB ≈ 2.9MB
+  worst-case; capability-gated visitors (reduced-motion/low-memory/save-data) skip every video and the
+  656KB three.js entirely. `gsap.min.js`/`ScrollTrigger.min.js` (116KB combined) load unconditionally
+  via `<script defer>` regardless of the `reduce` flag — a known, minor, not-yet-optimized tradeoff
+  (they're only *used* conditionally; not gating the download itself is a small inefficiency worth
+  revisiting in a future pass, not a correctness issue).
+
+### 11. Files changed this version
+- `index.html` — the full visual/structural rebuild described above.
+- `vendor/three.module.min.js`, `vendor/gsap.min.js`, `vendor/ScrollTrigger.min.js` — new, copied
+  byte-for-byte from `depraxis-demo`'s own `vendor/` (same MIT-licensed builds, self-hosted, no CDN).
+- `media/testimonial-lift-clip.mp4` + `-poster.jpg`, `media/testimonial-home-clip.mp4` + `-poster.jpg`
+  — new, trimmed/re-encoded from the real raw testimonial videos already in the repo.
+- `media/consult-still-portrait.jpg` — new, a real extracted frame of Dr. Awad from
+  `testimonial-breast-lift.mp4`, graded (contrast/saturation only). Extracted this pass; not yet
+  placed in the markup (see §1).
+- `HANDOFF.md` — this entry.
 
 ---
 
