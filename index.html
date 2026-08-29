@@ -43,7 +43,7 @@
 :root[data-reduce-motion="true"]{ --dur-fast:0s; --dur:0s; --dur-slow:0s; }
 
 *,*::before,*::after{box-sizing:border-box;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth; overflow-x:hidden; max-width:100%;}
 html[data-reduce-motion="true"]{scroll-behavior:auto;}
 body{
   margin:0;
@@ -141,7 +141,18 @@ section{position:relative;}
     radial-gradient(ellipse 900px 600px at 82% -10%, rgba(195,154,92,0.16), transparent 60%),
     radial-gradient(ellipse 700px 500px at 10% 110%, rgba(195,154,92,0.08), transparent 60%),
     var(--ink);
+  overflow:hidden;
 }
+.hero-watermark{
+  position:absolute; top:50%; inset-inline-end:-2%; transform:translateY(-50%);
+  font-family:"Plex Serif Display",serif; font-weight:600;
+  font-size:min(46vw,620px); line-height:1; color:transparent;
+  -webkit-text-stroke:1px rgba(220,194,148,0.16);
+  pointer-events:none; user-select:none; z-index:0;
+  white-space:nowrap;
+}
+@media (max-width:760px){ .hero-watermark{display:none;} }
+.hero .wrap{position:relative; z-index:1;}
 .hero-eyebrow{
   display:flex; align-items:center; gap:14px;
   font-size:13px; letter-spacing:.08em; color:var(--gold-soft); margin-bottom:28px;
@@ -397,6 +408,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 
 <!-- ============================================================ HERO -->
 <section class="hero" id="top">
+  <div class="hero-watermark" aria-hidden="true">أع</div>
   <div class="wrap">
     <p class="hero-eyebrow"><span class="rule"></span>
       <span class="ar-only">جدة، المملكة العربية السعودية</span>
