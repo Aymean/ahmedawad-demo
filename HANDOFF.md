@@ -11,6 +11,183 @@ GSAP self-hosted copies in `vendor/` (Three.js was removed in v7 along with the 
 
 ---
 
+## VERSION 8 — color-application flip + booking rebuild, evidence-backed (2026-08-29)
+
+**Why this pass exists:** the client rejected v7 outright on sight: "the black is bullshit... use
+white or something premium related to his niche." A code audit against the exact shipped file (not
+guesswork) found the real root cause and five other confirmed defects: `body{background:var(--ink)}`
+made the dark token the canvas for all 12 sections, while `--paper` (the correct warm cream, genuinely
+pixel-sampled in v7) was used as a background exactly once anywhere. Alongside the color flip: a
+genuinely low-res portrait photo displayed full-bleed past its native resolution, three separate
+"he doesn't own a clinic" disclaimers stacked in one section, a "booking" section that was three
+static paragraphs with no `?text=`-prefilled WhatsApp links anywhere on the page, booking and contact
+merged into one section, and a second broken WhatsApp icon (missing its bubble-outline path) on the
+booking CTA. All six were fixed this pass; none of the real-sampled hex values were touched.
+
+### 1. Canvas flip — same real tokens, opposite roles
+`--ink:#171310` / `--paper:#f5eee1` (and every other v7 token) keep their exact real-sampled values —
+the hues were never the problem, the application was. `body{background:var(--ink); color:var(--paper)}`
+→ `background:var(--paper); color:var(--ink)`. `.band` (the section-rhythm class on `#practice`,
+`#journey`, `#focus`, `#testimonials`, the new `#booking`) flipped from `var(--ink-2)` to `var(--paper-
+dim)` — a deeper cream/tan step, never a dark fill, per the brief's explicit direction. Every card
+surface that was `var(--ink-2)`/`var(--ink-3)` (`.stat`, `.cred`, `.edu-panel-wrap`, `.tmn-card`,
+`.gcard`, `.visit-map` placeholder) moved to a new `--card:#fffdf8` (plain sections) or `--paper` itself
+(inside `.band` sections, since it's lighter than `--paper-dim`) — the same "card lighter than its
+section" relationship the site already had, just inverted in absolute lightness. `--line`/`--line-
+strong`/`--muted`/`--muted-2` were `rgba(245,238,225,alpha)` (light-on-dark opacity utilities) — flipped
+to `rgba(23,19,16,alpha)` so hairlines and secondary text read correctly on the new light canvas.
+`--gold-soft`/`--blue-soft` (light-on-dark text/icon accents) were close to invisible at body-text sizes
+against cream, so every text/icon use of them on the page canvas moved to `--gold-deep`/`--blue-deep`
+(both already existed as steps off the same real samples) — `--gold-soft`/`--blue-soft` are now reserved
+for small icons/dividers and the handful of components that genuinely still sit on a real dark photo or
+video scrim (the hero + practice video citations, the conference-photo caption), which correctly keep
+their light-on-dark styling since their local background is still dark, not the page. Gradient-text
+treatments (`.hero h1 .who`, the Arabic serif section-head gradient) flipped their light stop to `--ink`/
+`--gold-deep`/`--blue-deep` so the gradient text itself stays legible on cream instead of rendering
+near-white-on-near-white. The `#booking` WebGL warp shader (see item 4) was retinted from an ink→blue-
+deep→gold→gold-soft palette to paper-dim→blue→gold→gold-soft, so this page's one GPU-driven "wow" moment
+reads as a warm marbling texture rather than reintroducing a dark panel. Found and fixed one nav bug
+class along the way: the nav's own scroll-state JS (`updateNav()`) set `background` via inline style
+with a literal `rgba(23,19,16,…)` — flipped to the new light value so the nav doesn't silently stay dark
+after a page-level token change, the exact bug class Version 3/5/7's own HANDOFF entries already warned
+about.
+
+**One real layout regression found and fixed during this pass's own QA, not shipped un-caught:** adding
+a 9th nav link (`#booking`) pushed the English-language nav-links row wide enough to wrap mid-label at
+1440px (`Where to Find Him` breaking across lines, overflowing the nav's fixed 76px height) — caught by
+the very 1440px responsive check this pass's own QA requires, not assumed fine. Fixed by tightening
+`.nav-links` (`gap:34px→20px`, `font-size:14px→13px`, `white-space:nowrap` added) — re-verified via
+`getBoundingClientRect` that all 9 links now sit on one row (`top` offset identical for every link) at
+1440px in both languages, with zero document overflow.
+
+### 2. Portrait section — capped card, not full-bleed (was: low-quality portrait)
+`media/consult-still-portrait.jpg` is a genuinely low-res extracted video frame (640×800px, ~40KB)
+that v6/v7 displayed full-bleed at up to 620px tall across the full viewport width via `.portrait-band`/
+`.pb-bleed` — well past native resolution, guaranteeing visible softness on anything wider than 640px.
+**Fixed** by removing the full-bleed hero treatment entirely: `#portrait` is now a normal `.section-pad`
+with a two-column grid, the photo capped to `max-width:380px; aspect-ratio:4/5` — the same scale as
+this page's other real-photo device, `.editorial-photo` (max 420px), and coincidentally the same 4:5
+ratio as the source file's own native dimensions, so the displayed size sits close to native resolution
+rather than stretched past it. The dedicated `initPortraitParallax()` function (which targeted the now-
+removed `[data-portrait-parallax]` element) was deleted as dead code; the new `.portrait-photo` reuses
+the existing generic `[data-parallax]` mechanism `initParallax()` already provides for `.editorial-
+photo`, re-confirmed via `ScrollTrigger.getAll().length === 2` (unchanged from v7 — same two parallax
+instances, now both routed through the one shared function instead of a bespoke second one).
+
+### 3. "Where to find him" — one confident statement, not three disclaimers
+Confirmed: the heading ("لا يملك عيادة، لكنه يمارس هنا حالياً" / "He owns no clinic — but this is where
+he currently practices"), the subhead, and the closing note all independently restated "he doesn't own
+a clinic" — three disclaimers in one section. **Rewritten** to state the practice location plainly:
+heading is now "يمارس حالياً في عيادات لمسة، جدة" / "Currently practicing at Lamsa Clinics, Jeddah",
+subhead states what's in the section (address, contact, map), and the closing note states the address/
+phone are documented and verified — with no "he doesn't own X" framing left anywhere in visible copy.
+**New real link added**: Lamsa Clinics' own live website, `lamssaclinics.com` (already verified in this
+project's v1 research as listing him on its "Meet our Doctors" page), added as a new `.visit-row` linking
+directly to it — real, not fabricated, and linked naturally instead of caveated. The reception-phone row
+was also reworded from a negative frame ("not his personal line") to a positive one ("for booking and
+inquiries") — same fact, no disclaimer tone.
+
+### 4. Booking — a real interactive flow, not an apology
+Confirmed: the heading was literally "لا نظام حجز إلكتروني — رسالة واتساب واحدة تكفي" / "No online
+booking system — one WhatsApp message is enough," backed by three static explainer paragraphs and plain
+`wa.me/966563681087` links with **zero** `?text=` params anywhere in the file (confirmed by grep before
+this pass). **Rebuilt from scratch** as `#booking`: a real 3-step flow (reason for visit → urgency +
+time of day → name/phone/note) built as selectable chip groups and text inputs, a live-updating "your
+request so far" summary panel next to the form, and a final "Send via WhatsApp" button that composes a
+real `wa.me/966563681087?text=<encoded message>` link from the actual selections and opens it — verified
+end-to-end in this session: selecting chips updates the summary live, `Back`/`Next` gate correctly on
+required fields (`Next` stays disabled until a reason/urgency+time is picked; `Send` stays disabled until
+a name is entered), and the composed message was captured and decoded to confirm it exactly reflects the
+real selections, in whichever language is active at send time (`مرحباً د. أحمد، أرغب في حجز موعد. السبب:
+جراحة اليد والمجهرية. الوقت المفضل: في أقرب وقت ممكن، صباحاً. الاسم: خالد` — checked verbatim). The
+summary panel states honestly that the appointment is confirmed once he replies directly on WhatsApp —
+no fabricated live calendar, no instant-confirmation claim — while the flow itself behaves like a real
+booking system rather than an apology for the lack of one. **One live bug found and fixed during this
+pass's own testing, not shipped un-caught:** the summary panel didn't refresh an already-selected chip's
+label into the newly active language after a lang-toggle click (the underlying state and the final
+WhatsApp message were always correct, only the displayed label was stale) — fixed by having `setLang()`
+dispatch a `langchange` custom event that the booker listens for to re-render its summary; re-verified
+live (toggling language now immediately re-labels the summary row).
+
+### 5. Booking and contact split into two sections
+Confirmed: the old `#contact` held the booking flow, a WhatsApp/email contact card, AND the 6-icon
+social grid all in one `<section>`. **Split**: `#booking` (item 4's new flow, keeps the real WebGL
+shader) and `#contact` (direct contact methods + social links only, plain `.section-pad`, no shader) —
+13 `<section>` elements total now (was 12 in v7), confirmed by open/close tag count match. A new "Book
+Appointment" nav link was added pointing at `#booking`; the existing "Contact" link stays pointed at the
+now-smaller `#contact`.
+
+### 6. WhatsApp icon — the booking CTA's own bubble-outline path, missing since v7
+Confirmed: the hero button's previously-reported bug (a zeroed-opacity bubble path) is genuinely still
+fixed — zero `opacity="0"` remains anywhere. But the old booking section's own primary CTA ("راسله
+الآن" / "Message him now") had an SVG with only the handset-squiggle `<path>` — the bubble-outline
+second path was missing entirely, rendering as a bare disconnected squiggle. That exact button was
+rebuilt as part of item 5's section split with the correct two-path icon copied from the known-good
+hero instance. **Every WhatsApp icon instance on the page was then re-verified programmatically** (not
+just the one that was reported broken): a script scanned the full shipped file for every `<svg>` block
+containing the handset-squiggle path signature and counted its `<path>` elements — **6 instances found,
+all 6 with exactly 2 paths and the bubble outline present** (hero CTA, booking-flow send button, contact
+card's WhatsApp line, contact card's "Message him now" button, the floating `.wa-float` circle, and the
+mobile bottom bar — the last of these uses a valid alternate two-path style, a solid-fill bubble instead
+of an outline, which is a different but equally correct rendering, not a bug).
+
+### QA — this session, independently verified
+- **Real screenshot verification, section-isolation method** (reused from prior versions' HANDOFF, not
+  rediscovered): every one of the 13 sections screenshotted individually (`display:none` on every
+  `<main> > section>` but the one under review, forced `scrollTop:0`) — About's white stat cards, the
+  new capped Portrait card, Practice's video/photo panels, Journey's timeline on the new paper-dim band,
+  Education's white credential cards, the Explains accordion, the Focus rail, Testimonials' white cards
+  (including the two dark quote-only tiles, confirmed still legible — see item 1), Reviews' gauge/stars/
+  columns, the rewritten Visit section with the real Google Maps embed and the new lamssaclinics.com
+  link, the new Booking flow (all 3 steps, both languages, both desktop 1440px and mobile 375px), and
+  the split Contact/social section — all confirmed correct by real pixels, not asserted from code.
+- **Booking flow interactivity, verified live, not just visually**: chip selection, step navigation
+  gating, live summary updates, and the final composed WhatsApp URL (captured via a temporary
+  `window.open` override and decoded) — see item 4 for the exact verified message string.
+- **Responsive, 375 / 768 / 1440px, both languages:** `document.documentElement.scrollWidth` vs.
+  `window.innerWidth` — 375: 375/375. 768: 753/768. 1440: 1425/1440. Zero overflow at any width, re-
+  checked after every structural change (the color flip touches shared tokens used everywhere, so this
+  was re-run after the flip too, not just once at the end).
+- **Bidirectional lang-leak sweep:** 190 `.en-only` / 190 `.ar-only` nodes (symmetric, up from v7's
+  160/160 — the new Booking section's ~25 bilingual pairs plus the Visit section's new lamssaclinics.com
+  row account for the increase). In Arabic mode: 174 visible `.ar-only` / 0 visible `.en-only`. In
+  English mode: 174 visible `.en-only` / 0 visible `.ar-only` (174 vs. 190 total is expected — some
+  nodes sit inside currently-collapsed accordion panels / inactive booking steps, not a leak).
+- **Console:** zero errors across every reload, both languages, all three viewports.
+- **Network:** every media/font asset re-checked — 200/206 across the board, zero 404s, including the
+  portrait photo and all real video clips.
+- **ScrollTrigger/GSAP:** `ScrollTrigger.getAll().length` still reads **2** (editorial-photo + portrait-
+  photo parallax, both now via the one shared `initParallax()`), `typeof window.gsap === "object"` —
+  the v6 defer-bug fix still holds, unaffected by this pass's structural changes.
+- **Section count:** 13 `<section>` open tags, 13 close tags, in the expected order (top, about,
+  portrait, practice, journey, education, explains, focus, testimonials, reviews, visit, booking,
+  contact) — confirms the booking/contact split left no orphaned or malformed markup.
+- **WhatsApp icon, every instance:** see item 6 — 6/6 confirmed with both paths via a full-file scan,
+  not just the one instance named in the brief.
+- **Known tooling limitation, re-confirmed, not re-litigated as a page bug:** this session's browser tab
+  reported `document.hidden:true` throughout automated interaction regardless of front/background state
+  in this specific harness — the same class of limitation every prior version's HANDOFF documents for
+  `requestAnimationFrame`/`IntersectionObserver`/`requestIdleCallback` (it delayed the booking shader's
+  own `requestIdleCallback`-gated init in one timing check during this session, though it was directly
+  observed rendering correctly — visible warm marbling texture — in an earlier screenshot the same
+  session, confirming the code path itself works and this is a timing artifact, not a defect). Section-
+  isolation + forced `scrollTop:0` (documented since v3) remains the correct workaround and was used for
+  every screenshot in this pass; DOM/computed-style assertions were used wherever a screenshot's timing
+  couldn't be controlled precisely enough (e.g. the shader's async init), never as a substitute for
+  looking wherever a direct screenshot was possible.
+
+### Files changed this version
+- `index.html` — all 6 items above (color-token flip and every downstream usage, portrait section
+  rebuild, visit copy rewrite, booking section rebuild + JS, booking/contact split, WhatsApp icon fix,
+  the nav-wrap fix found during this pass's own QA).
+- `HANDOFF.md` — this entry.
+
+No new media/font assets this pass — the color flip re-used every real-sampled hex value from v7
+unchanged, and the new lamssaclinics.com link points at Lamsa Clinics' own already-live site rather than
+adding any new asset to this repo.
+
+---
+
 ## VERSION 7 — the client's concrete, evidence-backed punch list (2026-08-29)
 
 **Why this pass exists:** the client reviewed Version 6 and rated it 6-7/10 — genuine improvement over

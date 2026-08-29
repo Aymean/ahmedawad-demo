@@ -26,11 +26,10 @@
 @font-face{font-family:"Amiri";src:url("fonts/Amiri-Italic.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap;}
 
 /* ============================================================
-   TOKENS — v7 palette, derived from his own real material, not an
-   invented scheme (client's explicit direction: colors "related to
-   him, to what he does", NOT a copy of De Praxes' own bronze/cream).
-   Every value below was sampled directly (pixel-picked with PIL) from
-   real frames in this repo's own media/, not eyeballed or guessed:
+   TOKENS — v8 keeps the exact v7 real-sampled hex values (client
+   rejected the DARK APPLICATION, not the hues — see HANDOFF v8).
+   Every value below still traces to a real frame in this repo's own
+   media/, not eyeballed or guessed:
      --gold      = Lamsa Clinics' own real lower-third graphic, sampled
                    from media/reel-or-marking.mp4 (the gold-bronze bar
                    under "د/ أحمد عوض", ~#a6875c average across the bar)
@@ -39,11 +38,37 @@
      --ink       = a warm charcoal-brown, sampled from two real dark
                    surfaces: the OR clip's own lower-third dark bar
                    (~#2d2925) and the conference photo's step-and-repeat
-                   backdrop (~#3d2a1f/#492e27) — warm, not the old flat
-                   near-black/navy the client called generic
+                   backdrop (~#3d2a1f/#492e27)
      --paper     = warm cream, sampled from his real office walls/desk
                    in media/testimonial-lift-clip.mp4 (the in-office
                    consultation clip) and Lamsa's own cream badge ground
+
+   v8 CANVAS FLIP: the client's "the black is bullshit" rejection was of
+   the APPLICATION (body{background:var(--ink)} made the dark token the
+   canvas for all 12 sections; --paper was used as a background exactly
+   once on the whole page), not the sampled hues themselves. --ink and
+   --paper keep their real-sampled values unchanged; every ROLE that
+   used to put --ink/--ink-2/--ink-3 under body text now puts --paper/
+   --paper-dim there instead. --gold-deep/--blue-deep (steps off the
+   same real samples, already existed in v7 for the shader) now do the
+   contrast-bearing text/icon work that --gold-soft/--blue-soft used to
+   do on a dark canvas — gold-soft/blue-soft read close to invisible at
+   4.5:1 body-text sizes against cream, so they're now reserved for
+   small icons/dividers and for the few spots that still sit on a real
+   dark photo/video scrim (the hero + practice video citations, and the
+   conference-photo caption — those stay genuinely dark locally, so
+   their light text is still correct there; see the scoped overrides
+   below each of those components. The portrait section no longer has a
+   dark scrim at all — v8 replaced its full-bleed treatment with a
+   capped card, see punch-list item 2, so its copy is now plain page
+   text like everything else).
+   --line/--line-strong/--muted/--muted-2 were rgba(paper-rgb,alpha) —
+   light-on-dark opacity utilities. Flipped to rgba(ink-rgb,alpha) so
+   hairlines/secondary text read correctly on the new light canvas.
+   --card/--card-dim are new: the two light card surfaces (plain
+   sections sit on --paper, so cards use white --card for lift;
+   .band sections sit on the slightly deeper --paper-dim, so cards
+   there use --paper itself for the same lift relationship).
    ============================================================ */
 :root{
   --ink:#171310;
@@ -57,10 +82,11 @@
   --blue:#3f6ea5;
   --blue-soft:#8fb4da;
   --blue-deep:#244168;
-  --line:rgba(245,238,225,0.13);
-  --line-strong:rgba(245,238,225,0.27);
-  --muted:rgba(245,238,225,0.62);
-  --muted-2:rgba(245,238,225,0.42);
+  --line:rgba(23,19,16,0.14);
+  --line-strong:rgba(23,19,16,0.24);
+  --muted:rgba(23,19,16,0.64);
+  --muted-2:rgba(23,19,16,0.46);
+  --card:#fffdf8;
   --radius:3px;
   --maxw:1180px;
   --ease:cubic-bezier(.22,.68,.35,1);
@@ -75,8 +101,8 @@ html{scroll-behavior:smooth; overflow-x:hidden; max-width:100%;}
 html[data-reduce-motion="true"]{scroll-behavior:auto;}
 body{
   margin:0;
-  background:var(--ink);
-  color:var(--paper);
+  background:var(--paper);
+  color:var(--ink);
   font-family:"Plex Arabic","Segoe UI",Tahoma,sans-serif;
   font-weight:400;
   line-height:1.7;
@@ -113,7 +139,7 @@ section{position:relative;}
    ============================================================ */
 .nav{
   position:fixed; inset-inline:0; top:0; z-index:50;
-  background:rgba(23,19,16,0.82);
+  background:rgba(245,238,225,0.86);
   backdrop-filter:blur(10px);
   -webkit-backdrop-filter:blur(10px);
   border-bottom:1px solid var(--line);
@@ -128,35 +154,36 @@ section{position:relative;}
   font-weight:600; letter-spacing:.02em;
 }
 .brand-mark{
-  width:38px;height:38px;border:1px solid var(--gold-soft);border-radius:50%;
+  width:38px;height:38px;border:1px solid var(--gold-deep);border-radius:50%;
   display:flex;align-items:center;justify-content:center;
   font-family:"Plex Serif Display",serif;
-  font-size:15px;color:var(--gold-soft);flex:none;
+  font-size:15px;color:var(--gold-deep);flex:none;
 }
 .brand-name{font-size:15px;}
 .brand-sub{display:block;font-size:11px;font-weight:400;color:var(--muted);letter-spacing:.03em;}
 
-.nav-links{display:flex;align-items:center;gap:34px;}
+.nav-links{display:flex;align-items:center;gap:20px;}
 .nav-links a{
-  font-size:14px;color:var(--muted);position:relative;padding:4px 0;
+  font-size:13px;color:var(--muted);position:relative;padding:4px 0;
+  white-space:nowrap;
   transition:color var(--dur-fast) ease;
 }
-.nav-links a:hover{color:var(--paper);}
+.nav-links a:hover{color:var(--ink);}
 .nav-links a::after{
-  content:"";position:absolute;bottom:0;inset-inline-start:0;height:1px;width:0;background:var(--gold);
+  content:"";position:absolute;bottom:0;inset-inline-start:0;height:1px;width:0;background:var(--gold-deep);
   transition:width var(--dur-fast) ease;
 }
 .nav-links a:hover::after{width:100%;}
 @media (max-width:860px){ .nav-links{display:none;} }
 
 .lang-toggle{
-  border:1px solid var(--line-strong); background:transparent; color:var(--paper);
+  border:1px solid var(--line-strong); background:transparent; color:var(--ink);
   font-size:13px; padding:8px 16px; border-radius:999px; cursor:pointer;
   display:flex; align-items:center; gap:8px;
   transition:border-color var(--dur-fast) ease, color var(--dur-fast) ease;
 }
-.lang-toggle:hover{border-color:var(--gold);color:var(--gold-soft);}
-.lang-toggle:focus-visible, a:focus-visible, button:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+.lang-toggle:hover{border-color:var(--gold-deep);color:var(--gold-deep);}
+.lang-toggle:focus-visible, a:focus-visible, button:focus-visible{outline:2px solid var(--gold-deep);outline-offset:3px;}
 
 /* ============================================================
    HERO
@@ -166,16 +193,16 @@ section{position:relative;}
   display:flex; flex-direction:column; justify-content:center;
   padding-top:112px; padding-bottom:64px;
   background:
-    radial-gradient(ellipse 900px 600px at 82% -10%, rgba(182,146,79,0.18), transparent 60%),
-    radial-gradient(ellipse 700px 500px at 6% 106%, rgba(63,110,165,0.16), transparent 60%),
-    var(--ink);
+    radial-gradient(ellipse 900px 600px at 82% -10%, rgba(182,146,79,0.14), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 6% 106%, rgba(63,110,165,0.12), transparent 60%),
+    var(--paper);
   overflow:hidden;
 }
 .hero-watermark{
   position:absolute; top:50%; inset-inline-end:-2%; transform:translateY(-50%);
   font-family:"Plex Serif Display",serif; font-weight:600;
   font-size:min(46vw,620px); line-height:1; color:transparent;
-  -webkit-text-stroke:1px rgba(220,194,148,0.16);
+  -webkit-text-stroke:1px rgba(23,19,16,0.08);
   pointer-events:none; user-select:none; z-index:0;
   white-space:nowrap;
 }
@@ -183,10 +210,10 @@ section{position:relative;}
 .hero .wrap{position:relative; z-index:1;}
 .hero-eyebrow{
   display:flex; align-items:center; gap:14px;
-  font-size:13px; letter-spacing:.08em; color:var(--gold-soft); margin-bottom:28px;
+  font-size:13px; letter-spacing:.08em; color:var(--gold-deep); margin-bottom:28px;
   text-transform:uppercase;
 }
-.hero-eyebrow .rule{width:40px;height:1px;background:var(--gold-soft);display:inline-block;}
+.hero-eyebrow .rule{width:40px;height:1px;background:var(--gold-deep);display:inline-block;}
 .hero h1{
   font-family:"Plex Serif Display",serif;
   font-size:clamp(52px,8.6vw,108px);
@@ -195,31 +222,31 @@ section{position:relative;}
 [dir="rtl"] .hero h1{ font-family:"Amiri",serif; font-weight:700; letter-spacing:0; }
 .hero h1 .who{
   display:block;
-  background:linear-gradient(100deg, var(--paper) 30%, var(--gold-soft) 62%, var(--blue-soft) 96%);
+  background:linear-gradient(100deg, var(--ink) 30%, var(--gold-deep) 62%, var(--blue-deep) 96%);
   -webkit-background-clip:text; background-clip:text; color:transparent;
 }
 .hero-role{
-  font-size:clamp(18px,2.4vw,26px); color:var(--gold-soft); font-weight:500;
+  font-size:clamp(18px,2.4vw,26px); color:var(--gold-deep); font-weight:500;
   margin:14px 0 28px;
 }
 .hero-bio{
   max-width:640px; font-size:17px; color:var(--muted); margin:0 0 28px;
 }
 .hero-voice{
-  max-width:560px; margin:0 0 40px; padding-inline-start:18px; border-inline-start:2px solid var(--gold-soft);
-  font-family:"Plex Serif Display",serif; font-size:16.5px; font-style:italic; color:var(--paper); line-height:1.5;
+  max-width:560px; margin:0 0 40px; padding-inline-start:18px; border-inline-start:2px solid var(--gold-deep);
+  font-family:"Plex Serif Display",serif; font-size:16.5px; font-style:italic; color:var(--ink); line-height:1.5;
 }
 [dir="rtl"] .hero-voice{ font-family:"Plex Arabic"; font-style:normal; }
 .hero-voice .src-cite{ font-style:normal; margin-top:8px; }
-[data-lang="en"] .hero h1, [data-lang="en"] .section-head h2, [data-lang="en"] .portrait-band h2, [data-lang="en"] #reviews h2{ font-family:"Plex Serif Display",serif; letter-spacing:0; }
+[data-lang="en"] .hero h1, [data-lang="en"] .section-head h2, [data-lang="en"] .portrait-copy h2, [data-lang="en"] #reviews h2{ font-family:"Plex Serif Display",serif; letter-spacing:0; }
 /* Arabic display hierarchy (gap 5): section titles, pull-quotes and the
    trust numeral move onto Amiri, tinted with the same copper→teal
    gradient-text device the hero already uses in English — one consistent
    "serif = a moment of emphasis" language across both directions instead
    of one flat sans weight standing in for every level. */
-[dir="rtl"] .section-head h2, [dir="rtl"] .portrait-band h2, [dir="rtl"] #reviews h2{
+[dir="rtl"] .section-head h2, [dir="rtl"] .portrait-copy h2, [dir="rtl"] #reviews h2{
   font-family:"Amiri",serif; font-weight:700; letter-spacing:0;
-  background:linear-gradient(100deg, var(--paper) 45%, var(--gold-soft) 100%);
+  background:linear-gradient(100deg, var(--ink) 45%, var(--gold-deep) 100%);
   -webkit-background-clip:text; background-clip:text; color:transparent;
 }
 [dir="rtl"] .hero-voice, [dir="rtl"] .quote-block blockquote, [dir="rtl"] .tmn-body blockquote{
@@ -234,10 +261,11 @@ section{position:relative;}
 .hero-tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:44px;}
 .tag{
   border:1px solid var(--line-strong); padding:9px 16px; border-radius:var(--radius);
-  font-size:13px; color:var(--paper); display:flex; align-items:center; gap:8px;
+  font-size:13px; color:var(--ink); display:flex; align-items:center; gap:8px;
+  background:var(--card);
 }
 .tag > span.en-only, .tag > b.en-only{text-transform:uppercase; letter-spacing:.04em;}
-.tag b{color:var(--gold-soft); font-family:"Plex Serif Display",serif; font-weight:600;}
+.tag b{color:var(--gold-deep); font-family:"Plex Serif Display",serif; font-weight:600;}
 
 .hero-actions{display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
 .btn{
@@ -254,21 +282,21 @@ section{position:relative;}
    Pure CSS (a pseudo-element + one transform), no extra markup needed;
    respects reduced-motion by disabling the scale transition only. */
 .btn-primary{
-  background:var(--paper); color:var(--ink); overflow:hidden; isolation:isolate;
+  background:var(--gold); color:var(--ink); overflow:hidden; isolation:isolate;
 }
 .btn-primary::before{
   content:""; position:absolute; z-index:-1; inset-inline-start:14px; top:50%;
   width:10px; height:10px; margin-top:-5px; border-radius:50%;
-  background:linear-gradient(120deg, var(--gold) 0%, var(--blue) 100%);
+  background:linear-gradient(120deg, var(--gold-deep) 0%, var(--blue-deep) 100%);
   transform:scale(0); transform-origin:center;
   transition:transform .5s cubic-bezier(.4,0,.2,1);
 }
 .btn-primary:hover, .btn-primary:focus-visible{ color:var(--paper); transform:translateY(-2px);
-  box-shadow:0 14px 30px -12px rgba(182,146,79,0.4); }
+  box-shadow:0 14px 30px -12px rgba(23,19,16,0.35); }
 .btn-primary:hover::before, .btn-primary:focus-visible::before{ transform:scale(60); }
 [data-reduce-motion="true"] .btn-primary::before{ transition:none; }
-.btn-ghost{border:1px solid var(--line-strong); color:var(--paper);}
-.btn-ghost:hover{border-color:var(--gold); color:var(--gold-soft); transform:translateY(-2px);}
+.btn-ghost{border:1px solid var(--line-strong); color:var(--ink); background:var(--card);}
+.btn-ghost:hover{border-color:var(--gold-deep); color:var(--gold-deep); transform:translateY(-2px);}
 .btn svg{width:18px;height:18px;flex:none;}
 
 /* magnetic wrapper */
@@ -280,7 +308,7 @@ section{position:relative;}
   font-size:11px; letter-spacing:.1em; color:var(--muted-2); text-transform:uppercase;
 }
 [dir="rtl"] .hero-scroll{ transform:translateX(50%); }
-.hero-scroll .line{width:1px;height:36px;background:linear-gradient(var(--gold-soft),transparent);
+.hero-scroll .line{width:1px;height:36px;background:linear-gradient(var(--gold-deep),transparent);
   animation:scrollpulse 2.2s ease-in-out infinite;}
 [data-reduce-motion="true"] .hero-scroll .line{animation:none;}
 @keyframes scrollpulse{0%,100%{opacity:.25;}50%{opacity:1;}}
@@ -290,10 +318,10 @@ section{position:relative;}
    ============================================================ */
 .section-head{margin-bottom:40px; max-width:640px;}
 .kicker{
-  font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-soft);
+  font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep);
   display:flex; align-items:center; gap:12px; margin-bottom:16px;
 }
-.kicker .rule{width:28px;height:1px;background:var(--gold-soft);}
+.kicker .rule{width:28px;height:1px;background:var(--gold-deep);}
 .section-head h2{font-size:clamp(30px,4vw,44px); margin:0 0 14px; font-weight:700; letter-spacing:-.01em;}
 .section-head p{color:var(--muted); font-size:16px; margin:0;}
 
@@ -304,7 +332,9 @@ section{position:relative;}
 .section-pad{padding:88px 0;}
 @media (max-width:640px){ .section-pad{padding:60px 0;} }
 
-.band{background:var(--ink-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+/* v8: .band was --ink-2 (dark) — the section-to-section rhythm step is now
+   the deeper cream/tan --paper-dim, never a dark fill (see HANDOFF v8 §1). */
+.band{background:var(--paper-dim); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
 
 /* ============================================================
    ABOUT
@@ -313,17 +343,17 @@ section{position:relative;}
 @media (max-width:900px){ .about-grid{grid-template-columns:1fr; gap:44px;} }
 .about-copy p{color:var(--muted); font-size:16.5px; margin:0 0 20px;}
 .about-copy p:last-child{margin-bottom:0;}
-.about-copy strong{color:var(--paper); font-weight:600;}
+.about-copy strong{color:var(--ink); font-weight:600;}
 
 .stat-list{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
 .stat{
-  background:var(--ink-2); padding:28px 24px; border-radius:14px; border:1px solid var(--line);
-  box-shadow:0 30px 60px -34px rgba(0,0,0,0.65), 0 0 0 1px rgba(245,238,225,0.04);
+  background:var(--card); padding:28px 24px; border-radius:14px; border:1px solid var(--line);
+  box-shadow:0 20px 40px -28px rgba(23,19,16,0.22), 0 0 0 1px rgba(23,19,16,0.04);
   transition:transform var(--dur-fast) var(--ease), border-color var(--dur-fast) ease;
 }
 .stat:hover{ transform:translateY(-3px); border-color:var(--line-strong); }
 .stat b{
-  display:block; font-family:"Plex Serif Display",serif; font-size:38px; color:var(--gold-soft);
+  display:block; font-family:"Plex Serif Display",serif; font-size:38px; color:var(--gold-deep);
   line-height:1; margin-bottom:10px; font-weight:600;
 }
 .stat span{font-size:13px; color:var(--muted);}
@@ -345,14 +375,14 @@ section{position:relative;}
 .tl-item:last-child{padding-bottom:0;}
 .tl-dot{
   position:absolute; inset-inline-start:0; top:4px; width:20px; height:20px; border-radius:50%;
-  border:1px solid var(--gold-soft); background:var(--ink);
+  border:1px solid var(--gold-deep); background:var(--ink);
   display:flex; align-items:center; justify-content:center;
 }
 .tl-dot::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold);}
 .tl-item.current .tl-dot{background:var(--gold); }
 .tl-item.current .tl-dot::after{background:var(--ink);}
 .tl-years{
-  font-family:"Plex Serif Display",serif; font-size:14px; color:var(--gold-soft);
+  font-family:"Plex Serif Display",serif; font-size:14px; color:var(--gold-deep);
   letter-spacing:.03em; margin-bottom:6px; display:block;
 }
 .tl-item h3{font-size:20px; margin:0 0 8px; font-weight:600;}
@@ -369,12 +399,12 @@ section{position:relative;}
 .cred-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px;}
 @media (max-width:760px){ .cred-grid{grid-template-columns:1fr;} }
 .cred{
-  background:var(--ink-2); padding:32px; border-radius:14px; border:1px solid var(--line);
-  box-shadow:0 30px 60px -34px rgba(0,0,0,0.65), 0 0 0 1px rgba(245,238,225,0.04);
+  background:var(--card); padding:32px; border-radius:14px; border:1px solid var(--line);
+  box-shadow:0 20px 40px -28px rgba(23,19,16,0.22), 0 0 0 1px rgba(23,19,16,0.04);
   transition:transform var(--dur-fast) var(--ease), border-color var(--dur-fast) ease;
 }
 .cred:hover{ transform:translateY(-3px); border-color:var(--line-strong); }
-.cred-year{font-family:"Plex Serif Display",serif; color:var(--gold-soft); font-size:14px; margin-bottom:12px; display:block;}
+.cred-year{font-family:"Plex Serif Display",serif; color:var(--gold-deep); font-size:14px; margin-bottom:12px; display:block;}
 .cred h3{margin:0 0 8px; font-size:17px; font-weight:600;}
 .cred p{margin:0; color:var(--muted); font-size:14.5px;}
 
@@ -386,7 +416,7 @@ section{position:relative;}
    6); .trust-stars stays, reused there.
    ============================================================ */
 .trust-stars{display:flex; gap:5px; margin-top:14px;}
-.trust-stars svg{width:20px;height:20px; color:var(--gold);}
+.trust-stars svg{width:20px;height:20px; color:var(--gold-deep);}
 
 /* ============================================================
    VISIT — "where to find him" (punch-list item 9, new this pass).
@@ -405,75 +435,135 @@ section{position:relative;}
   display:grid; grid-template-columns:24px 1fr; gap:16px; align-items:start;
   padding:18px 0; border-bottom:1px solid var(--line);
 }
-.visit-row svg{ width:19px; height:19px; color:var(--gold-soft); margin-top:2px; flex:none; }
-.visit-row p{ margin:0; color:var(--paper); font-size:14.5px; line-height:1.85; }
+.visit-row svg{ width:19px; height:19px; color:var(--gold-deep); margin-top:2px; flex:none; }
+.visit-row p{ margin:0; color:var(--ink); font-size:14.5px; line-height:1.85; }
 .visit-row .muted{ color:var(--muted); }
-.visit-row a.ulink{ color:var(--gold-soft); display:inline-block; margin-top:4px; font-size:13.5px; }
+.visit-row a.ulink{ color:var(--gold-deep); display:inline-block; margin-top:4px; font-size:13.5px; }
 .visit-map{
   border-radius:16px; overflow:hidden; border:1px solid var(--line-strong);
-  height:320px; background:var(--ink-2);
+  height:320px; background:var(--paper-dim);
 }
 @media (max-width:640px){ .visit-map{height:240px;} }
 .visit-map iframe{ width:100%; height:100%; display:block; border:0; }
 .visit-note{ margin-top:16px; font-size:12.5px; color:var(--muted-2); max-width:520px; line-height:1.7; }
 
 /* ============================================================
-   CONTACT / BOOKING — real WebGL warp shader behind the CTA (punch-
-   list item 8). He has no online booking system, so this stays honest:
-   three real steps, always ending in a WhatsApp message he answers
-   himself — not a fabricated calendar or department picker. The depth
-   device (a hand-written GLSL plasma/warp field) is the concrete thing
-   studied from De Praxes' own #book section — reimplemented from
-   scratch on this page's own gold/blue tokens (its ink→blue-deep→gold→
-   gold-soft stops), not the same shader file, not the same palette.
-   Same capability gate as every other heavy element on this page
-   (gpuCapable(), shared with nothing else now that Signature 3D — see
-   punch-list item 3 — was removed rather than kept for its own sake).
+   BOOKING — v8 punch-list item 4: a REAL multi-step interactive flow
+   (reason → timing → details → running summary) whose submit composes
+   a pre-filled wa.me/…?text= WhatsApp message, replacing the old static
+   "no booking system" apology + three explainer steps + a bare wa.me
+   link with zero ?text= prefill (confirmed by grep — none existed
+   anywhere on the page before this pass). Honest about what it is: the
+   summary panel states plainly that the appointment is confirmed once
+   he replies — no fabricated live calendar — but the UI itself behaves
+   like a real booking system, not an apology for the lack of one.
+   Retains the real WebGL warp shader from v7 (punch-list item 8) as
+   this page's one GPU-driven "wow" moment, but RETINTED off the light
+   canvas: the old ink→blue-deep→gold→gold-soft stops made this read as
+   a dark panel exactly like the rest of the page the client rejected —
+   now paper-dim→blue→gold→gold-soft, a warm cream/gold/blue marbling
+   texture instead of a plasma field on black. Same gpuCapable() gate as
+   before; falls back to the section's plain .book-scrim-tinted paper-dim
+   background (no canvas, no visual gap) for anyone gated off.
    ============================================================ */
-#contact.book-wrap{ position:relative; isolation:isolate; overflow:hidden; }
+#booking.book-wrap{ position:relative; isolation:isolate; overflow:hidden; }
 #bookshader{
   position:absolute; inset:0; width:100%; height:100%; display:block; opacity:0;
   transition:opacity 1.6s ease; pointer-events:none; z-index:0;
 }
-#bookshader.on{ opacity:.32; }
+#bookshader.on{ opacity:.55; }
 .book-scrim{
   position:absolute; inset:0; z-index:1; pointer-events:none;
-  background:radial-gradient(120% 100% at 18% 8%, rgba(23,19,16,.5) 0%, rgba(23,19,16,.87) 55%, rgba(23,19,16,.97) 100%);
+  background:radial-gradient(120% 100% at 18% 8%, rgba(228,216,189,.35) 0%, rgba(228,216,189,.82) 55%, rgba(228,216,189,.95) 100%);
 }
 [dir="rtl"] .book-scrim{
-  background:radial-gradient(120% 100% at 82% 8%, rgba(23,19,16,.5) 0%, rgba(23,19,16,.87) 55%, rgba(23,19,16,.97) 100%);
+  background:radial-gradient(120% 100% at 82% 8%, rgba(228,216,189,.35) 0%, rgba(228,216,189,.82) 55%, rgba(228,216,189,.95) 100%);
 }
-#contact.book-wrap .wrap{ position:relative; z-index:2; }
-.book-steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin:32px 0 40px; }
-@media (max-width:760px){ .book-steps{grid-template-columns:1fr; gap:16px;} }
-.book-step{ display:flex; gap:14px; align-items:flex-start; }
-.book-step .n{
-  flex:none; width:32px; height:32px; border-radius:50%; border:1px solid var(--gold-soft);
-  display:flex; align-items:center; justify-content:center;
-  font-family:"Plex Serif Display",serif; font-size:13.5px; color:var(--gold-soft);
+#booking.book-wrap .wrap{ position:relative; z-index:2; }
+
+.booker{
+  background:var(--card); border:1px solid var(--line-strong); border-radius:20px;
+  padding:36px; box-shadow:0 30px 70px -34px rgba(23,19,16,0.28), 0 0 0 1px rgba(23,19,16,0.04);
 }
-.book-step p{ margin:0; font-size:13.5px; color:var(--muted); line-height:1.65; }
-.book-step b{ display:block; color:var(--paper); font-size:14.5px; font-weight:600; margin-bottom:4px; }
+@media (max-width:640px){ .booker{padding:22px 18px;} }
+
+.bk-progress{ display:flex; align-items:center; gap:10px; margin-bottom:32px; }
+.bk-dot{ display:flex; align-items:center; gap:10px; color:var(--muted-2); }
+.bk-dot i{
+  flex:none; width:30px; height:30px; border-radius:50%; border:1px solid var(--line-strong);
+  display:flex; align-items:center; justify-content:center; font-style:normal;
+  font-family:"Plex Serif Display",serif; font-size:13px; color:var(--muted-2);
+  transition:background var(--dur-fast) ease, border-color var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+.bk-dot b{ font-size:13px; font-weight:600; display:none; }
+@media (min-width:640px){ .bk-dot b{display:inline;} }
+.bk-dot.is-active{ color:var(--ink); }
+.bk-dot.is-active i{ background:var(--gold); border-color:var(--gold); color:var(--ink); }
+.bk-dot-line{ flex:1 1 auto; height:1px; background:var(--line-strong); }
+
+.bk-body{ display:grid; grid-template-columns:1.3fr 1fr; gap:36px; align-items:start; }
+@media (max-width:760px){ .bk-body{grid-template-columns:1fr; gap:28px;} }
+
+.bk-panel{ display:none; }
+.bk-panel.is-active{ display:block; }
+.bk-panel h3{ margin:0 0 18px; font-size:18px; font-weight:600; }
+.bk-subhead{ margin:22px 0 12px; font-size:13px; color:var(--muted); font-weight:600; }
+.bk-subhead:first-of-type{ margin-top:0; }
+
+.bk-chips{ display:flex; flex-wrap:wrap; gap:10px; }
+.bk-chip{
+  border:1px solid var(--line-strong); background:var(--paper); color:var(--ink);
+  padding:11px 18px; border-radius:999px; font-size:14px; cursor:pointer;
+  transition:border-color var(--dur-fast) ease, background var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+.bk-chip:hover{ border-color:var(--gold-deep); }
+.bk-chip.is-selected{ background:var(--gold); border-color:var(--gold); color:var(--ink); font-weight:600; }
+
+.bk-field{ display:block; margin-bottom:18px; font-size:13px; color:var(--muted); font-weight:600; }
+.bk-field input, .bk-field textarea{
+  display:block; width:100%; margin-top:8px; padding:12px 14px; font-size:15px; font-family:inherit;
+  color:var(--ink); background:var(--paper); border:1px solid var(--line-strong); border-radius:8px;
+  resize:vertical;
+}
+.bk-field input:focus, .bk-field textarea:focus{ outline:2px solid var(--gold-deep); outline-offset:1px; }
+
+.bk-summary{
+  background:var(--paper-dim); border:1px solid var(--line); border-radius:14px; padding:22px;
+}
+.bk-summary h4{ margin:0 0 14px; font-size:13px; letter-spacing:.04em; text-transform:uppercase; color:var(--gold-deep); }
+.bk-summary dl{ margin:0; }
+.bk-summary dl > div{ display:flex; justify-content:space-between; gap:12px; padding:9px 0; border-bottom:1px solid var(--line); font-size:13.5px; }
+.bk-summary dl > div:last-child{ border-bottom:none; }
+.bk-summary dt{ color:var(--muted); flex:none; }
+.bk-summary dd{ margin:0; color:var(--ink); font-weight:600; text-align:end; }
+.bk-honest{
+  display:flex; gap:8px; align-items:flex-start; margin:16px 0 0; font-size:12px; color:var(--muted-2); line-height:1.6;
+}
+.bk-honest svg{ width:14px; height:14px; flex:none; margin-top:2px; color:var(--gold-deep); }
+
+.bk-actions{ display:flex; gap:14px; margin-top:28px; }
+.bk-actions .btn{ padding:13px 26px; font-size:14px; }
+.bk-actions .btn:disabled{ opacity:.4; cursor:not-allowed; transform:none !important; }
 
 .contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:40px;}
 @media (max-width:860px){ .contact-grid{grid-template-columns:1fr; gap:40px;} }
 .contact-card{
-  border:1px solid var(--line-strong); padding:40px; display:flex; flex-direction:column; gap:22px;
-  background:linear-gradient(160deg, rgba(182,146,79,0.07), rgba(63,110,165,0.04) 70%, transparent);
+  border:1px solid var(--line-strong); border-radius:16px; padding:40px; display:flex; flex-direction:column; gap:22px;
+  background:linear-gradient(160deg, rgba(182,146,79,0.08), rgba(63,110,165,0.05) 70%, transparent), var(--card);
 }
 .contact-card h3{margin:0; font-size:22px; font-weight:600;}
-.contact-line{display:flex; align-items:center; gap:14px; font-size:15px;}
-.contact-line svg{width:20px;height:20px;color:var(--gold-soft); flex:none;}
+.contact-line{display:flex; align-items:center; gap:14px; font-size:15px; color:var(--ink);}
+.contact-line svg{width:20px;height:20px;color:var(--gold-deep); flex:none;}
 
 .social-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px;}
 @media (max-width:420px){ .social-grid{grid-template-columns:repeat(2,1fr);} }
 .social-btn{
   display:flex; flex-direction:column; align-items:center; gap:8px;
-  border:1px solid var(--line); padding:18px 8px; font-size:12.5px; color:var(--muted);
+  border:1px solid var(--line); border-radius:10px; padding:18px 8px; font-size:12.5px; color:var(--muted);
   transition:border-color var(--dur-fast) ease, color var(--dur-fast) ease, transform var(--dur-fast) ease;
 }
-.social-btn:hover{border-color:var(--gold-soft); color:var(--paper); transform:translateY(-3px);}
-.social-btn svg{width:22px;height:22px;color:var(--gold-soft);}
+.social-btn:hover{border-color:var(--gold-deep); color:var(--ink); transform:translateY(-3px);}
+.social-btn svg{width:22px;height:22px;color:var(--gold-deep);}
 
 /* ============================================================
    FOOTER
@@ -515,7 +605,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 .mbar{
   position:fixed; inset-inline:0; bottom:0; z-index:65; display:none;
   grid-template-columns:1fr 1fr;
-  background:rgba(23,19,16,0.96); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  background:rgba(245,238,225,0.96); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
   border-top:1px solid var(--line);
   transform:translateY(100%); transition:transform .45s var(--ease);
 }
@@ -525,10 +615,10 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 .mbar a{
   position:relative; overflow:hidden; isolation:isolate;
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
-  padding:12px 0 14px; font-size:11.5px; color:var(--paper);
+  padding:12px 0 14px; font-size:11.5px; color:var(--ink);
 }
 .mbar a:first-child{ border-inline-end:1px solid var(--line); }
-.mbar a svg{ width:19px; height:19px; color:var(--gold-soft); }
+.mbar a svg{ width:19px; height:19px; color:var(--gold-deep); }
 .mbar-dot{
   position:absolute; inset:0; background:var(--gold); border-radius:50%;
   transform:scale(0); transition:transform .4s cubic-bezier(.4,0,.2,1); z-index:-1;
@@ -542,7 +632,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
    VISUALLY HIDDEN / SKIP LINK
    ============================================================ */
 .skip-link{
-  position:absolute; top:-100px; inset-inline-start:12px; background:var(--gold); color:var(--ink);
+  position:absolute; top:-100px; inset-inline-start:12px; background:var(--ink); color:var(--paper);
   padding:10px 18px; z-index:100; border-radius:4px; transition:top .2s ease;
 }
 .skip-link:focus{top:12px;}
@@ -565,7 +655,14 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   display:inline-flex; align-items:center; gap:7px; font-size:11.5px; color:var(--muted-2);
   letter-spacing:.02em; margin-top:12px;
 }
-.src-cite svg{width:13px;height:13px;flex:none;color:var(--gold-soft);}
+.src-cite svg{width:13px;height:13px;flex:none;color:var(--gold-deep);}
+/* v8: .src-cite is reused both directly on the (now light) page canvas
+   AND inside the one component that still sits on a genuine dark photo
+   scrim (the conference-photo caption, .ed-cap). The base rule above is
+   the light-canvas default; that one context keeps the original light-
+   on-dark citation styling since its local background is still dark. */
+.ed-cap .src-cite{ color:rgba(245,238,225,0.7); }
+.ed-cap .src-cite svg{ color:var(--gold-soft); }
 
 /* ============================================================
    HERO — split layout with a borderless cinematic video panel
@@ -583,8 +680,8 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 .hero-stage::before{
   content:""; position:absolute; width:520px; height:520px; border-radius:50%;
   background:
-    radial-gradient(circle at 35% 30%, rgba(182,146,79,0.30), transparent 55%),
-    radial-gradient(circle at 68% 70%, rgba(63,110,165,0.28), transparent 58%);
+    radial-gradient(circle at 35% 30%, rgba(182,146,79,0.24), transparent 55%),
+    radial-gradient(circle at 68% 70%, rgba(63,110,165,0.22), transparent 58%);
   filter:blur(10px); z-index:0;
 }
 .cine-panel{
@@ -609,7 +706,9 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 }
 .cine-panel .cine-cite svg{width:18px;height:18px;color:var(--gold-soft);flex:none;}
 .cine-panel .cine-cite b{display:block;font-size:12.5px;font-weight:600;}
-.cine-panel .cine-cite span{display:block;font-size:11px;color:var(--muted);}
+/* Sits on the video's own dark .cine-scrim, not the page canvas — stays
+   an explicit light value rather than the (now dark) --muted token. */
+.cine-panel .cine-cite span{display:block;font-size:11px;color:rgba(245,238,225,0.65);}
 .hero-stage .cine-panel{ width:min(360px,78vw); }
 
 /* ============================================================
@@ -645,14 +744,16 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   position:absolute; z-index:2; inset-inline:22px; bottom:20px;
 }
 .editorial-photo .ed-cap h3{ margin:0 0 6px; font-size:18px; font-weight:600; color:var(--paper); }
-.editorial-photo .ed-cap p{ margin:0 0 10px; font-size:13px; color:var(--muted); max-width:420px; }
+/* Sits on the photo's own dark .cine-scrim, not the page canvas —
+   explicit light value rather than the (now dark) --muted token. */
+.editorial-photo .ed-cap p{ margin:0 0 10px; font-size:13px; color:rgba(245,238,225,0.72); max-width:420px; }
 
 .practice-video-col{display:flex; flex-direction:column; gap:26px; align-items:stretch;}
 .practice-video-col .cine-panel{ width:100%; aspect-ratio:3/4; max-width:340px; align-self:center; }
 
 .quote-block{ max-width:480px; }
 .quote-mark{
-  font-family:"Plex Serif Display",serif; font-size:64px; line-height:1; color:var(--gold-soft);
+  font-family:"Plex Serif Display",serif; font-size:64px; line-height:1; color:var(--gold-deep);
   margin:0 0 4px; opacity:.7;
 }
 .quote-block blockquote{ margin:0 0 10px; font-size:19px; line-height:1.5; font-weight:500; }
@@ -661,21 +762,21 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 /* ============================================================
    PATIENT EDUCATION — real accordion sourced from his own post
    ============================================================ */
-.edu-panel-wrap{border:1px solid var(--line-strong); background:var(--ink-2);}
+.edu-panel-wrap{border:1px solid var(--line-strong); background:var(--card);}
 .edu-item{ border-bottom:1px solid var(--line); }
 .edu-item:last-child{ border-bottom:none; }
 .edu-trigger{
   width:100%; display:flex; align-items:center; justify-content:space-between; gap:16px;
-  background:transparent; border:none; color:var(--paper); text-align:start; cursor:pointer;
+  background:transparent; border:none; color:var(--ink); text-align:start; cursor:pointer;
   padding:22px 26px; font-size:16px; font-weight:600;
 }
 [dir="rtl"] .edu-trigger{ text-align:right; }
 .edu-trigger .plus{
-  flex:none; width:22px;height:22px;border:1px solid var(--gold-soft);border-radius:50%;
+  flex:none; width:22px;height:22px;border:1px solid var(--gold-deep);border-radius:50%;
   position:relative; transition:transform var(--dur-fast) var(--ease);
 }
 .edu-trigger .plus::before,.edu-trigger .plus::after{
-  content:""; position:absolute; background:var(--gold-soft); top:50%; inset-inline-start:50%;
+  content:""; position:absolute; background:var(--gold-deep); top:50%; inset-inline-start:50%;
   transform:translate(-50%,-50%);
 }
 .edu-trigger .plus::before{ width:10px; height:1px; }
@@ -690,10 +791,10 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 .edu-panel-inner ul{ margin:0; padding-inline-start:20px; }
 .edu-panel-inner li{ margin-bottom:6px; }
 .edu-final{
-  padding:18px 26px; border-top:1px solid var(--line); font-size:14.5px; color:var(--paper);
+  padding:18px 26px; border-top:1px solid var(--line); font-size:14.5px; color:var(--ink);
   display:flex; align-items:center; gap:10px;
 }
-.edu-final b{ color:var(--gold-soft); }
+.edu-final b{ color:var(--gold-deep); }
 
 /* ============================================================
    TESTIMONIALS — real, video-verified patient quotes
@@ -703,12 +804,12 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 .tmn-card{
   display:grid; grid-template-columns:150px 1fr; gap:20px;
   border:1px solid var(--line); border-radius:16px; padding:20px;
-  background:linear-gradient(160deg, rgba(182,146,79,0.05), rgba(63,110,165,0.04)), var(--ink-2);
-  box-shadow:0 34px 70px -34px rgba(0,0,0,0.6), 0 0 0 1px rgba(245,238,225,0.04);
+  background:linear-gradient(160deg, rgba(182,146,79,0.06), rgba(63,110,165,0.05)), var(--card);
+  box-shadow:0 24px 50px -30px rgba(23,19,16,0.2), 0 0 0 1px rgba(23,19,16,0.04);
   transition:border-color var(--dur-fast) ease, transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
 }
 .tmn-card:hover{ border-color:var(--line-strong); transform:translateY(-5px);
-  box-shadow:0 40px 80px -30px rgba(0,0,0,0.7), 0 0 0 1px rgba(245,238,225,0.06); }
+  box-shadow:0 30px 60px -26px rgba(23,19,16,0.26), 0 0 0 1px rgba(23,19,16,0.06); }
 @media (max-width:520px){ .tmn-card{grid-template-columns:1fr;} }
 .tmn-media{
   position:relative; width:150px; aspect-ratio:3/4; border-radius:12px; overflow:hidden; flex:none;
@@ -730,7 +831,11 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   background-size:14px 14px;
   mask-image:linear-gradient(to bottom, transparent, black 40%, black 70%, transparent);
 }
-.tmn-media.text-only .quote-mark{ position:relative; z-index:1; margin:0; font-size:52px; opacity:.9; text-shadow:0 4px 24px rgba(0,0,0,0.4); }
+/* This tile keeps its own dark gold-deep/ink gradient (a small, self-
+   contained accent tile, not a page-level fill) so its quote-mark keeps
+   the light gold-soft treatment rather than the page-canvas gold-deep
+   the base .quote-mark rule now uses. */
+.tmn-media.text-only .quote-mark{ position:relative; z-index:1; margin:0; font-size:52px; opacity:.9; color:var(--gold-soft); text-shadow:0 4px 24px rgba(0,0,0,0.4); }
 .tmn-play-badge{
   position:absolute; z-index:2; top:10px; inset-inline-start:10px;
   font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--paper);
@@ -739,12 +844,12 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 }
 .tmn-body blockquote{ margin:0 0 12px; font-size:18px; line-height:1.55; font-weight:500; }
 .tmn-attrib{ font-size:13px; color:var(--muted); margin:0 0 10px; }
-.tmn-attrib b{ color:var(--gold-soft); font-weight:600; }
+.tmn-attrib b{ color:var(--gold-deep); font-weight:600; }
 .tmn-note{
   margin-top:36px; font-size:13px; color:var(--muted-2); max-width:640px;
   display:flex; gap:10px; align-items:flex-start;
 }
-.tmn-note svg{ width:16px; height:16px; color:var(--blue-soft); flex:none; margin-top:2px; }
+.tmn-note svg{ width:16px; height:16px; color:var(--blue-deep); flex:none; margin-top:2px; }
 
 /* ============================================================
    FOCUS AREAS — numbered rail (replaces the old flat grid)
@@ -755,69 +860,55 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   padding:22px 4px; border-bottom:1px solid var(--line);
   transition:background var(--dur-fast) ease;
 }
-.focus-row:hover, .focus-row.is-active{ background:rgba(182,146,79,0.05); }
+.focus-row:hover, .focus-row.is-active{ background:rgba(182,146,79,0.08); }
 @media (max-width:700px){ .focus-row{grid-template-columns:60px 1fr; gap:16px;} .focus-row .focus-arrow{display:none;} }
 .focus-num{
   font-family:"Plex Serif Display",serif; font-weight:600; font-size:clamp(28px,3.2vw,44px);
   color:var(--muted-2); line-height:1; transition:color var(--dur-fast) ease;
 }
-.focus-row:hover .focus-num, .focus-row.is-active .focus-num{ color:var(--gold-soft); }
+.focus-row:hover .focus-num, .focus-row.is-active .focus-num{ color:var(--gold-deep); }
 .focus-content h3{ margin:0 0 8px; font-size:19px; font-weight:600; display:flex; align-items:center; gap:10px; }
-.focus-content .icon{ width:22px; height:22px; color:var(--gold-soft); flex:none; }
+.focus-content .icon{ width:22px; height:22px; color:var(--gold-deep); flex:none; }
 .focus-content p{ margin:0; color:var(--muted); font-size:14.5px; max-width:560px; }
 .focus-arrow{ width:18px; height:18px; color:var(--muted-2); transform:rotate(135deg); transition:transform var(--dur-fast) ease, color var(--dur-fast) ease; }
 [dir="rtl"] .focus-arrow{ transform:rotate(45deg); }
-.focus-row:hover .focus-arrow, .focus-row.is-active .focus-arrow{ color:var(--gold-soft); transform:rotate(180deg); }
+.focus-row:hover .focus-arrow, .focus-row.is-active .focus-arrow{ color:var(--gold-deep); transform:rotate(180deg); }
 [dir="rtl"] .focus-row:hover .focus-arrow, [dir="rtl"] .focus-row.is-active .focus-arrow{ transform:rotate(0deg); }
 
 /* count-up numerals (JS toggles .counted once animated; CSS-only, no layout dependency) */
 [data-count]{ font-variant-numeric:tabular-nums; }
 
 /* ============================================================
-   PORTRAIT BAND — near-full-bleed editorial treatment of the one
-   real portrait still in the repo (media/consult-still-portrait.jpg),
-   confirmed unused in every prior version. The single highest-leverage
-   fix in this pass (gap 1) and, via its copper/teal duotone grade, the
-   answer to gap 4 (gold as a genuine large-surface partner to ink, not
-   a 10-20% accent). (HANDOFF v6)
+   PORTRAIT — v8 punch-list item 2: media/consult-still-portrait.jpg
+   is a genuinely low-res extracted video frame (640×800px, ~40KB) but
+   v6/v7 displayed it full-bleed at up to 620px tall across the full
+   viewport width — well past its native resolution, guaranteeing
+   visible softness on anything wider than 640px (client: "low-quality
+   portrait section"). Fixed by dropping the full-bleed hero treatment
+   entirely: a capped card at the SAME scale as this page's other real-
+   photo device, .editorial-photo (max-width 420px, aspect-ratio 4/5 —
+   which happens to match this photo's own real 4:5 native ratio, so
+   the displayed size sits close to native res, not stretched past it).
    ============================================================ */
-.portrait-band{
-  position:relative; overflow:hidden; background:var(--ink);
-  height:clamp(400px,58vw,620px);
+.portrait-grid{ display:grid; grid-template-columns:.9fr 1.1fr; gap:48px; align-items:center; }
+@media (max-width:860px){ .portrait-grid{grid-template-columns:1fr; gap:32px;} }
+.portrait-photo{
+  position:relative; border-radius:20px; overflow:hidden;
+  max-width:380px; aspect-ratio:4/5; margin-inline:auto;
+  box-shadow:0 30px 70px -28px rgba(23,19,16,0.28), 0 0 0 1px rgba(23,19,16,0.06);
 }
-.portrait-band .pb-bleed{
-  position:absolute; inset:0; width:100%; height:118%; top:-9%;
-  will-change:transform;
+@media (max-width:860px){ .portrait-photo{ margin-inline:0; max-width:320px; } }
+.portrait-photo img{
+  width:100%; height:100%; object-fit:cover; object-position:50% 22%; display:block; will-change:transform;
+  filter:contrast(1.05) saturate(1.04);
 }
-.portrait-band img{
-  width:100%; height:100%; object-fit:cover; object-position:50% 22%; display:block;
-  filter:grayscale(.4) contrast(1.08) saturate(1.05) brightness(.94);
+.portrait-photo .grade{
+  position:absolute; inset:0; pointer-events:none; mix-blend-mode:multiply;
+  background:linear-gradient(160deg, rgba(182,146,79,0.12), rgba(63,110,165,0.08) 55%, transparent 85%);
 }
-.portrait-band .pb-duo{
-  position:absolute; inset:0; pointer-events:none; mix-blend-mode:color;
-  background:
-    linear-gradient(115deg, rgba(182,146,79,0.85) 0%, rgba(182,146,79,0.15) 46%),
-    linear-gradient(295deg, rgba(63,110,165,0.85) 0%, rgba(63,110,165,0.1) 55%);
-}
-.portrait-band .pb-duo::after{
-  content:""; position:absolute; inset:0; mix-blend-mode:overlay;
-  background:linear-gradient(160deg, rgba(182,146,79,0.3), rgba(63,110,165,0.24) 70%);
-}
-.portrait-band .pb-scrim{
-  position:absolute; inset:0; pointer-events:none;
-  background:
-    linear-gradient(to top, rgba(10,8,6,0.98) 0%, rgba(10,8,6,0.86) 22%, rgba(10,8,6,0.3) 48%, rgba(10,8,6,0.1) 65%, rgba(10,8,6,0.5) 100%);
-}
-.portrait-band .pb-content{
-  position:relative; z-index:1; height:100%; display:flex; flex-direction:column; justify-content:flex-end;
-  padding-bottom:64px;
-}
-.portrait-band .kicker, .portrait-band .kicker .rule{ color:var(--gold-soft); }
-.portrait-band h2{
-  font-size:clamp(28px,4.2vw,48px); margin:0 0 16px; font-weight:700; max-width:680px;
-}
-.portrait-band p{ color:var(--paper); opacity:.92; font-size:16px; max-width:520px; margin:0 0 4px; }
-@media (max-width:640px){ .portrait-band{ height:clamp(420px,120vw,620px); } .portrait-band .pb-content{ padding-bottom:40px; } }
+.portrait-copy .kicker, .portrait-copy .kicker .rule{ color:var(--gold-deep); }
+.portrait-copy h2{ font-size:clamp(26px,3.6vw,40px); margin:0 0 16px; font-weight:700; max-width:520px; }
+.portrait-copy p{ color:var(--muted); font-size:16px; max-width:480px; margin:0 0 4px; }
 
 /* ============================================================
    TRUST — radial gauge, a second real device alongside the numeral
@@ -827,7 +918,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 .trust-gauge{ position:relative; width:132px; height:132px; flex:none; }
 .trust-gauge svg{ width:100%; height:100%; transform:rotate(-90deg); }
 .trust-gauge circle{ fill:none; stroke-width:7; }
-.trust-gauge .tg-track{ stroke:rgba(245,238,225,0.1); }
+.trust-gauge .tg-track{ stroke:rgba(23,19,16,0.1); }
 .trust-gauge .tg-fill{
   stroke:url(#tgGrad); stroke-linecap:round;
   stroke-dasharray:345; stroke-dashoffset:345;
@@ -853,7 +944,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 @media (max-width:900px){ .greviews-grid{grid-template-columns:1fr; gap:32px;} }
 .greviews-score{ display:flex; align-items:center; gap:20px; margin-bottom:18px; }
 .greviews-score .num{
-  font-family:"Plex Serif Display",serif; font-size:clamp(48px,5vw,60px); color:var(--gold-soft); font-weight:600; line-height:1;
+  font-family:"Plex Serif Display",serif; font-size:clamp(48px,5vw,60px); color:var(--gold-deep); font-weight:600; line-height:1;
 }
 .greviews-note{ color:var(--muted); font-size:14.5px; max-width:340px; }
 
@@ -866,14 +957,14 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 @keyframes gcol-scroll{ to{ transform:translateY(-50%); } }
 .gcard{
   border:1px solid var(--line); border-radius:14px; padding:20px 22px;
-  background:var(--ink-2);
-  box-shadow:0 26px 54px -30px rgba(0,0,0,0.6), 0 0 0 1px rgba(245,238,225,0.04);
+  background:var(--card);
+  box-shadow:0 20px 42px -28px rgba(23,19,16,0.2), 0 0 0 1px rgba(23,19,16,0.04);
 }
 .gcard .gstars{ display:flex; gap:3px; margin-bottom:10px; }
-.gcard .gstars svg{ width:14px; height:14px; color:var(--gold); }
-.gcard blockquote{ margin:0 0 12px; font-size:14.5px; line-height:1.8; color:var(--paper); opacity:.92; }
+.gcard .gstars svg{ width:14px; height:14px; color:var(--gold-deep); }
+.gcard blockquote{ margin:0 0 12px; font-size:14.5px; line-height:1.8; color:var(--ink); opacity:.92; }
 .gcard figcaption{ font-size:12.5px; color:var(--muted); display:flex; align-items:center; gap:8px; }
-.gcard figcaption b{ color:var(--paper); font-weight:600; }
+.gcard figcaption b{ color:var(--ink); font-weight:600; }
 @media (max-width:640px){
   .gcols{ max-height:480px; }
   .gcol:nth-child(2){ display:none; }
@@ -917,6 +1008,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
       <a href="#education"><span class="ar-only">التعليم والزمالات</span><span class="en-only">Education</span></a>
       <a href="#focus"><span class="ar-only">مجالات التركيز</span><span class="en-only">Focus</span></a>
       <a href="#visit"><span class="ar-only">أين تجده</span><span class="en-only">Where to Find Him</span></a>
+      <a href="#booking"><span class="ar-only">احجز موعدك</span><span class="en-only">Book Appointment</span></a>
       <a href="#contact"><span class="ar-only">تواصل</span><span class="en-only">Contact</span></a>
     </nav>
     <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch language">
@@ -1029,23 +1121,28 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   </div>
 </section>
 
-<!-- ============================================================ PORTRAIT BAND — the one real portrait still in the repo,
-     finally placed: near-full-bleed, graded, editorial (gap 1 + gap 4) -->
-<section class="portrait-band" id="portrait">
-  <div class="pb-bleed" data-portrait-parallax>
-    <img src="media/consult-still-portrait.jpg" loading="lazy" alt="Dr. Ahmed Awad, a real still from his own patient-consultation footage">
-  </div>
-  <div class="pb-duo" aria-hidden="true"></div>
-  <div class="pb-scrim" aria-hidden="true"></div>
-  <div class="wrap pb-content reveal">
-    <div class="kicker"><span class="rule"></span><span class="ar-only">الاستشاري</span><span class="en-only">The Consultant</span></div>
-    <h2><span class="ar-only">الوجه خلف عشرين عاماً من العمل الجراحي</span><span class="en-only">The face behind twenty years of surgical work</span></h2>
-    <p><span class="ar-only">إطار حقيقي، لا صورة معدّة، مأخوذ من لقطة استشارة حقيقية معه.</span><span class="en-only">A real, unstaged frame — extracted from his own real consultation footage.</span></p>
-    <p class="src-cite">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
-      <span class="ar-only">إطار حقيقي من مقطع فيديو حقيقي لاستشارة، عيادات لمسة</span>
-      <span class="en-only">A real frame from a real consultation video, Lamsa Clinics</span>
-    </p>
+<!-- ============================================================ PORTRAIT — the one real portrait still in the repo. v8 (punch-
+     list item 2): capped card at .editorial-photo's own scale instead
+     of the old full-bleed hero treatment, which stretched this genuinely
+     low-res (640x800) extracted frame well past native resolution. -->
+<section class="section-pad" id="portrait">
+  <div class="wrap">
+    <div class="portrait-grid reveal">
+      <div class="portrait-photo" data-parallax>
+        <img src="media/consult-still-portrait.jpg" width="640" height="800" loading="lazy" alt="Dr. Ahmed Awad, a real still from his own patient-consultation footage">
+        <div class="grade" aria-hidden="true"></div>
+      </div>
+      <div class="portrait-copy">
+        <div class="kicker"><span class="rule"></span><span class="ar-only">الاستشاري</span><span class="en-only">The Consultant</span></div>
+        <h2><span class="ar-only">الوجه خلف عشرين عاماً من العمل الجراحي</span><span class="en-only">The face behind twenty years of surgical work</span></h2>
+        <p><span class="ar-only">إطار حقيقي، لا صورة معدّة، مأخوذ من لقطة استشارة حقيقية معه.</span><span class="en-only">A real, unstaged frame — extracted from his own real consultation footage.</span></p>
+        <p class="src-cite">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+          <span class="ar-only">إطار حقيقي من مقطع فيديو حقيقي لاستشارة، عيادات لمسة</span>
+          <span class="en-only">A real frame from a real consultation video, Lamsa Clinics</span>
+        </p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1493,7 +1590,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
               <defs>
                 <linearGradient id="tgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stop-color="#b6924f"/>
-                  <stop offset="100%" stop-color="#8fb4da"/>
+                  <stop offset="100%" stop-color="#3f6ea5"/>
                 </linearGradient>
               </defs>
               <circle class="tg-track" cx="60" cy="60" r="55"/>
@@ -1643,8 +1740,8 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   <div class="wrap">
     <div class="section-head reveal">
       <div class="kicker"><span class="rule"></span><span class="ar-only">أين تجده</span><span class="en-only">Where to Find Him</span></div>
-      <h2><span class="ar-only">لا يملك عيادة، لكنه يمارس هنا حالياً</span><span class="en-only">He owns no clinic — but this is where he currently practices</span></h2>
-      <p><span class="ar-only">لا عنوان شخصي أو "عيادة أحمد عوض" — هذا واقعي وصادق: يمارس حالياً في عيادات لمسة، جدة.</span><span class="en-only">No personal address or a "Dr. Awad Clinic" — this is stated honestly: he currently practices at Lamsa Clinics, Jeddah.</span></p>
+      <h2><span class="ar-only">يمارس حالياً في عيادات لمسة، جدة</span><span class="en-only">Currently practicing at Lamsa Clinics, Jeddah</span></h2>
+      <p><span class="ar-only">العنوان، رقم التواصل، والموقع على الخريطة — كل ما تحتاجه لزيارته.</span><span class="en-only">The address, contact number, and map location — everything you need to visit.</span></p>
     </div>
     <div class="visit-grid reveal">
       <div>
@@ -1662,23 +1759,33 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
           <div class="visit-row">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
             <p>
-              <span class="ar-only muted">هاتف عيادات لمسة (استقبال، لا خطه الشخصي)</span>
-              <span class="en-only muted">Lamsa Clinics reception line (not his personal number)</span><br>
+              <span class="ar-only muted">خط استقبال عيادات لمسة — للحجز والاستفسار</span>
+              <span class="en-only muted">Lamsa Clinics reception line — for booking and inquiries</span><br>
               <a class="ulink" href="tel:+966126614000"><span class="ltr">012 661 4000</span></a>
+            </p>
+          </div>
+          <div class="visit-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/><circle cx="16" cy="16" r="2.5"/><path d="M16 15v1l.8.5"/></svg>
+            <p>
+              <span class="ar-only">صفحته على موقع عيادات لمسة — نبذة ومؤهلات</span>
+              <span class="en-only">His profile on Lamsa Clinics' website — bio and credentials</span><br>
+              <a class="ulink" href="https://lamssaclinics.com" target="_blank" rel="noopener">
+                <span class="ltr">lamssaclinics.com</span>
+              </a>
             </p>
           </div>
           <div class="visit-row">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
             <p>
-              <span class="ar-only">ساعات العمل تُحدَّد بحسب مواعيده الشخصية عبر واتساب — <span class="muted">لا جدول ثابت معلن</span></span>
-              <span class="en-only">Hours are set around his own personal appointments via WhatsApp — <span class="muted">no fixed published schedule</span></span>
+              <span class="ar-only">مواعيده تُحجز مباشرة عبر واتساب — الرد عادة خلال ساعات العمل</span>
+              <span class="en-only">Appointments are booked directly over WhatsApp — replies typically within business hours</span>
             </p>
           </div>
         </div>
         <p class="visit-note">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" style="width:13px;height:13px;display:inline-block;vertical-align:-1px;margin-inline-end:6px;"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
-          <span class="ar-only">هذا هو المكان الذي يمارس فيه حالياً كاستشاري — لا عيادة يملكها باسمه، ولا هوية ثابتة مستقلة. عنوان عيادات لمسة موثّق ومتحقق منه (انظر البحث الأصلي في هذا المشروع).</span>
-          <span class="en-only">This is where he currently practices as a consultant — not a clinic he owns, not an independent fixed identity of his own. Lamsa Clinics' address is documented and independently verified (see this project's own research).</span>
+          <span class="ar-only">العنوان ورقم عيادات لمسة موثّقان ومتحقق منهما مباشرة من موقعها الإلكتروني.</span>
+          <span class="en-only">Lamsa Clinics' address and number are documented and independently verified directly against its own website.</span>
         </p>
       </div>
       <div class="visit-map reveal">
@@ -1689,41 +1796,120 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   </div>
 </section>
 
-<!-- ============================================================ CONTACT / BOOKING — WhatsApp-first, real shader depth (punch-list item 8) -->
-<section class="section-pad band book-wrap" id="contact">
+<!-- ============================================================ BOOKING — real multi-step interactive flow (punch-list item 4),
+     replacing the old apologetic "no booking system" heading and three
+     static explainer steps. Submit composes a pre-filled wa.me?text=
+     WhatsApp message; the shader from v7 stays as this section's real
+     GPU-driven moment, retinted off the light canvas (see the CSS
+     comment above .booker). -->
+<section class="section-pad band book-wrap" id="booking">
   <canvas id="bookshader" aria-hidden="true"></canvas>
   <div class="book-scrim" aria-hidden="true"></div>
   <div class="wrap">
     <div class="section-head reveal">
-      <div class="kicker"><span class="rule"></span><span class="ar-only">تواصل</span><span class="en-only">Contact</span></div>
-      <h2><span class="ar-only">لا نظام حجز إلكتروني — رسالة واتساب واحدة تكفي</span><span class="en-only">No online booking system — one WhatsApp message is enough</span></h2>
-      <p><span class="ar-only">لا يوجد عنوان ثابت أو ساعات عمل معلنة — التواصل المباشر هو الطريق الأقصر.</span><span class="en-only">No fixed address or published hours — direct contact is the fastest way to reach him.</span></p>
+      <div class="kicker"><span class="rule"></span><span class="ar-only">احجز موعدك</span><span class="en-only">Book Your Appointment</span></div>
+      <h2><span class="ar-only">ثلاث خطوات، ثم رسالة واتساب جاهزة له مباشرة</span><span class="en-only">Three steps, then a ready message straight to him on WhatsApp</span></h2>
+      <p><span class="ar-only">لا مركز اتصال ولا انتظار على الهاتف — املأ التفاصيل هنا، ويفتح واتساب برسالة مكتملة تُرسل له شخصياً.</span><span class="en-only">No call center, no phone queue — fill in the details here and WhatsApp opens with a complete message sent to him personally.</span></p>
     </div>
-    <div class="book-steps reveal">
-      <div class="book-step">
-        <span class="n">1</span>
-        <p><b class="ar-only">راسله على واتساب</b><b class="en-only">Message him on WhatsApp</b>
-          <span class="ar-only">اضغط الزر أدناه — يفتح محادثة مباشرة مع رقمه الشخصي.</span>
-          <span class="en-only">Tap the button below — it opens a direct chat with his personal number.</span></p>
+
+    <div class="booker reveal" id="booker">
+      <div class="bk-progress" aria-hidden="true">
+        <span class="bk-dot is-active" data-dot="1"><i>1</i><b class="ar-only">السبب</b><b class="en-only">Reason</b></span>
+        <span class="bk-dot-line"></span>
+        <span class="bk-dot" data-dot="2"><i>2</i><b class="ar-only">الوقت</b><b class="en-only">Timing</b></span>
+        <span class="bk-dot-line"></span>
+        <span class="bk-dot" data-dot="3"><i>3</i><b class="ar-only">بياناتك</b><b class="en-only">Your details</b></span>
       </div>
-      <div class="book-step">
-        <span class="n">2</span>
-        <p><b class="ar-only">اشرح حالتك بإيجاز</b><b class="en-only">Briefly describe your case</b>
-          <span class="ar-only">اسمك، وما تحتاجه — بلا نماذج أو خطوات معقدة.</span>
-          <span class="en-only">Your name and what you need — no forms, no complicated steps.</span></p>
+
+      <div class="bk-body">
+        <div class="bk-panels">
+          <div class="bk-panel is-active" data-panel="1">
+            <h3><span class="ar-only">ما الذي تحتاجه؟</span><span class="en-only">What do you need?</span></h3>
+            <div class="bk-chips" data-group="reason" role="radiogroup" aria-label="Reason for visit">
+              <button type="button" class="bk-chip" data-ar="نحت الجسم" data-en="Body contouring" role="radio" aria-checked="false"><span class="ar-only">نحت الجسم</span><span class="en-only">Body contouring</span></button>
+              <button type="button" class="bk-chip" data-ar="جراحة اليد والمجهرية" data-en="Hand &amp; microsurgery" role="radio" aria-checked="false"><span class="ar-only">جراحة اليد والمجهرية</span><span class="en-only">Hand &amp; microsurgery</span></button>
+              <button type="button" class="bk-chip" data-ar="حشوات تجميلية" data-en="Aesthetic fillers" role="radio" aria-checked="false"><span class="ar-only">حشوات تجميلية</span><span class="en-only">Aesthetic fillers</span></button>
+              <button type="button" class="bk-chip" data-ar="استشارة عامة" data-en="General consultation" role="radio" aria-checked="false"><span class="ar-only">استشارة عامة</span><span class="en-only">General consultation</span></button>
+              <button type="button" class="bk-chip" data-ar="غير ذلك" data-en="Something else" role="radio" aria-checked="false"><span class="ar-only">غير ذلك</span><span class="en-only">Something else</span></button>
+            </div>
+          </div>
+
+          <div class="bk-panel" data-panel="2">
+            <h3><span class="ar-only">ما الوقت المناسب لك؟</span><span class="en-only">What timing works for you?</span></h3>
+            <p class="bk-subhead"><span class="ar-only">الاستعجال</span><span class="en-only">Urgency</span></p>
+            <div class="bk-chips" data-group="urgency" role="radiogroup" aria-label="Urgency">
+              <button type="button" class="bk-chip" data-ar="في أقرب وقت ممكن" data-en="As soon as possible" role="radio" aria-checked="false"><span class="ar-only">في أقرب وقت ممكن</span><span class="en-only">As soon as possible</span></button>
+              <button type="button" class="bk-chip" data-ar="هذا الأسبوع" data-en="This week" role="radio" aria-checked="false"><span class="ar-only">هذا الأسبوع</span><span class="en-only">This week</span></button>
+              <button type="button" class="bk-chip" data-ar="الأسبوع القادم" data-en="Next week" role="radio" aria-checked="false"><span class="ar-only">الأسبوع القادم</span><span class="en-only">Next week</span></button>
+            </div>
+            <p class="bk-subhead"><span class="ar-only">وقت اليوم المفضل</span><span class="en-only">Preferred time of day</span></p>
+            <div class="bk-chips" data-group="time" role="radiogroup" aria-label="Time of day">
+              <button type="button" class="bk-chip" data-ar="صباحاً" data-en="Morning" role="radio" aria-checked="false"><span class="ar-only">صباحاً</span><span class="en-only">Morning</span></button>
+              <button type="button" class="bk-chip" data-ar="بعد الظهر" data-en="Afternoon" role="radio" aria-checked="false"><span class="ar-only">بعد الظهر</span><span class="en-only">Afternoon</span></button>
+              <button type="button" class="bk-chip" data-ar="مساءً" data-en="Evening" role="radio" aria-checked="false"><span class="ar-only">مساءً</span><span class="en-only">Evening</span></button>
+            </div>
+          </div>
+
+          <div class="bk-panel" data-panel="3">
+            <h3><span class="ar-only">بياناتك</span><span class="en-only">Your details</span></h3>
+            <label class="bk-field">
+              <span class="ar-only">الاسم</span><span class="en-only">Name</span>
+              <input type="text" id="bkName" autocomplete="name">
+            </label>
+            <label class="bk-field">
+              <span class="ar-only">رقم للتواصل (اختياري)</span><span class="en-only">Contact number (optional)</span>
+              <input type="tel" id="bkPhone" autocomplete="tel">
+            </label>
+            <label class="bk-field">
+              <span class="ar-only">ملاحظة (اختياري)</span><span class="en-only">Note (optional)</span>
+              <textarea id="bkNote" rows="3"></textarea>
+            </label>
+          </div>
+        </div>
+
+        <aside class="bk-summary" aria-live="polite">
+          <h4><span class="ar-only">ملخص طلبك</span><span class="en-only">Your request so far</span></h4>
+          <dl>
+            <div><dt><span class="ar-only">السبب</span><span class="en-only">Reason</span></dt><dd id="bkSumReason">—</dd></div>
+            <div><dt><span class="ar-only">الاستعجال</span><span class="en-only">Urgency</span></dt><dd id="bkSumUrgency">—</dd></div>
+            <div><dt><span class="ar-only">الوقت</span><span class="en-only">Time of day</span></dt><dd id="bkSumTime">—</dd></div>
+            <div><dt><span class="ar-only">الاسم</span><span class="en-only">Name</span></dt><dd id="bkSumName">—</dd></div>
+          </dl>
+          <p class="bk-honest">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>
+            <span class="ar-only">يُعتبر الموعد مؤكداً بعد رده مباشرة على رسالتك على واتساب — لا يوجد نظام حجز آلي فوري.</span>
+            <span class="en-only">Your appointment is confirmed once he replies to your message on WhatsApp directly — not an instant automated booking system.</span>
+          </p>
+        </aside>
       </div>
-      <div class="book-step">
-        <span class="n">3</span>
-        <p><b class="ar-only">يرد عليك شخصياً</b><b class="en-only">He replies personally</b>
-          <span class="ar-only">لا مركز اتصال — هو من يقرأ ويرد على رسالتك بنفسه.</span>
-          <span class="en-only">No call center — he reads and replies to your message himself.</span></p>
+
+      <div class="bk-actions">
+        <button type="button" class="btn btn-ghost bk-back" disabled><span class="ar-only">السابق</span><span class="en-only">Back</span></button>
+        <button type="button" class="btn btn-primary bk-next" disabled><span class="ar-only">التالي</span><span class="en-only">Next</span></button>
+        <button type="button" class="btn btn-primary bk-send" style="display:none;" disabled>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.5s-.6-1.5-.9-2c-.2-.5-.5-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3c1.5.8 3.2 1.3 5.1 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.5.9.9-3.4-.2-.3C3.5 14.4 3 12.7 3 10.9 3 6 6.9 2 11.9 2c5 0 9 4 9 9s-4 9-9 9z"/></svg>
+          <span class="ar-only">إرسال عبر واتساب</span>
+          <span class="en-only">Send via WhatsApp</span>
+        </button>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ CONTACT — direct contact methods + verified social accounts,
+     split out from the old combined booking+contact section (item 5). -->
+<section class="section-pad" id="contact">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="kicker"><span class="rule"></span><span class="ar-only">تواصل</span><span class="en-only">Contact</span></div>
+      <h2><span class="ar-only">تواصل مباشر وحسابات موثقة</span><span class="en-only">Direct contact &amp; verified accounts</span></h2>
+      <p><span class="ar-only">للتفضيل السريع، رقمه على واتساب دائماً هو الطريق الأقصر.</span><span class="en-only">For the fastest reply, his WhatsApp number is always the shortest path.</span></p>
     </div>
     <div class="contact-grid reveal">
       <div class="contact-card">
         <h3><span class="ar-only">تواصل مباشر</span><span class="en-only">Direct Contact</span></h3>
         <a class="contact-line" href="https://wa.me/966563681087" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3c1.5.8 3.2 1.3 5.1 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2z" opacity=".18"/><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.5s-.6-1.5-.9-2c-.2-.5-.5-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.5s-.6-1.5-.9-2c-.2-.5-.5-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3c1.5.8 3.2 1.3 5.1 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.5.9.9-3.4-.2-.3C3.5 14.4 3 12.7 3 10.9 3 6 6.9 2 11.9 2c5 0 9 4 9 9s-4 9-9 9z"/></svg>
           <span class="ltr">+966 56 368 1087</span>
         </a>
         <a class="contact-line" href="mailto:ahmedplastic2010@gmail.com">
@@ -1732,7 +1918,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
         </a>
         <span class="magnetic" data-magnetic style="align-self:flex-start;">
           <a class="btn btn-primary" href="https://wa.me/966563681087" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.5s-.6-1.5-.9-2c-.2-.5-.5-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.5s-.6-1.5-.9-2c-.2-.5-.5-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3c1.5.8 3.2 1.3 5.1 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.5.9.9-3.4-.2-.3C3.5 14.4 3 12.7 3 10.9 3 6 6.9 2 11.9 2c5 0 9 4 9 9s-4 9-9 9z"/></svg>
             <span class="ar-only">راسله الآن</span>
             <span class="en-only">Message him now</span>
           </a>
@@ -1853,6 +2039,10 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
       htmlEl.setAttribute("dir","ltr");
     }
     try{ localStorage.setItem("dr-awad-lang", lang); }catch(e){}
+    /* Lets the booker's running summary (item 4) re-render any already-
+       selected chip's label in the newly active language instead of
+       staying frozen in whichever language it was picked in. */
+    document.dispatchEvent(new CustomEvent("langchange", { detail:{ lang:lang } }));
   }
   langBtn.addEventListener("click", function(){
     var current = bodyEl.getAttribute("data-lang");
@@ -1978,8 +2168,8 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   /* ---------- nav background on scroll ---------- */
   var navEl = document.querySelector(".nav");
   function updateNav(){
-    if(window.scrollY > 20){ navEl.style.background = "rgba(23,19,16,0.94)"; }
-    else { navEl.style.background = "rgba(23,19,16,0.82)"; }
+    if(window.scrollY > 20){ navEl.style.background = "rgba(245,238,225,0.94)"; }
+    else { navEl.style.background = "rgba(245,238,225,0.86)"; }
   }
   window.addEventListener("scroll", updateNav, {passive:true});
   updateNav();
@@ -2187,39 +2377,11 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   }
   initStagger();
 
-  /* ---------- Portrait band: real scrub:true parallax (not one-shot) ----------
-     Same GSAP+ScrollTrigger dependency the editorial-photo parallax above
-     already uses, applied a second time with a stronger scale+translate so
-     the two don't read as the same effect copy-pasted. Falls back to a
-     dependency-free rAF/scroll-ratio version, same pattern as initParallax. */
-  function initPortraitParallax(){
-    if(reduce) return;
-    var el = document.querySelector("[data-portrait-parallax]");
-    if(!el) return;
-    if(window.gsap && window.ScrollTrigger){
-      gsap.fromTo(el, {yPercent:-8, scale:1.06}, {
-        yPercent:8, scale:1.12, ease:"none",
-        scrollTrigger:{ trigger: el.closest(".portrait-band"), scrub:true, start:"top bottom", end:"bottom top" }
-      });
-    } else {
-      var ticking = false;
-      function onScroll(){
-        if(ticking) return;
-        ticking = true;
-        requestAnimationFrame(function(){
-          var band = el.closest(".portrait-band");
-          var r = band.getBoundingClientRect();
-          var vh = window.innerHeight;
-          var ratio = Math.max(-1, Math.min(1, (r.top + r.height/2 - vh/2) / vh));
-          el.style.transform = "translateY(" + (ratio * -30) + "px) scale(1.08)";
-          ticking = false;
-        });
-      }
-      window.addEventListener("scroll", onScroll, {passive:true});
-      onScroll();
-    }
-  }
-  initPortraitParallax();
+  /* ---------- Portrait photo parallax: v8 dropped the old full-bleed
+     portrait band (see HANDOFF v8 punch-list item 2) for a capped card
+     the same scale as .editorial-photo — it now reuses that same
+     [data-parallax] mechanism above via initParallax() instead of a
+     dedicated function, so there is nothing bespoke left to init here. */
 
   /* ---------- Trust gauge: draws to the real 4.8/5 figure once in view ---------- */
   (function initTrustGauge(){
@@ -2259,15 +2421,122 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
     onScroll();
   })();
 
-  /* ---------- CONTACT/BOOKING section — real WebGL warp shader background
+  /* ---------- BOOKING section — real multi-step flow, ending in a
+     pre-filled WhatsApp deep link (punch-list item 4). Pure client-side
+     state + a wa.me/…?text= composer — no fabricated backend, no fake
+     live calendar; the summary panel says plainly that a real reply is
+     what confirms the appointment. ---------- */
+  (function initBooker(){
+    var booker = document.getElementById("booker");
+    if(!booker) return;
+    var state = { reason:null, urgency:null, time:null };
+    var step = 1;
+    var panels = Array.prototype.slice.call(booker.querySelectorAll(".bk-panel"));
+    var dots = Array.prototype.slice.call(booker.querySelectorAll(".bk-dot"));
+    var backBtn = booker.querySelector(".bk-back");
+    var nextBtn = booker.querySelector(".bk-next");
+    var sendBtn = booker.querySelector(".bk-send");
+    var nameInput = document.getElementById("bkName");
+    var phoneInput = document.getElementById("bkPhone");
+    var noteInput = document.getElementById("bkNote");
+    var sumReason = document.getElementById("bkSumReason");
+    var sumUrgency = document.getElementById("bkSumUrgency");
+    var sumTime = document.getElementById("bkSumTime");
+    var sumName = document.getElementById("bkSumName");
+
+    function chipText(chip){
+      var lang = bodyEl.getAttribute("data-lang");
+      return chip.getAttribute(lang === "en" ? "data-en" : "data-ar");
+    }
+    function updateSummary(){
+      sumReason.textContent = state.reason ? chipText(state.reason) : "—";
+      sumUrgency.textContent = state.urgency ? chipText(state.urgency) : "—";
+      sumTime.textContent = state.time ? chipText(state.time) : "—";
+      sumName.textContent = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : "—";
+    }
+    booker.querySelectorAll(".bk-chips").forEach(function(group){
+      var key = group.getAttribute("data-group");
+      var chips = Array.prototype.slice.call(group.querySelectorAll(".bk-chip"));
+      chips.forEach(function(chip){
+        chip.addEventListener("click", function(){
+          chips.forEach(function(c){ c.classList.remove("is-selected"); c.setAttribute("aria-checked","false"); });
+          chip.classList.add("is-selected");
+          chip.setAttribute("aria-checked","true");
+          state[key] = chip;
+          updateSummary();
+          refreshGateState();
+        });
+      });
+    });
+    if(nameInput) nameInput.addEventListener("input", function(){ updateSummary(); refreshGateState(); });
+    document.addEventListener("langchange", updateSummary);
+
+    function refreshGateState(){
+      if(step === 1){ nextBtn.disabled = !state.reason; }
+      else if(step === 2){ nextBtn.disabled = !(state.urgency && state.time); }
+      else if(step === 3){ sendBtn.disabled = !(nameInput && nameInput.value.trim().length > 0); }
+    }
+    function goToStep(n){
+      step = Math.max(1, Math.min(3, n));
+      panels.forEach(function(p){ p.classList.toggle("is-active", +p.getAttribute("data-panel") === step); });
+      dots.forEach(function(d){ d.classList.toggle("is-active", +d.getAttribute("data-dot") <= step); });
+      backBtn.disabled = (step === 1);
+      nextBtn.style.display = (step < 3) ? "" : "none";
+      sendBtn.style.display = (step === 3) ? "" : "none";
+      refreshGateState();
+    }
+    nextBtn.addEventListener("click", function(){
+      if(step === 1 && !state.reason) return;
+      if(step === 2 && !(state.urgency && state.time)) return;
+      goToStep(step + 1);
+    });
+    backBtn.addEventListener("click", function(){ goToStep(step - 1); });
+
+    sendBtn.addEventListener("click", function(){
+      if(sendBtn.disabled) return;
+      var lang = bodyEl.getAttribute("data-lang");
+      var name = nameInput ? nameInput.value.trim() : "";
+      var phone = phoneInput ? phoneInput.value.trim() : "";
+      var note = noteInput ? noteInput.value.trim() : "";
+      var reason = state.reason ? chipText(state.reason) : "";
+      var urgency = state.urgency ? chipText(state.urgency) : "";
+      var time = state.time ? chipText(state.time) : "";
+      var lines;
+      if(lang === "en"){
+        lines = ["Hello Dr. Ahmed, I'd like to book an appointment.",
+          "Reason: " + reason,
+          "Preferred time: " + urgency + ", " + time,
+          "Name: " + name];
+        if(phone) lines.push("Contact number: " + phone);
+        if(note) lines.push("Note: " + note);
+      } else {
+        lines = ["مرحباً د. أحمد، أرغب في حجز موعد.",
+          "السبب: " + reason,
+          "الوقت المفضل: " + urgency + "، " + time,
+          "الاسم: " + name];
+        if(phone) lines.push("رقم للتواصل: " + phone);
+        if(note) lines.push("ملاحظة: " + note);
+      }
+      var url = "https://wa.me/966563681087?text=" + encodeURIComponent(lines.join("\n"));
+      window.open(url, "_blank", "noopener");
+    });
+
+    updateSummary();
+    refreshGateState();
+  })();
+
+  /* ---------- BOOKING section — real WebGL warp shader background
      (punch-list item 8, replaces the removed Signature 3D as this page's
      one real GPU-driven moment). Hand-written raw GLSL, no dependency,
      technique studied from depraxis-demo's own #book section (itself
      ported from 21st.dev's Warmth Ripple / the open-source
      paper-design/shaders "warp" family) — reimplemented from scratch here
      on this page's own gold/blue tokens, not the same shader file or
-     palette. Same gpuCapable() gate as everything else on this page, plus
-     its own IntersectionObserver so the render loop only runs on screen. ---------- */
+     palette. v8 retints the stops off the light canvas (paper-dim→blue→
+     gold→gold-soft, a warm marbling texture) since the old ink-based
+     stops read as another dark panel — see HANDOFF v8. Same gpuCapable()
+     gate as everything else on this page, plus its own IntersectionObserver
+     so the render loop only runs on screen. ---------- */
   function initBookShader(){
     if(!gpuCapable()) return;
     var canvas = document.getElementById("bookshader");
@@ -2276,14 +2545,18 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
     if(!gl) return;
 
     var vsSrc = "attribute vec2 p;void main(){gl_Position=vec4(p,0.0,1.0);}";
-    /* Palette stops = this file's own --ink / --blue-deep / --gold / --gold-soft
-       tokens, converted to 0-1 floats (not De Praxes' char/bronze/sand). */
+    /* Palette stops = this file's own --paper-dim / --blue / --gold /
+       --gold-soft tokens, converted to 0-1 floats. v8 swaps the old
+       --ink base for --paper-dim so the warp field reads as a warm
+       cream/gold/blue marbling texture, not a plasma field on black
+       (see HANDOFF v8 — the client rejected the page reading as a dark
+       canvas, and the old ink-based stops made this section no exception). */
     var fsSrc = [
       "precision highp float;",
       "uniform vec2 uRes; uniform float uTime;",
       "#define TWO_PI 6.28318530718",
-      "const vec3 C0 = vec3(0.0902,0.0745,0.0627);", /* --ink #171310 */
-      "const vec3 C1 = vec3(0.1412,0.2549,0.4078);", /* --blue-deep #244168 */
+      "const vec3 C0 = vec3(0.8941,0.8471,0.7412);", /* --paper-dim #e4d8bd */
+      "const vec3 C1 = vec3(0.2471,0.4314,0.6471);", /* --blue #3f6ea5 */
       "const vec3 C2 = vec3(0.7137,0.5725,0.3098);", /* --gold #b6924f */
       "const vec3 C3 = vec3(0.8667,0.7412,0.5333);", /* --gold-soft #ddbd88 */
       "float hash(vec2 p){ vec3 q = fract(vec3(p.xyx) * 0.1031);",
