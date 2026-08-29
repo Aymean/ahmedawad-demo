@@ -16,6 +16,14 @@
 @font-face{font-family:"Plex Arabic";src:url("fonts/IBMPlexSansArabic-Bold.woff2") format("woff2");font-weight:700;font-display:swap;}
 @font-face{font-family:"Plex Serif Display";src:url("fonts/IBMPlexSerif-Regular.woff2") format("woff2");font-weight:400;font-display:swap;}
 @font-face{font-family:"Plex Serif Display";src:url("fonts/IBMPlexSerif-SemiBold.woff2") format("woff2");font-weight:600;font-display:swap;}
+/* Arabic display serif — self-hosted Amiri (SIL OFL, fonts/LICENSE-Amiri.txt).
+   Gives the Arabic register (the site's primary language) genuine serif/sans
+   contrast for the first time: headlines, quotes and section titles move off
+   the body sans onto this, the same role Plex Serif Display already plays
+   for English. See HANDOFF v6, gap 5. */
+@font-face{font-family:"Amiri";src:url("fonts/Amiri-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap;}
+@font-face{font-family:"Amiri";src:url("fonts/Amiri-Bold.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap;}
+@font-face{font-family:"Amiri";src:url("fonts/Amiri-Italic.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap;}
 
 /* ============================================================
    TOKENS
@@ -166,7 +174,7 @@ section{position:relative;}
   font-size:clamp(52px,8.6vw,108px);
   font-weight:600; margin:0 0 6px; letter-spacing:-.01em; line-height:0.98;
 }
-[dir="rtl"] .hero h1{ font-family:"Plex Arabic"; font-weight:700; }
+[dir="rtl"] .hero h1{ font-family:"Amiri",serif; font-weight:700; letter-spacing:0; }
 .hero h1 .who{
   display:block;
   background:linear-gradient(100deg, var(--paper) 30%, var(--gold-soft) 62%, var(--teal-soft) 96%);
@@ -185,7 +193,27 @@ section{position:relative;}
 }
 [dir="rtl"] .hero-voice{ font-family:"Plex Arabic"; font-style:normal; }
 .hero-voice .src-cite{ font-style:normal; margin-top:8px; }
-[data-lang="en"] .hero h1, [data-lang="en"] .section-head h2{ font-family:"Plex Serif Display",serif; letter-spacing:0; }
+[data-lang="en"] .hero h1, [data-lang="en"] .section-head h2, [data-lang="en"] .portrait-band h2, [data-lang="en"] #reviews h2, [data-lang="en"] .sig3d-copy h2{ font-family:"Plex Serif Display",serif; letter-spacing:0; }
+/* Arabic display hierarchy (gap 5): section titles, pull-quotes and the
+   trust numeral move onto Amiri, tinted with the same copper→teal
+   gradient-text device the hero already uses in English — one consistent
+   "serif = a moment of emphasis" language across both directions instead
+   of one flat sans weight standing in for every level. */
+[dir="rtl"] .section-head h2, [dir="rtl"] .portrait-band h2, [dir="rtl"] #reviews h2{
+  font-family:"Amiri",serif; font-weight:700; letter-spacing:0;
+  background:linear-gradient(100deg, var(--paper) 45%, var(--gold-soft) 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+[dir="rtl"] .hero-voice, [dir="rtl"] .quote-block blockquote, [dir="rtl"] .tmn-body blockquote{
+  font-family:"Amiri",serif; font-weight:400;
+}
+/* Amiri is one of the few Arabic typefaces with a genuine hand-cut italic
+   (most Arabic type fakes it by auto-slanting, which Plex Arabic and every
+   other face on this page correctly refuses to do). Used once, sparingly,
+   on the short atmospheric hero pull-quote — the longer testimonial/quote
+   blocks above stay upright for readability. */
+[dir="rtl"] .hero-voice{ font-family:"Amiri",serif; font-style:italic; font-weight:400; }
+[dir="rtl"] .sig3d-copy h2{ font-family:"Amiri",serif; font-weight:700; }
 .hero-tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:44px;}
 .tag{
   border:1px solid var(--line-strong); padding:9px 16px; border-radius:var(--radius);
@@ -201,8 +229,27 @@ section{position:relative;}
   transition:transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease), background var(--dur-fast) ease;
   position:relative;
 }
-.btn-primary{background:var(--paper); color:var(--ink);}
-.btn-primary:hover{transform:translateY(-2px); box-shadow:0 14px 30px -12px rgba(201,113,63,0.4);}
+/* ---------- primary CTA — copper/teal dot-wipe (gap 3) ----------
+   Replaces the old lift+shadow-only hover: a small dot at the button's
+   inline-start edge scales up to flood the whole pill in a copper→teal
+   sweep on hover/focus, the resting label fades and the button's own
+   text swaps to ink so it stays readable against the flooded fill.
+   Pure CSS (a pseudo-element + one transform), no extra markup needed;
+   respects reduced-motion by disabling the scale transition only. */
+.btn-primary{
+  background:var(--paper); color:var(--ink); overflow:hidden; isolation:isolate;
+}
+.btn-primary::before{
+  content:""; position:absolute; z-index:-1; inset-inline-start:14px; top:50%;
+  width:10px; height:10px; margin-top:-5px; border-radius:50%;
+  background:linear-gradient(120deg, var(--gold) 0%, var(--teal) 100%);
+  transform:scale(0); transform-origin:center;
+  transition:transform .5s cubic-bezier(.4,0,.2,1);
+}
+.btn-primary:hover, .btn-primary:focus-visible{ color:var(--paper); transform:translateY(-2px);
+  box-shadow:0 14px 30px -12px rgba(201,113,63,0.4); }
+.btn-primary:hover::before, .btn-primary:focus-visible::before{ transform:scale(60); }
+[data-reduce-motion="true"] .btn-primary::before{ transition:none; }
 .btn-ghost{border:1px solid var(--line-strong); color:var(--paper);}
 .btn-ghost:hover{border-color:var(--gold); color:var(--gold-soft); transform:translateY(-2px);}
 .btn svg{width:18px;height:18px;flex:none;}
@@ -247,9 +294,13 @@ section{position:relative;}
 .about-copy p:last-child{margin-bottom:0;}
 .about-copy strong{color:var(--paper); font-weight:600;}
 
-.stat-list{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line);
-  border:1px solid var(--line);}
-.stat{background:var(--ink); padding:28px 24px;}
+.stat-list{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+.stat{
+  background:var(--ink-2); padding:28px 24px; border-radius:14px; border:1px solid var(--line);
+  box-shadow:0 30px 60px -34px rgba(0,0,0,0.65), 0 0 0 1px rgba(247,244,238,0.04);
+  transition:transform var(--dur-fast) var(--ease), border-color var(--dur-fast) ease;
+}
+.stat:hover{ transform:translateY(-3px); border-color:var(--line-strong); }
 .stat b{
   display:block; font-family:"Plex Serif Display",serif; font-size:38px; color:var(--gold-soft);
   line-height:1; margin-bottom:10px; font-weight:600;
@@ -294,9 +345,14 @@ section{position:relative;}
 /* ============================================================
    EDUCATION / CREDENTIALS
    ============================================================ */
-.cred-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--line); border:1px solid var(--line);}
+.cred-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px;}
 @media (max-width:760px){ .cred-grid{grid-template-columns:1fr;} }
-.cred{background:var(--ink); padding:32px;}
+.cred{
+  background:var(--ink-2); padding:32px; border-radius:14px; border:1px solid var(--line);
+  box-shadow:0 30px 60px -34px rgba(0,0,0,0.65), 0 0 0 1px rgba(247,244,238,0.04);
+  transition:transform var(--dur-fast) var(--ease), border-color var(--dur-fast) ease;
+}
+.cred:hover{ transform:translateY(-3px); border-color:var(--line-strong); }
 .cred-year{font-family:"Plex Serif Display",serif; color:var(--gold-soft); font-size:14px; margin-bottom:12px; display:block;}
 .cred h3{margin:0 0 8px; font-size:17px; font-weight:600;}
 .cred p{margin:0; color:var(--muted); font-size:14.5px;}
@@ -359,15 +415,59 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 /* ============================================================
    FLOATING WHATSAPP
    ============================================================ */
+/* ============================================================
+   FLOATING WHATSAPP — recolored onto the site's own tokens (no more
+   stock #25D366), scroll-gated entrance matching .reveal's own easing,
+   desktop-only; mobile gets the bottom action bar below instead
+   (gap 2, HANDOFF v6).
+   ============================================================ */
 .wa-float{
   position:fixed; bottom:26px; inset-inline-end:26px; z-index:60;
-  width:58px; height:58px; border-radius:50%; background:#25D366; color:#0a0a10;
-  display:flex; align-items:center; justify-content:center; box-shadow:0 10px 26px -8px rgba(0,0,0,.5);
-  transition:transform var(--dur-fast) var(--ease);
+  width:60px; height:60px; border-radius:50%;
+  background:var(--ink); color:var(--gold-soft);
+  border:1px solid var(--line-strong);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 16px 34px -12px rgba(0,0,0,.65), 0 0 0 1px rgba(247,244,238,0.05);
+  opacity:0; transform:translateY(22px) scale(.92);
+  transition:transform .5s var(--ease), box-shadow var(--dur-fast) var(--ease),
+             background var(--dur-fast) ease, color var(--dur-fast) ease, opacity .5s var(--ease);
+  pointer-events:none;
 }
-.wa-float:hover{transform:scale(1.08);}
-.wa-float svg{width:28px;height:28px;}
-@media (max-width:640px){ .wa-float{width:50px;height:50px; bottom:18px; inset-inline-end:18px;} }
+.wa-float.is-visible{ opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
+.wa-float:hover{ background:var(--gold); color:var(--ink); transform:translateY(-3px) scale(1.06);
+  box-shadow:0 20px 40px -12px rgba(201,113,63,.5), 0 0 0 1px rgba(247,244,238,0.05); }
+.wa-float svg{width:26px;height:26px;}
+[data-reduce-motion="true"] .wa-float{ transition:opacity .3s ease; transform:none; }
+[data-reduce-motion="true"] .wa-float.is-visible{ transform:none; }
+@media (max-width:640px){ .wa-float{display:none;} }
+
+/* ---------- mobile bottom action bar (replaces the floating circle
+   under 640px) ---------- */
+.mbar{
+  position:fixed; inset-inline:0; bottom:0; z-index:65; display:none;
+  grid-template-columns:1fr 1fr;
+  background:rgba(10,10,16,0.96); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  border-top:1px solid var(--line);
+  transform:translateY(100%); transition:transform .45s var(--ease);
+}
+.mbar.is-visible{ transform:translateY(0); }
+[data-reduce-motion="true"] .mbar{ transition:opacity .3s ease; transform:none; }
+@media (max-width:640px){ .mbar{display:grid;} body{padding-bottom:66px;} }
+.mbar a{
+  position:relative; overflow:hidden; isolation:isolate;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+  padding:12px 0 14px; font-size:11.5px; color:var(--paper);
+}
+.mbar a:first-child{ border-inline-end:1px solid var(--line); }
+.mbar a svg{ width:19px; height:19px; color:var(--gold-soft); }
+.mbar-dot{
+  position:absolute; inset:0; background:var(--gold); border-radius:50%;
+  transform:scale(0); transition:transform .4s cubic-bezier(.4,0,.2,1); z-index:-1;
+}
+.mbar a:active .mbar-dot{ transform:scale(2.6); }
+.mbar a:active{ color:var(--ink); }
+.mbar a:active svg{ color:var(--ink); }
+@media (prefers-reduced-motion:reduce){ .mbar-dot{transition:none;} }
 
 /* ============================================================
    VISUALLY HIDDEN / SKIP LINK
@@ -555,10 +655,12 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 .tmn-card{
   display:grid; grid-template-columns:150px 1fr; gap:20px;
   border:1px solid var(--line); border-radius:16px; padding:20px;
-  background:linear-gradient(160deg, rgba(201,113,63,0.05), rgba(47,110,100,0.04));
-  transition:border-color var(--dur-fast) ease, transform var(--dur-fast) ease;
+  background:linear-gradient(160deg, rgba(201,113,63,0.05), rgba(47,110,100,0.04)), var(--ink-2);
+  box-shadow:0 34px 70px -34px rgba(0,0,0,0.6), 0 0 0 1px rgba(247,244,238,0.04);
+  transition:border-color var(--dur-fast) ease, transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
 }
-.tmn-card:hover{ border-color:var(--line-strong); transform:translateY(-3px); }
+.tmn-card:hover{ border-color:var(--line-strong); transform:translateY(-5px);
+  box-shadow:0 40px 80px -30px rgba(0,0,0,0.7), 0 0 0 1px rgba(247,244,238,0.06); }
 @media (max-width:520px){ .tmn-card{grid-template-columns:1fr;} }
 .tmn-media{
   position:relative; width:150px; aspect-ratio:3/4; border-radius:12px; overflow:hidden; flex:none;
@@ -588,7 +690,6 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   padding:3px 9px;
 }
 .tmn-body blockquote{ margin:0 0 12px; font-size:18px; line-height:1.55; font-weight:500; }
-[data-lang="ar"] .tmn-body blockquote{ font-family:"Plex Arabic"; }
 .tmn-attrib{ font-size:13px; color:var(--muted); margin:0 0 10px; }
 .tmn-attrib b{ color:var(--gold-soft); font-weight:600; }
 .tmn-note{
@@ -623,9 +724,141 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 
 /* count-up numerals (JS toggles .counted once animated; CSS-only, no layout dependency) */
 [data-count]{ font-variant-numeric:tabular-nums; }
+
+/* ============================================================
+   PORTRAIT BAND — near-full-bleed editorial treatment of the one
+   real portrait still in the repo (media/consult-still-portrait.jpg),
+   confirmed unused in every prior version. The single highest-leverage
+   fix in this pass (gap 1) and, via its copper/teal duotone grade, the
+   answer to gap 4 (gold as a genuine large-surface partner to ink, not
+   a 10-20% accent). (HANDOFF v6)
+   ============================================================ */
+.portrait-band{
+  position:relative; overflow:hidden; background:var(--ink);
+  height:clamp(440px,72vw,760px);
+}
+.portrait-band .pb-bleed{
+  position:absolute; inset:0; width:100%; height:118%; top:-9%;
+  will-change:transform;
+}
+.portrait-band img{
+  width:100%; height:100%; object-fit:cover; object-position:50% 22%; display:block;
+  filter:grayscale(.4) contrast(1.08) saturate(1.05) brightness(.94);
+}
+.portrait-band .pb-duo{
+  position:absolute; inset:0; pointer-events:none; mix-blend-mode:color;
+  background:
+    linear-gradient(115deg, rgba(201,113,63,0.85) 0%, rgba(201,113,63,0.15) 46%),
+    linear-gradient(295deg, rgba(47,110,100,0.85) 0%, rgba(47,110,100,0.1) 55%);
+}
+.portrait-band .pb-duo::after{
+  content:""; position:absolute; inset:0; mix-blend-mode:overlay;
+  background:linear-gradient(160deg, rgba(201,113,63,0.3), rgba(47,110,100,0.24) 70%);
+}
+.portrait-band .pb-scrim{
+  position:absolute; inset:0; pointer-events:none;
+  background:
+    linear-gradient(to top, rgba(6,6,9,0.98) 0%, rgba(6,6,9,0.86) 22%, rgba(6,6,9,0.3) 48%, rgba(6,6,9,0.1) 65%, rgba(6,6,9,0.5) 100%);
+}
+.portrait-band .pb-content{
+  position:relative; z-index:1; height:100%; display:flex; flex-direction:column; justify-content:flex-end;
+  padding-bottom:64px;
+}
+.portrait-band .kicker, .portrait-band .kicker .rule{ color:var(--gold-soft); }
+.portrait-band h2{
+  font-size:clamp(28px,4.2vw,48px); margin:0 0 16px; font-weight:700; max-width:680px;
+}
+.portrait-band p{ color:var(--paper); opacity:.92; font-size:16px; max-width:520px; margin:0 0 4px; }
+@media (max-width:640px){ .portrait-band{ height:clamp(420px,120vw,620px); } .portrait-band .pb-content{ padding-bottom:40px; } }
+
+/* ============================================================
+   TRUST — radial gauge, a second real device alongside the numeral
+   (gap 7). SVG stroke-dashoffset draws to the real 4.8/5 figure —
+   no fabricated distribution, the same verified number rendered twice.
+   ============================================================ */
+.trust-gauge{ position:relative; width:132px; height:132px; flex:none; }
+.trust-gauge svg{ width:100%; height:100%; transform:rotate(-90deg); }
+.trust-gauge circle{ fill:none; stroke-width:7; }
+.trust-gauge .tg-track{ stroke:rgba(247,244,238,0.1); }
+.trust-gauge .tg-fill{
+  stroke:url(#tgGrad); stroke-linecap:round;
+  stroke-dasharray:345; stroke-dashoffset:345;
+  transition:stroke-dashoffset 1.4s var(--ease);
+}
+.trust-gauge.on .tg-fill{ stroke-dashoffset:35; } /* 4.8/5 = 96% drawn */
+.trust-gauge .tg-label{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-family:"Plex Serif Display",serif; font-size:15px; color:var(--muted);
+}
+@media (max-width:640px){ .trust-gauge{ width:96px; height:96px; } }
+
+/* ============================================================
+   GOOGLE REVIEWS — real, verified 5-star reviews (Apify pull, Aug
+   2026), distinct from the video-testimonial section above. Auto-
+   scrolling doubled-track columns (technique studied from De Praxes'
+   own reviews device — reimplemented from scratch on this site's own
+   tokens/markup, not copied file-for-file) so real content and real
+   motion-variety both land in one device (gap 3 + the reviews brief).
+   Real names/dates/quotes only; no avatars invented. (HANDOFF v6)
+   ============================================================ */
+.greviews-grid{ display:grid; grid-template-columns:.62fr 1fr; gap:48px; align-items:start; }
+@media (max-width:900px){ .greviews-grid{grid-template-columns:1fr; gap:32px;} }
+.greviews-score{ display:flex; align-items:center; gap:20px; margin-bottom:18px; }
+.greviews-score .num{
+  font-family:"Plex Serif Display",serif; font-size:clamp(48px,5vw,60px); color:var(--gold-soft); font-weight:600; line-height:1;
+}
+.greviews-note{ color:var(--muted); font-size:14.5px; max-width:340px; }
+
+.gcols{ display:flex; gap:20px; max-height:620px; overflow:hidden;
+  -webkit-mask-image:linear-gradient(to bottom, transparent, #000 14%, #000 84%, transparent);
+  mask-image:linear-gradient(to bottom, transparent, #000 14%, #000 84%, transparent); }
+.gcol{ flex:1 1 0; min-width:0; overflow:hidden; }
+.gcol-track{ display:flex; flex-direction:column; gap:16px; padding-bottom:16px;
+  animation:gcol-scroll var(--gdur,26s) linear infinite; will-change:transform; }
+@keyframes gcol-scroll{ to{ transform:translateY(-50%); } }
+.gcard{
+  border:1px solid var(--line); border-radius:14px; padding:20px 22px;
+  background:var(--ink-2);
+  box-shadow:0 26px 54px -30px rgba(0,0,0,0.6), 0 0 0 1px rgba(247,244,238,0.04);
+}
+.gcard .gstars{ display:flex; gap:3px; margin-bottom:10px; }
+.gcard .gstars svg{ width:14px; height:14px; color:var(--gold); }
+.gcard blockquote{ margin:0 0 12px; font-size:14.5px; line-height:1.8; color:var(--paper); opacity:.92; }
+.gcard figcaption{ font-size:12.5px; color:var(--muted); display:flex; align-items:center; gap:8px; }
+.gcard figcaption b{ color:var(--paper); font-weight:600; }
+@media (max-width:640px){
+  .gcols{ max-height:480px; }
+  .gcol:nth-child(2){ display:none; }
+}
+[data-reduce-motion="true"] .gcols{ max-height:none; overflow:visible; -webkit-mask-image:none; mask-image:none; }
+[data-reduce-motion="true"] .gcol-track{ animation:none; }
+[data-reduce-motion="true"] .gcol:nth-child(2){ display:block; }
+
+/* ============================================================
+   JOURNEY spine — strengthened + a real scroll-synced traveling
+   marker (gap 3 + gap 7's "second device" for the timeline). The
+   fill (#tlProgress) already ties to scroll in JS; this just gives
+   it a visible glow and a marker riding its tip instead of a plain
+   flat-color bar.
+   ============================================================ */
+.tl-track{ width:2px; background:rgba(247,244,238,0.14); border-radius:2px; }
+.tl-track i{
+  width:2px; border-radius:2px;
+  background:linear-gradient(to bottom, var(--teal-soft), var(--gold));
+  box-shadow:0 0 16px 1px rgba(201,113,63,0.55);
+}
+.tl-marker{
+  position:absolute; inset-inline-start:-4px; width:11px; height:11px; border-radius:50%;
+  background:var(--gold); box-shadow:0 0 0 4px rgba(201,113,63,0.22), 0 0 14px 2px rgba(201,113,63,0.6);
+  top:0%; transform:translateY(-50%); transition:top 1.1s var(--ease);
+}
+[data-reduce-motion="true"] .tl-marker{ display:none; }
 </style>
 </head>
 <body data-lang="ar">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-gstar" viewBox="0 0 20 20"><path fill="currentColor" d="M10 1l2.6 6 6.4.6-4.8 4.2 1.4 6.2L10 15l-5.6 3 1.4-6.2L1 7.6 7.4 7z"/></symbol>
+</svg>
 <div class="grain" aria-hidden="true"></div>
 <a href="#main" class="skip-link">تخطي إلى المحتوى / Skip to content</a>
 
@@ -644,6 +877,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
       <a href="#about"><span class="ar-only">نبذة</span><span class="en-only">About</span></a>
       <a href="#practice"><span class="ar-only">في الميدان</span><span class="en-only">In Practice</span></a>
       <a href="#testimonials"><span class="ar-only">آراء حقيقية</span><span class="en-only">Testimonials</span></a>
+      <a href="#reviews"><span class="ar-only">تقييمات جوجل</span><span class="en-only">Google Reviews</span></a>
       <a href="#journey"><span class="ar-only">المسيرة المهنية</span><span class="en-only">Journey</span></a>
       <a href="#education"><span class="ar-only">التعليم والزمالات</span><span class="en-only">Education</span></a>
       <a href="#focus"><span class="ar-only">مجالات التركيز</span><span class="en-only">Focus</span></a>
@@ -759,6 +993,26 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   </div>
 </section>
 
+<!-- ============================================================ PORTRAIT BAND — the one real portrait still in the repo,
+     finally placed: near-full-bleed, graded, editorial (gap 1 + gap 4) -->
+<section class="portrait-band" id="portrait">
+  <div class="pb-bleed" data-portrait-parallax>
+    <img src="media/consult-still-portrait.jpg" loading="lazy" alt="Dr. Ahmed Awad, a real still from his own patient-consultation footage">
+  </div>
+  <div class="pb-duo" aria-hidden="true"></div>
+  <div class="pb-scrim" aria-hidden="true"></div>
+  <div class="wrap pb-content reveal">
+    <div class="kicker"><span class="rule"></span><span class="ar-only">الاستشاري</span><span class="en-only">The Consultant</span></div>
+    <h2><span class="ar-only">الوجه خلف عشرين عاماً من العمل الجراحي</span><span class="en-only">The face behind twenty years of surgical work</span></h2>
+    <p><span class="ar-only">إطار حقيقي، لا صورة معدّة، مأخوذ من لقطة استشارة حقيقية معه.</span><span class="en-only">A real, unstaged frame — extracted from his own real consultation footage.</span></p>
+    <p class="src-cite">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+      <span class="ar-only">إطار حقيقي من مقطع فيديو حقيقي لاستشارة، عيادات لمسة</span>
+      <span class="en-only">A real frame from a real consultation video, Lamsa Clinics</span>
+    </p>
+  </div>
+</section>
+
 <!-- ============================================================ SIGNATURE 3D — precision, materialized -->
 <section class="section-pad sig3d-section" id="signature">
   <div class="wrap">
@@ -849,7 +1103,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
     </div>
 
     <div class="timeline reveal" id="timeline">
-      <div class="tl-track"><i id="tlProgress"></i></div>
+      <div class="tl-track"><i id="tlProgress"></i><span class="tl-marker" id="tlMarker" aria-hidden="true"></span></div>
 
       <div class="tl-item">
         <span class="tl-dot"></span>
@@ -1101,6 +1355,19 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
     </div>
     <div class="trust-panel reveal">
     <div class="trust-wrap">
+      <div class="trust-gauge" id="trustGauge" aria-hidden="true">
+        <svg viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="tgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#c9713f"/>
+              <stop offset="100%" stop-color="#74c3b1"/>
+            </linearGradient>
+          </defs>
+          <circle class="tg-track" cx="60" cy="60" r="55"/>
+          <circle class="tg-fill" cx="60" cy="60" r="55"/>
+        </svg>
+        <span class="tg-label ltr">4.8/5</span>
+      </div>
       <div>
         <div class="trust-score"><span class="ltr">4.8</span><span class="ar-only">من 5</span><span class="en-only">/ 5</span></div>
         <div class="trust-stars" aria-hidden="true">
@@ -1241,6 +1508,155 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   </div>
 </section>
 
+<!-- ============================================================ GOOGLE REVIEWS — real, verified 5-star reviews (Apify pull,
+     Aug 2026), distinct from the video-testimonial section above -->
+<section class="section-pad" id="reviews">
+  <div class="wrap">
+    <div class="greviews-grid">
+      <div class="reveal">
+        <div class="kicker"><span class="rule"></span><span class="ar-only">تقييمات جوجل</span><span class="en-only">Google Reviews</span></div>
+        <h2><span class="ar-only">ماذا يقول مرضاه على جوجل</span><span class="en-only">What his patients say on Google</span></h2>
+        <div class="greviews-score">
+          <span class="num ltr">4.8</span>
+          <span>
+            <span class="trust-stars" aria-hidden="true" style="margin-top:0;">
+              <svg viewBox="0 0 20 20"><use href="#i-gstar"></use></svg><svg viewBox="0 0 20 20"><use href="#i-gstar"></use></svg><svg viewBox="0 0 20 20"><use href="#i-gstar"></use></svg><svg viewBox="0 0 20 20"><use href="#i-gstar"></use></svg><svg viewBox="0 0 20 20"><use href="#i-gstar"></use></svg>
+            </span>
+            <span class="greviews-note" style="margin-top:6px; display:block;">
+              <span class="ar-only"><span class="ltr">38</span> تقييماً موثقاً على خرائط جوجل</span>
+              <span class="en-only"><span class="ltr">38</span> verified reviews on Google Maps</span>
+            </span>
+          </span>
+        </div>
+        <p class="greviews-note">
+          <span class="ar-only">عشرة تقييمات حقيقية مختارة من أصل خمس عشرة تقييماً حقيقياً موثقاً — أسماء حقيقية، تواريخ حقيقية، بلا صور مُلفّقة للمُراجِعات.</span>
+          <span class="en-only">Ten real reviews, a curated cross-section of fifteen real, verified 5-star reviews — real names, real dates, no invented reviewer photos.</span>
+        </p>
+        <p class="src-cite" style="margin-top:16px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+          <span class="ar-only">من خرائط جوجل، تم رصدها في أغسطس <span class="ltr">2026</span></span>
+          <span class="en-only">From Google Maps, pulled in August <span class="ltr">2026</span></span>
+        </p>
+      </div>
+
+      <div class="reveal">
+        <div class="gcols" aria-label="Real Google reviews">
+          <div class="gcol">
+            <div class="gcol-track" style="--gdur:28s">
+              <figure class="gcard">
+                <div class="gstars" aria-hidden="true"><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg></div>
+                <blockquote dir="ltr" lang="en">Dr Ahmad he is very professional in his surgeries, thanks a lot.</blockquote>
+                <figcaption><b dir="ltr">Reem Balto</b> <span class="ltr">· 2026-08-19</span></figcaption>
+              </figure>
+              <figure class="gcard">
+                <div class="gstars" aria-hidden="true"><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg></div>
+                <blockquote dir="rtl">كل الشكر والتقدير لدكتور أحمد عوض 🙏🏻🤍</blockquote>
+                <figcaption><b dir="ltr">Rawan Bukhari</b> <span class="ltr">· 2026-07-21</span></figcaption>
+              </figure>
+              <figure class="gcard">
+                <div class="gstars" aria-hidden="true"><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg></div>
+                <blockquote dir="rtl">الله يسعده قمة في الأخلاق والاحترافية والله وآمين يقولك ايش تحتاجي بالزبط بدون كلام كثير، سويت معاه mini face lift ومو ندمانة أبداً</blockquote>
+                <figcaption><b dir="ltr">Dr Lolo</b> <span class="ltr">· 2026-06-29</span></figcaption>
+              </figure>
+              <figure class="gcard">
+                <div class="gstars" aria-hidden="true"><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg></div>
+                <blockquote dir="ltr" lang="en">I would like to express my deepest gratitude to my plastic surgeon, Dr. Ahmed Awad, for my breast augmentation surgery! From the very first consultation, I felt calm and confident that I was in the hands of a true professional&hellip; I sincerely recommend Dr. Ahmed Awad with all my heart ❤️</blockquote>
+                <figcaption><b dir="ltr">Диана Апаликова</b> <span class="ltr">· 2026-05-16</span></figcaption>
+              </figure>
+              <figure class="gcard">
+                <div class="gstars" aria-hidden="true"><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg></div>
+                <blockquote dir="rtl">حابه اشكر الدكتور احمد ع اهتمامه وامانته معايا انا عملت عنده شفط وشد للزنود ويعدها عمليه شد الوجه والصراحه النتايج مذهله وانا راضيه عنها جدا</blockquote>
+                <figcaption><b dir="ltr">Noga Saeed</b> <span class="ltr">· 2026-03-10</span></figcaption>
+              </figure>
+              <!-- doubled for the seamless translateY(-50%) loop -->
+              <figure class="gcard" aria-hidden="true">
+                <div class="gstars"><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg></div>
+                <blockquote dir="ltr" lang="en">Dr Ahmad he is very professional in his surgeries, thanks a lot.</blockquote>
+                <figcaption><b dir="ltr">Reem Balto</b> <span class="ltr">· 2026-08-19</span></figcaption>
+              </figure>
+              <figure class="gcard" aria-hidden="true">
+                <div class="gstars"><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg></div>
+                <blockquote dir="rtl">كل الشكر والتقدير لدكتور أحمد عوض 🙏🏻🤍</blockquote>
+                <figcaption><b dir="ltr">Rawan Bukhari</b> <span class="ltr">· 2026-07-21</span></figcaption>
+              </figure>
+              <figure class="gcard" aria-hidden="true">
+                <div class="gstars"><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg></div>
+                <blockquote dir="rtl">الله يسعده قمة في الأخلاق والاحترافية والله وآمين يقولك ايش تحتاجي بالزبط بدون كلام كثير، سويت معاه mini face lift ومو ندمانة أبداً</blockquote>
+                <figcaption><b dir="ltr">Dr Lolo</b> <span class="ltr">· 2026-06-29</span></figcaption>
+              </figure>
+              <figure class="gcard" aria-hidden="true">
+                <div class="gstars"><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg></div>
+                <blockquote dir="ltr" lang="en">I would like to express my deepest gratitude to my plastic surgeon, Dr. Ahmed Awad, for my breast augmentation surgery! From the very first consultation, I felt calm and confident that I was in the hands of a true professional&hellip; I sincerely recommend Dr. Ahmed Awad with all my heart ❤️</blockquote>
+                <figcaption><b dir="ltr">Диана Апаликова</b> <span class="ltr">· 2026-05-16</span></figcaption>
+              </figure>
+              <figure class="gcard" aria-hidden="true">
+                <div class="gstars"><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg></div>
+                <blockquote dir="rtl">حابه اشكر الدكتور احمد ع اهتمامه وامانته معايا انا عملت عنده شفط وشد للزنود ويعدها عمليه شد الوجه والصراحه النتايج مذهله وانا راضيه عنها جدا</blockquote>
+                <figcaption><b dir="ltr">Noga Saeed</b> <span class="ltr">· 2026-03-10</span></figcaption>
+              </figure>
+            </div>
+          </div>
+          <div class="gcol">
+            <div class="gcol-track" style="--gdur:33s">
+              <figure class="gcard">
+                <div class="gstars" aria-hidden="true"><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg></div>
+                <blockquote dir="rtl">ماشاءالله افضل دكتور أنا سويت فلر للارداف ونتيجة كانت اكتر من رائعة والمساعدة ايمان مرة ذوق ومتعاونة شكرا من القلب</blockquote>
+                <figcaption><b dir="ltr">Amjad Sath</b> <span class="ltr">· 2026-05-24</span></figcaption>
+              </figure>
+              <figure class="gcard">
+                <div class="gstars" aria-hidden="true"><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg></div>
+                <blockquote dir="rtl">دكتور احمد عوض شهادتي فيه مجروحه افضل دكتور من ناحية الشغل والامانه العاليه والصدق ومتعاون جداا&hellip; سويت عنده عملية شفط وشد بطن مصغره والنتيجة روعه والخياطه بعد سنه شبه مختفيه</blockquote>
+                <figcaption><b dir="ltr">Jomanh</b> <span class="ltr">· 2026-03-10</span></figcaption>
+              </figure>
+              <figure class="gcard">
+                <div class="gstars" aria-hidden="true"><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg></div>
+                <blockquote dir="rtl">قمة في الاحترافية وخبرة في التجميل لا تضاهى بصراحة وطاقم صحي وإداري من أروع ما يكون خدمة على أعلى مستوى</blockquote>
+                <figcaption><b dir="ltr">Omar Seraj</b> <span class="ltr">· 2025-10-31</span></figcaption>
+              </figure>
+              <figure class="gcard">
+                <div class="gstars" aria-hidden="true"><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg></div>
+                <blockquote dir="ltr" lang="en">The best in his field, clean surgery, and smooth recovery. Thank God I chosed him.</blockquote>
+                <figcaption><b dir="ltr">Malak Y</b> <span class="ltr">· 2025-09-18</span></figcaption>
+              </figure>
+              <figure class="gcard">
+                <div class="gstars" aria-hidden="true"><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg></div>
+                <blockquote dir="rtl">الله يسعده هذا ثاني مره ارجعله لانه يسوي بذمة ويقولك ايش تحتاجي بالضبط مرررره شغله يجنن</blockquote>
+                <figcaption><b dir="ltr">seham alkhateeb369</b> <span class="ltr">· 2026-02-22</span></figcaption>
+              </figure>
+              <!-- doubled for the seamless translateY(-50%) loop -->
+              <figure class="gcard" aria-hidden="true">
+                <div class="gstars"><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg></div>
+                <blockquote dir="rtl">ماشاءالله افضل دكتور أنا سويت فلر للارداف ونتيجة كانت اكتر من رائعة والمساعدة ايمان مرة ذوق ومتعاونة شكرا من القلب</blockquote>
+                <figcaption><b dir="ltr">Amjad Sath</b> <span class="ltr">· 2026-05-24</span></figcaption>
+              </figure>
+              <figure class="gcard" aria-hidden="true">
+                <div class="gstars"><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg></div>
+                <blockquote dir="rtl">دكتور احمد عوض شهادتي فيه مجروحه افضل دكتور من ناحية الشغل والامانه العاليه والصدق ومتعاون جداا&hellip; سويت عنده عملية شفط وشد بطن مصغره والنتيجة روعه والخياطه بعد سنه شبه مختفيه</blockquote>
+                <figcaption><b dir="ltr">Jomanh</b> <span class="ltr">· 2026-03-10</span></figcaption>
+              </figure>
+              <figure class="gcard" aria-hidden="true">
+                <div class="gstars"><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg></div>
+                <blockquote dir="rtl">قمة في الاحترافية وخبرة في التجميل لا تضاهى بصراحة وطاقم صحي وإداري من أروع ما يكون خدمة على أعلى مستوى</blockquote>
+                <figcaption><b dir="ltr">Omar Seraj</b> <span class="ltr">· 2025-10-31</span></figcaption>
+              </figure>
+              <figure class="gcard" aria-hidden="true">
+                <div class="gstars"><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg></div>
+                <blockquote dir="ltr" lang="en">The best in his field, clean surgery, and smooth recovery. Thank God I chosed him.</blockquote>
+                <figcaption><b dir="ltr">Malak Y</b> <span class="ltr">· 2025-09-18</span></figcaption>
+              </figure>
+              <figure class="gcard" aria-hidden="true">
+                <div class="gstars"><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg><svg><use href="#i-gstar"></use></svg></div>
+                <blockquote dir="rtl">الله يسعده هذا ثاني مره ارجعله لانه يسوي بذمة ويقولك ايش تحتاجي بالضبط مرررره شغله يجنن</blockquote>
+                <figcaption><b dir="ltr">seham alkhateeb369</b> <span class="ltr">· 2026-02-22</span></figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============================================================ CONTACT -->
 <section class="section-pad band" id="contact">
   <div class="wrap">
@@ -1314,12 +1730,41 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   </div>
 </footer>
 
-<a class="wa-float" href="https://wa.me/966563681087" target="_blank" rel="noopener" aria-label="WhatsApp">
+<a class="wa-float" id="waFloat" href="https://wa.me/966563681087" target="_blank" rel="noopener" aria-label="WhatsApp">
   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.5s-.6-1.5-.9-2c-.2-.5-.5-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3c1.5.8 3.2 1.3 5.1 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.5.9.9-3.4-.2-.3C3.5 14.4 3 12.7 3 10.9 3 6 6.9 2 11.9 2c5 0 9 4 9 9s-4 9-9 9z"/></svg>
 </a>
 
-<script src="vendor/gsap.min.js" defer></script>
-<script src="vendor/ScrollTrigger.min.js" defer></script>
+<nav class="mbar" id="mBar" aria-label="Quick contact">
+  <a href="https://wa.me/966563681087" target="_blank" rel="noopener" aria-label="WhatsApp">
+    <span class="mbar-dot" aria-hidden="true"></span>
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.5s-.6-1.5-.9-2c-.2-.5-.5-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3c1.5.8 3.2 1.3 5.1 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
+    <span class="ar-only">واتساب</span><span class="en-only">WhatsApp</span>
+  </a>
+  <a href="mailto:ahmedplastic2010@gmail.com" aria-label="Email">
+    <span class="mbar-dot" aria-hidden="true"></span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+    <span class="ar-only">إيميل</span><span class="en-only">Email</span>
+  </a>
+</nav>
+
+<!-- Real bug found and fixed this pass (v6): these were both `defer`,
+     and the main inline script below was plain — which, per spec, means
+     it ran SYNCHRONOUSLY at parse time (defer has no effect on a
+     classic inline script with no `src`; only `src`'d scripts can
+     actually be deferred). window.gsap was therefore always undefined
+     when initParallax()/initStagger()/initSignature3D() etc. ran, and
+     every "real GSAP" path in this file was silently falling back to
+     its dependency-free version — confirmed via
+     ScrollTrigger.getAll().length reading 0 after load, even though
+     gsap/ScrollTrigger.min.js loaded fine (200 OK) and worked correctly
+     when the exact same call was re-run by hand from the console.
+     Dropping `defer` here makes both vendor scripts load+execute
+     synchronously in order, right before the inline script that needs
+     them — a small one-time parse-blocking cost, paid only after all
+     real content above is already parsed (both tags sit at the very
+     end of body), so it never delays first paint. -->
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
 
 <script>
 (function(){
@@ -1412,6 +1857,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   /* ---------- timeline progress fill on scroll ---------- */
   var timeline = document.getElementById("timeline");
   var tlProgress = document.getElementById("tlProgress");
+  var tlMarker = document.getElementById("tlMarker");
   function updateTimeline(){
     if(!timeline || !tlProgress) return;
     var rect = timeline.getBoundingClientRect();
@@ -1420,9 +1866,11 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
     var visible = vh - rect.top;
     var ratio = Math.max(0, Math.min(1, visible / (total + vh*0.3)));
     tlProgress.style.height = (ratio*100) + "%";
+    if(tlMarker) tlMarker.style.top = (ratio*100) + "%";
   }
   if(reduce){
     if(tlProgress) tlProgress.style.height = "100%";
+    if(tlMarker) tlMarker.style.top = "100%";
   } else {
     window.addEventListener("scroll", updateTimeline, {passive:true});
     window.addEventListener("resize", updateTimeline);
@@ -1632,23 +2080,133 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 
   /* ---------- GSAP stagger enhancement on top of the existing IO reveal
      system. The .reveal / IntersectionObserver mechanism above is the
-     guaranteed baseline (works with zero dependencies); when GSAP has
-     actually loaded, elements inside a common parent get a small
-     staggered delay instead of firing in lockstep, which is the one
-     visible difference this adds. Never blocks or replaces the base
-     reveal — purely additive, and skipped entirely under reduced motion
-     or if the vendor script failed to load for any reason. */
+     guaranteed baseline (works with zero dependencies) and still owns
+     each group's own fade-up. When GSAP has actually loaded, this adds
+     a SECOND, independent layer: the group's own children animate in
+     individually with a real gsap.fromTo + stagger (not just a CSS
+     transition-delay hack) — a genuinely different easing/mechanism
+     from the flat .reveal fade, which is the concrete "motion variety"
+     fix (gap 3). Falls back to the old transition-delay approach if
+     GSAP isn't present, and does nothing at all under reduced motion. */
   function initStagger(){
-    if(reduce || !window.gsap) return;
-    var groups = document.querySelectorAll(".tmn-grid, .cred-grid, .stat-list");
-    groups.forEach(function(group, gi){
-      var items = Array.prototype.slice.call(group.children);
-      items.forEach(function(el, i){
-        el.style.transitionDelay = (i * 70) + "ms";
+    if(reduce) return;
+    var groups = Array.prototype.slice.call(document.querySelectorAll(".tmn-grid, .cred-grid, .stat-list, .focus-rail"));
+    if(!window.gsap){
+      groups.forEach(function(group){
+        Array.prototype.slice.call(group.children).forEach(function(el, i){
+          el.style.transitionDelay = (i * 70) + "ms";
+        });
       });
+      return;
+    }
+    var allItems = [];
+    groups.forEach(function(group){
+      var items = Array.prototype.slice.call(group.children);
+      if(!items.length) return;
+      allItems = allItems.concat(items);
+      gsap.set(items, { opacity:0, y:26 });
+      var revealed = false;
+      function reveal(){
+        if(revealed) return;
+        revealed = true;
+        gsap.to(items, { opacity:1, y:0, duration:.7, ease:"power3.out", stagger:.08, overwrite:true });
+      }
+      if("IntersectionObserver" in window){
+        var gio = new IntersectionObserver(function(entries){
+          entries.forEach(function(entry){
+            if(entry.isIntersecting){ reveal(); gio.unobserve(entry.target); }
+          });
+        }, { threshold:0.15, rootMargin:"0px 0px -8% 0px" });
+        gio.observe(group);
+      } else {
+        reveal();
+      }
     });
+    /* Hard backstop, same rationale/pattern as the stat-counter fix above:
+       IntersectionObserver callbacks (like rAF) can stall indefinitely on a
+       tab that never becomes visible/composited. Real visitors are looking
+       at the tab they're scrolling, so this should never fire for them in
+       practice — but it guarantees these cards are never permanently stuck
+       at opacity:0 if it ever does. */
+    if(allItems.length){
+      setTimeout(function(){
+        gsap.set(allItems.filter(function(el){ return getComputedStyle(el).opacity !== "1"; }), { opacity:1, y:0 });
+      }, 3000);
+    }
   }
   initStagger();
+
+  /* ---------- Portrait band: real scrub:true parallax (not one-shot) ----------
+     Same GSAP+ScrollTrigger dependency the editorial-photo parallax above
+     already uses, applied a second time with a stronger scale+translate so
+     the two don't read as the same effect copy-pasted. Falls back to a
+     dependency-free rAF/scroll-ratio version, same pattern as initParallax. */
+  function initPortraitParallax(){
+    if(reduce) return;
+    var el = document.querySelector("[data-portrait-parallax]");
+    if(!el) return;
+    if(window.gsap && window.ScrollTrigger){
+      gsap.fromTo(el, {yPercent:-8, scale:1.06}, {
+        yPercent:8, scale:1.12, ease:"none",
+        scrollTrigger:{ trigger: el.closest(".portrait-band"), scrub:true, start:"top bottom", end:"bottom top" }
+      });
+    } else {
+      var ticking = false;
+      function onScroll(){
+        if(ticking) return;
+        ticking = true;
+        requestAnimationFrame(function(){
+          var band = el.closest(".portrait-band");
+          var r = band.getBoundingClientRect();
+          var vh = window.innerHeight;
+          var ratio = Math.max(-1, Math.min(1, (r.top + r.height/2 - vh/2) / vh));
+          el.style.transform = "translateY(" + (ratio * -30) + "px) scale(1.08)";
+          ticking = false;
+        });
+      }
+      window.addEventListener("scroll", onScroll, {passive:true});
+      onScroll();
+    }
+  }
+  initPortraitParallax();
+
+  /* ---------- Trust gauge: draws to the real 4.8/5 figure once in view ---------- */
+  (function initTrustGauge(){
+    var gauge = document.getElementById("trustGauge");
+    if(!gauge) return;
+    if(reduce){ gauge.classList.add("on"); return; }
+    if("IntersectionObserver" in window){
+      var tgio = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting){ gauge.classList.add("on"); tgio.unobserve(entry.target); }
+        });
+      }, {threshold:0.4});
+      tgio.observe(gauge);
+    } else {
+      gauge.classList.add("on");
+    }
+  })();
+
+  /* ---------- Floating WhatsApp / mobile bottom bar: scroll-gated entrance
+     (gap 2) — hidden at load, slides/fades in past a scroll threshold with
+     the same easing curve every other .reveal element on the page uses. ---------- */
+  (function initFloatingCTA(){
+    var waFloat = document.getElementById("waFloat");
+    var mBar = document.getElementById("mBar");
+    if(!waFloat && !mBar) return;
+    if(reduce){
+      if(waFloat) waFloat.classList.add("is-visible");
+      if(mBar) mBar.classList.add("is-visible");
+      return;
+    }
+    function onScroll(){
+      var show = window.scrollY > 320;
+      if(waFloat) waFloat.classList.toggle("is-visible", show);
+      if(mBar) mBar.classList.toggle("is-visible", show);
+    }
+    window.addEventListener("scroll", onScroll, {passive:true});
+    onScroll();
+  })();
 
   /* ---------- SIGNATURE 3D — self-hosted Three.js, lazy + capability-gated ----------
      No CDN: vendor/three.module.min.js is a local, self-hosted copy of the

@@ -10,6 +10,208 @@ Three.js/GSAP self-hosted copies in `vendor/`.
 
 ---
 
+## VERSION 6 — closing a precise, evidence-backed gap list (2026-08-29)
+
+**Why this pass exists:** Version 5 was rated 4-5/10 across several client rounds ("AI slop"). Rather
+than another open-ended pass, this session started from a fixed 7-item gap list produced by a
+dedicated visual-audit that rendered this site and `depraxis-demo` live and cross-checked every claim
+against actual computed CSS. All 7 gaps were addressed, plus a new real Google Reviews section (15
+real, verified 5-star reviews from a fresh Apify pull, used directly — see the data table below).
+
+### 0. A real bug found mid-build that undermined gap 3 at the root
+While wiring up real `scrub:true` GSAP parallax, `ScrollTrigger.getAll().length` read **0** after a
+full page load — meaning no ScrollTrigger had ever actually registered, despite the code looking
+correct and `gsap`/`ScrollTrigger` both loading with 200s. Diagnosed by hand: `vendor/gsap.min.js` and
+`vendor/ScrollTrigger.min.js` both had `defer`, but the big inline `<script>` at the bottom of the
+file did **not** — and per spec, `defer` has **no effect on a classic inline `<script>` with no
+`src`**; only `src`'d scripts can actually be deferred. That inline script therefore always ran
+**synchronously at parse time**, before either deferred vendor script had executed, so `window.gsap`
+was `undefined` every single time `initParallax()`, `initSignature3D()`, etc. ran their
+`window.gsap && window.ScrollTrigger` check — meaning **this was true in Version 5 too**: the "real
+`ScrollTrigger.scrub` parallax" that v5's HANDOFF documented as shipping had, in practice, never once
+activated; every GSAP-gated code path had been silently falling back to its dependency-free version
+the entire time. Confirmed with a temporary `console.log(typeof window.gsap)` at the top of the IIFE
+(read `"undefined"`, `readyState:"loading"`), then confirmed the fix by re-checking
+`ScrollTrigger.getAll().length` (0 → 2) after the change. **Fix:** dropped `defer` from both vendor
+`<script src>` tags instead, so they load and execute synchronously, in order, immediately before the
+inline script that depends on them — both tags sit at the very end of `<body>`, so the one-time parse
+cost is paid only after all real content above is already parsed; it does not delay first paint. This
+is the single most important fix in this pass: without it, gap 3's entire GSAP layer (parallax,
+staggered reveals) would have shipped silently inert a second time.
+
+### 1. No real large-surface photography → new full-bleed Portrait Band
+`media/consult-still-portrait.jpg` — confirmed unused in every version through v5 — is now placed in a
+new section (`#portrait`), inserted between About and Signature 3D: `height:clamp(440px,72vw,760px)`,
+`object-fit:cover`, a real copper/teal duotone grade (`mix-blend-mode:color` + a second `overlay`
+layer, plus `filter:grayscale(.4) contrast(1.08)` on the image itself so the grade reads clearly
+instead of fighting the source photo's own green plant-backdrop cast), a strengthened bottom scrim,
+and a real `scrub:true` GSAP parallax (`yPercent -8→8`, `scale 1.06→1.12`) — a second, independent
+ScrollTrigger instance from the existing editorial-photo one, tuned differently so the two don't read
+as a copy-paste of each other. Network-verified: `consult-still-portrait.jpg` now returns 200 and is
+actually requested by the shipped page (it never was before).
+
+### 2. WhatsApp button — recolored, real entrance, mobile bottom bar
+- `.wa-float`: `#25D366` removed entirely. Rest state is `var(--ink)` fill / `var(--gold-soft)` icon /
+  `1px solid var(--line-strong)`; hover flips to `var(--gold)` fill / `var(--ink)` icon. Real
+  scroll-gated entrance (`opacity:0; transform:translateY(22px) scale(.92)` → `.is-visible` past
+  `scrollY:320`, `.5s var(--ease)` — the exact cubic-bezier every `.reveal` element already uses).
+- **Mobile (≤640px): the floating circle is now `display:none`**, replaced by a two-item bottom action
+  bar (`#mBar` — WhatsApp / Email, both real existing contact channels, no new fabricated one), same
+  scroll-gated slide-up entrance, a radial dot-flood on `:active` (tap) matching the same wipe language
+  as the primary CTA below. `body{padding-bottom:66px}` added under 640px so the bar never covers
+  content.
+- Verified via network+DOM inspection (programmatic scroll doesn't reliably stick in this session's
+  browser tooling — same class of limitation documented below); the underlying scroll-threshold logic
+  was code-reviewed and additionally spot-checked by forcing `.is-visible` directly and screenshotting
+  both the desktop circle and the mobile bar in both languages — both render and are legible.
+
+### 3. Motion variety — the GSAP that's already paid for, actually used
+- **Real `scrub:true` parallax**, not one-shot, now on **two** independent panels (editorial photo +
+  the new portrait band), confirmed via `ScrollTrigger.getAll().length === 2` post-fix.
+- **Staggered reveals**, real `gsap.fromTo`/`gsap.to` + `stagger:.08`, on `.tmn-grid`, `.cred-grid`,
+  `.stat-list`, and `.focus-rail` — replacing the old flat CSS `transition-delay` hack with a genuine
+  second animation system (falls back to the old transition-delay approach if GSAP truly never loads,
+  and does nothing under reduced motion). A `setTimeout` backstop (3s, same pattern as the existing
+  stat-counter fix) force-reveals anything still hidden, so a tab that never becomes visible/composited
+  can't leave cards permanently at `opacity:0` — the exact same defensive pattern already established
+  in this file for the count-up numbers.
+- **Dot-wipe primary CTA**: `.btn-primary` now floods on hover/focus via a `::before` pseudo-element
+  (copper→teal gradient dot, `scale(0)→scale(60)`, `.5s cubic-bezier(.4,0,.2,1)`), text swapping to
+  `var(--paper)` mid-flood — replacing the old lift+shadow-only hover. Verified by temporarily forcing
+  the hover state via an injected stylesheet and screenshotting (real `:hover` didn't reliably register
+  through this session's synthetic mouse events, so the visual result was confirmed this way instead of
+  left unverified).
+- **Journey timeline spine**: `.tl-track` thickened to 2px with a teal→gold gradient + glow
+  (`box-shadow:0 0 16px 1px rgba(201,113,63,.55)`), replacing the flat 1px `--line-strong` hairline; a
+  new `.tl-marker` (an 11px glowing dot) rides the same scroll-tied `#tlProgress` height percentage a
+  second way, giving the timeline a real traveling indicator instead of only a filling bar.
+
+### 4. Color — gold promoted to a real large-surface partner
+The new Portrait Band (gap 1) is the concrete answer here: a real copper/teal duotone across a
+600-760px-tall photo, not a 10-20%-opacity accent. Also added a radial trust gauge (see gap 7) using
+the same copper→teal gradient as a genuine graphic device, not just text color.
+
+### 5. Typography — Amiri self-hosted, real Arabic serif/sans hierarchy
+Self-hosted **Amiri** (Regular/Bold/Italic woff2, SIL OFL — `fonts/LICENSE-Amiri.txt`, ~320KB
+combined; downloaded from Google Fonts' CDN once, matching exactly how every other font in this repo
+was originally sourced, then served locally with no further CDN dependency). Applied as a tinted,
+gradient-text (`paper→gold-soft`) display accent — genuinely distinct from the Plex Arabic sans body —
+to: the hero `<h1>` (previously fell back to Plex Arabic sans, `font-weight:700`, in RTL), **every**
+section `<h2>` (`.section-head h2`, plus the three headings that lived outside that class and were
+initially missed on the first sweep — `.portrait-band h2`, `#reviews h2`, `.sig3d-copy h2`, caught by
+grepping every `<h2>` in the file and checking each one's computed `font-family` in both languages,
+not just the obvious ones), and pull-quotes (`.hero-voice`, `.quote-block blockquote`,
+`.tmn-body blockquote`). The hero pull-quote specifically uses **real Amiri italic** — one of the few
+Arabic typefaces with a genuine hand-cut italic cut rather than an auto-slant — reserved for that one
+short atmospheric line; longer quote blocks stay upright for readability. English headings keep Plex
+Serif Display, unchanged, on the same expanded selector list (parity check: same three previously-
+missed selectors were also missing the English rule and got fixed there too).
+
+### 6. Depth/shadow — the cine-panel recipe extended, not just the two elements
+`.stat-list`/`.stat` and `.cred-grid`/`.cred` were restructured from a hairline-adjoined CSS-grid
+"table" (`gap:1px; background:var(--line)`) to real gapped, individually-elevated cards
+(`gap:16px`, `border-radius:14px`, `box-shadow:0 30px 60px -34px rgba(0,0,0,.65), 0 0 0 1px
+rgba(247,244,238,.04)`, a hover lift). `.tmn-card` (testimonial cards) got the same shadow language
+added on top of its existing border/gradient background, with a stronger shadow on hover. All three
+now read as real elevated objects instead of flat/edge-only, matching (not copying) the exact
+`.cine-panel` shadow shape already proven on this page.
+
+### 7. Second visual mechanism per section (testimonials / trust / journey)
+- **Testimonials**: the new Google Reviews section (below) is itself the second device — an
+  auto-scrolling masked-column marquee distinct from the 2×2 video/quote-card grid above it.
+- **Trust**: a new radial SVG gauge (`#trustGauge`, copper→teal gradient stroke, draws to 96% =
+  4.8/5 — the same already-verified real number, rendered a second way, no fabricated star
+  distribution invented to fill it) sits beside the existing numeral+stars, IO-gated to draw once
+  in view.
+- **Journey**: the strengthened glowing spine + traveling `.tl-marker` (gap 3) is this section's
+  second device, on top of the existing numbered dots.
+
+### New: real Google Reviews section (`#reviews`), distinct from the testimonial-video section
+15 real, verified 5-star reviews (Apify pull, Aug 2026) were supplied directly in the task brief.
+Ten were selected as a curated cross-section (not all 15 — matching De Praxes' own reviews device,
+which is also a curated selection, not exhaustive) and built into a genuinely new device: two masked,
+auto-scrolling columns (`.gcols`/`.gcol`/`.gcol-track`, doubled content + `translateY(-50%)` keyframe
+loop, `mask-image` fade top/bottom) — the *technique* studied from De Praxes' own reviews column (its
+`.tcols`/`.tcol`/`.tcol-track`), reimplemented from scratch on this site's own tokens/markup/timing,
+not copied file-for-file. Real names, real dates, real quotes kept verbatim in their original language
+(Arabic/English/Russian) regardless of the site's own language toggle — the same "don't translate a
+real quote" convention De Praxes' own reviews already use — with an honest `src-cite` ("From Google
+Maps, pulled in August 2026"). No reviewer avatars invented (none exist). Real names used:
+Reem Balto, Rawan Bukhari, Dr Lolo, Диана Апаликова, Noga Saeed, Amjad Sath, Jomanh, Omar Seraj,
+Malak Y, seham alkhateeb369. A nav link (`#reviews`, "تقييمات جوجل"/"Google Reviews") was added.
+
+### The iteration loop — 3 real rounds, screenshots each time, gaps named and fixed
+Reused the exact section-isolation screenshot method Version 5's HANDOFF documented (set
+`display:none` on every `<main> > section>` except the one under review, force `scrollTop:0`) — did
+not rediscover it from scratch. Also hit and worked around a **second**, related tooling artifact this
+session: this harness keeps the browser tab `document.hidden:true` (confirmed via
+`document.visibilityState`) whenever the pane itself isn't actively displayed, which pauses/throttles
+`IntersectionObserver` callbacks and `requestAnimationFrame` the same way it was already known to
+freeze the stat counters — cards would sit at `opacity:0` (correctly hidden pre-reveal) until a
+screenshot call actually re-displayed the pane, at which point the reveal visibly caught up and
+completed correctly. Confirmed this is a test-harness-only artifact (real visitors' tabs are, by
+definition, visible while they're scrolling them) and additionally hardened it with the `setTimeout`
+backstop described in gap 3, rather than leaving it as an unverified assumption.
+
+**Round 1 — build all 7 gaps + reviews section, screenshot every changed/new section:**
+Portrait band, Trust (gauge), Reviews, About (stat cards), Education (cred cards), Testimonials (card
+shadows), Journey (spine), mobile bottom bar, and the hero — all screenshotted. Found and fixed in
+this round: the portrait band's initial duotone read too subtle against the source photo's own green
+cast (fixed with `mix-blend-mode:color` + a `grayscale/contrast` pre-filter on the image, see gap 1);
+and the root-cause GSAP/`defer` bug described in §0, found because `ScrollTrigger.getAll().length`
+read 0 when it should not have.
+
+**Round 2 — re-verify after the §0 fix, confirm the GSAP layer is genuinely active:**
+Re-checked `ScrollTrigger.getAll().length` (now 2), re-checked that `.cred`/`.focus-row` items start
+at `opacity:0` pre-reveal (confirming `gsap.set()` actually ran, not just left untouched by a
+silently-skipped branch) and settle to `opacity:1` once the pane is visible. Re-screenshotted Focus
+(rail rows revealing with real stagger), Signature 3D (unaffected, still rendering — the WebGL canvas
+was re-verified for regressions since it's also gated by the same script-timing area), and the mobile
+bottom bar (WhatsApp/Email, both languages).
+
+**Round 3 — final holistic pass, two more real gaps found and fixed:**
+- **Gap found:** three `<h2>` elements (`.portrait-band h2`, `#reviews h2`, `.sig3d-copy h2`) lived
+  outside the `.section-head` class the gap-5 serif rules targeted, so they silently stayed on the
+  default sans body font in **both** languages — caught by grepping every `<h2>` in the file (12 total)
+  and checking each one's computed `font-family`, not by trusting the class-based rule covered
+  everything. Fixed by adding all three to both the Arabic (Amiri) and English (Plex Serif Display)
+  selector lists.
+- **Gap found:** `fonts/Amiri-Italic.woff2` had been downloaded but nothing on the page actually used
+  `font-style:italic` with Amiri — an unused-asset problem of exactly the kind this same gap list
+  flagged for the portrait photo. Fixed by giving the hero pull-quote real Amiri italic (see gap 5);
+  confirmed via network log that the file is now actually requested (200 OK) where it wasn't before.
+- Full responsive/lang-leak/console sweep run after both fixes (results below) — clean.
+
+### QA — this session, independently verified
+- **Responsive, 375 / 768 / 1440px, both languages:** `document.documentElement.scrollWidth` vs.
+  `window.innerWidth` — 375: 375/375 (both languages). 768: 753/768. 1440: 1425/1440. No overflow at
+  any width (the few px under `innerWidth` at 768/1440 is the scrollbar, not overflow).
+- **Bidirectional lang-leak sweep:** 155 `.en-only` / 155 `.ar-only` nodes (symmetric, up from
+  Version 5's 143/143 — the new Portrait Band + Reviews sections added ~12 matched pairs each). In
+  Arabic mode, 0 visible `.en-only` nodes; in English mode, 0 visible `.ar-only` nodes.
+- **Console:** zero errors across every reload, both languages, all three viewports. The one
+  recurring `[QA] horizontal overflow detected: 103 > 0` warning is the same harmless
+  `window.innerWidth`-reads-0-at-`load`-in-this-harness artifact Version 2's HANDOFF already
+  documented — reconfirmed here, not newly introduced.
+- **Network:** every new asset (3 Amiri woff2 files, `consult-still-portrait.jpg`) returns 200/206,
+  zero 404s, across multiple reloads. `consult-still-portrait.jpg` is now genuinely fetched by the
+  shipped page for the first time in this repo's history.
+- **Capability gating:** the new portrait parallax and stagger reveals both check `reduce` first
+  (return immediately if set) before touching GSAP, matching every other motion system already on the
+  page; the mobile bar and floating WhatsApp both jump straight to their visible end-state under
+  `data-reduce-motion="true"` instead of animating in.
+- **Performance:** +~320KB (3 Amiri woff2 files) and +~1 new photo already counted in Version 5's
+  linked-media total (the portrait photo was already in the repo, just newly linked) — no new video,
+  no new heavy vendor library.
+
+### Files changed this version
+- `index.html` — all 7 gaps, the new `#reviews` section, the `defer` bug fix.
+- `fonts/Amiri-Regular.woff2`, `fonts/Amiri-Bold.woff2`, `fonts/Amiri-Italic.woff2`,
+  `fonts/LICENSE-Amiri.txt` — new, self-hosted (SIL OFL), sourced from Google Fonts.
+- `HANDOFF.md` — this entry.
+
+---
+
 ## VERSION 5 — quality-bar-raising loop against the De Praxes reference (2026-08-29)
 
 **Why this pass exists:** the client rated Version 4 **5/10** — "still bad, doesn't reach De Praxes
