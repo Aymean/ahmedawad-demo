@@ -9,7 +9,164 @@ no external CDN requests — fonts self-hosted in `fonts/`, real photo/video sel
 
 ---
 
-## VERSION 2 — real photo/video added (this pass)
+## VERSION 3 — visual-design revision to the locked personal-brand reference set (this pass)
+
+**The gap this pass fixes:** Versions 1–2 built the right *content* register (personal-brand
+framing, real career facts, real photo/video from his own Instagram) but the *visual* palette was
+never checked against a real, client-approved reference set — it used a dark green/pine-tinted ink
+(`#0d1815` / `#132420` / `#1b322c`, all G-channel-dominant) that reads closer to a spa/wellness
+clinic than the premium-editorial-surgeon register the client had just approved. This pass is a
+palette-and-detailing revision only — no new sections, no touching the real photo/video assets
+already integrated (conference photo, both real talking-head clips) beyond the neutral bezel-color
+tweak described below.
+
+### The reference set (agency-internal, not in this repo)
+A locked reference document (v1) names five real, currently-live, client-approved solo-doctor
+personal-brand sites: **garthfisher.com**, **drkolker.com**, **drcroteau.ca**, **amakaaesthetics.com**,
+**eresoplasticsurgery.com**. Its core claim: black/white/gray minimalism is the highest-confidence
+base palette for this register, alongside press/media credibility badges (if real ones exist),
+the doctor's own voice/philosophy as primary copy (not "meet our practice" language), and
+credential-forward framing.
+
+### What was actually verified by visiting all five sites live (not just trusting the summary)
+- **garthfisher.com** — confirmed: pure black background, a chrome/metallic "GF" monogram as the
+  literal hero, a stark black-and-white split contact bar ("Contact Us" / phone number), and heavy
+  real press/media badges (Newsweek "America's Top Plastic Surgeon" across four categories, quotes
+  from Vanity Fair, Elle, Tom Ford's "The Enhancer"). The strongest, most literal match to the
+  reference doc's claim.
+- **drkolker.com** — confirmed: a soft gray-gradient photographic hero over a warm-taupe band, then
+  — critically — a **stark black press-logo strip** immediately below the fold (Harper's Bazaar, The
+  New York Times, DuJour, NewBeauty, Vogue, New York, Allure). This is the clearest live example of
+  the "press badge row" device.
+- **drcroteau.ca** — **correction to the reference doc**: this site is *not* black/white/gray. It
+  uses a dark teal band and a coral/terracotta CTA pill on a white base. What *does* hold up: flat,
+  minimal layout, a circular monogram ("CF") echoing Fisher's device, and genuine first-person voice
+  ("Je suis minutieux, attentif et franc" — "I am meticulous, attentive, and direct"). Recorded here
+  so a future pass doesn't over-trust the written summary over the live site.
+- **amakaaesthetics.com** — confirmed navy/gold/white palette, and confirmed the "as both professional
+  and mother" personal-philosophy framing style (her copy: care informed by her own perspective as a
+  surgeon and a parent), plus a genuinely restrained before/after section (2 cases on the homepage,
+  not a wall of galleries).
+- **eresoplasticsurgery.com** — confirmed black-and-white high-contrast photography with a navy accent
+  bar, the exact tagline **"Patient-Centered Aesthetic Artistry. Beauty. Strength. Compassion."**, and
+  the named product line **"Age Erase by Alexander Ereso."** Also confirmed an extensive (7-case)
+  before/after gallery — i.e., selective use is a matter of taste across these sites, not a hard rule.
+
+**Net correction to the locked doc:** 3 of 5 (Fisher, Kolker, Ereso) are genuinely black/white/gray
+with a single restrained warm accent (Kolker's taupe, Ereso's navy). Croteau and Nwubah are real color
+exceptions (teal/coral, navy/gold) that still keep the flat, restrained, circular-monogram, first-
+person-voice DNA. The correct takeaway for this build: **black/white/gray as the dominant base, with
+one warm accent used sparingly for small details (rules, borders, numerals, hover states) — not as a
+large fill color.**
+
+### Press/media check — searched, found nothing, invented nothing
+Per the reference doc's explicit instruction ("use it if the real client has ANY real press/media
+mention, however small — never invent one"), a live web search was run for Dr. Ahmed Awad plus
+press/feature/interview terms. Nothing surfaced beyond his own social profiles and unrelated
+same-name doctors elsewhere (Liverpool/Cairo, Fargo ND, Riyadh) — consistent with Version 1's own
+research. **No press badge row was added.** The closest honest analog already on the site — the real,
+named, dated MESEI/Motiva conference photo in the "In Practice" section — was left as the site's only
+third-party-credibility device, exactly as before; it is not press coverage of him and is not
+mislabeled as such.
+
+### Dr. Awad's own real material — checked for a reason to deviate, found none, and one reason to *stay*
+His only self-hosted real photo (`media/conference-mesei-riyadh.jpg`) is a conference step-and-repeat
+backdrop: black background, warm gold event lighting, navy blazer — no distinct personal brand color
+of his own to honor. This is a data point *for* the black/gray-with-a-warm-accent direction, not
+against it: his own real photo already lives comfortably in exactly that palette. No deviation from
+black/white/gray was warranted or made.
+
+### Concrete changes made, tied to specific references
+1. **Palette detox (the main fix)** — `--ink`/`--ink-2`/`--ink-3` changed from green-tinted darks
+   (`#0d1815`/`#132420`/`#1b322c`) to true neutral near-black/charcoal (`#0b0b0c`/`#151515`/`#1e1e1e`);
+   `--paper` cooled slightly (`#f6f3ec` → `#f6f5f2`) to drop excess yellow cast. Directly implements
+   Fisher's and Ereso's confirmed-live black base. Four places had the *old* green ink hardcoded as
+   literal `rgba(13,24,21,…)` instead of the token (nav background, phone-badge background, and the
+   scroll-triggered nav-color JS) — these were the actual bug this pass had to catch and fix, since
+   changing the CSS variable alone would have silently left the nav a different color from the rest
+   of the page. Caught by grepping for the literal old hex/rgb after the token change, not just by
+   eyeballing it.
+2. **Primary CTA flipped from gold-fill to a stark black/white swap** (`.btn-primary`: `background:
+   var(--gold)` → `background:var(--paper); color:var(--ink)`) — a direct, literal borrow of Fisher's
+   black-and-white split contact bar, applied to the WhatsApp CTA instead of adding a new bar.
+3. **Credential tags and the timeline's "Current" badge flattened from pill (`border-radius:999px`)
+   to a flat rectangle (`var(--radius)`, 2px)**, with English-only uppercase/letter-spacing added to
+   the label text (scoped to `.en-only`/`[lang=en]` specifically — Arabic script does not take
+   letter-spacing well, a bug class already documented in this file's Round 2 notes, so it was
+   deliberately not applied to the Arabic labels). This shifts the credential strip from reading as a
+   soft "wellness pill" toward Kolker's flat press-logo-strip register while reusing the exact same
+   real facts (20+ years / EBOPRAS / MRM Barcelona / Arab Board) already on the site since Version 1.
+4. **The real, already-cited Instagram quote — "Choosing the right surgeon is very important"** (from
+   his own real Nov 21, 2025 reel, previously only surfaced mid-page in "In Practice") — is now also
+   surfaced immediately under the hero bio, styled as a cited pull-quote (gold rule, serif italic in
+   English, plain-weight Arabic to avoid fake-italicizing Arabic script). This is the same real,
+   sourced content reused in a second place, not new or fabricated text — it directly implements the
+   reference doc's #3 signal ("the doctor's own voice as primary copy") right at the top of the page,
+   where the hero was previously 100% third-person descriptive copy.
+5. **English-mode headline serif treatment**: `[data-lang="en"] .hero h1, [data-lang="en"]
+   .section-head h2` now render in "Plex Serif Display" (already self-hosted) instead of the sans
+   body face — echoing Kolker's and Croteau's elegant serif wordmarks. Scoped to English only:
+   IBM Plex Serif has no Arabic glyph coverage, so applying it to Arabic headlines would have silently
+   fallen back to a mismatched system serif — Arabic headlines correctly stay on Plex Arabic sans.
+6. **Phone-mock and practice-phone bezel gradients neutralized** (`#2a2a28→#0c0c0b` had a faint warm
+   cast; changed to strictly neutral `#2a2a2a→#0c0c0c`) for internal consistency with the new neutral
+   ink tokens — a two-line cosmetic fix, not a content change to the real video inside the frame.
+7. **The faint giant hero-watermark monogram (from Version 1's no-photo era) was kept, not removed** —
+   on review this is not a vestige: Nwubah's own real hero uses the same device (a giant, faint,
+   semi-transparent brand-mark triangle overlaid across a background photo), so the existing Version 1
+   decision to keep it "for brand continuity" turns out to already match a live reference, not just a
+   post-hoc justification.
+
+### What was deliberately NOT changed
+- The real photo and both real video clips — untouched, per the brief's instruction not to touch
+  already-approved real content.
+- The "selective before/after" signal — the site already has zero before/after imagery (excluded on
+  taste grounds since Version 2, see below). Ereso's own site proves extensive galleries are also a
+  legitimate choice among the five references, so zero was not "fixed" to become some — there was
+  no real case material to add anyway, and inventing any would violate the zero-fabrication rule.
+- No press badge row — none exists to show, and none was invented (see above).
+- Section structure, copy content, and all real facts/citations — unchanged from Version 2.
+
+### QA this pass
+- **Lang-leak sweep (both directions):** re-run via `get_page_text` in full after adding the hero
+  pull-quote block (~6 new bilingual strings). Zero leaks either direction; only shared proper nouns
+  (Instagram, EBOPRAS, MRM, MESEI) appear identically in both, as in prior versions.
+- **Overflow, 375 / 768 / 1440px, both languages:** re-verified via
+  `document.documentElement.scrollWidth` vs. `window.innerWidth` at all six combinations after the
+  hero-voice block and tag-flattening changes — equal (no overflow) at every one.
+- **RTL logical-property check on the new hero-voice block specifically:** confirmed via
+  `getComputedStyle` that `border-inline-start` correctly resolves to `border-right` in `dir="rtl"`
+  (2px, gold), and that the Arabic-mode override (`font-family:"Plex Arabic"; font-style:normal`)
+  correctly suppresses the browser's fake-italic on Arabic script — this exact bug class
+  (logical-property / RTL mis-resolution) is what caused the Round 2 WhatsApp-button bug in Version 1,
+  so it was checked deliberately rather than assumed fine.
+- **Capability gating:** re-confirmed live — both `<video>` elements reach `readyState 4`
+  (`HAVE_ENOUGH_DATA`) with a `<source>` attached; toggling `data-reduce-motion="true"` collapses
+  `--dur-fast` to `0s` as before. No change to the gating logic itself this pass.
+- **Accordion interaction:** re-verified programmatically (`.click()` + `.open` class checks) —
+  exactly one panel open at a time, unaffected by the palette/detailing changes.
+- **Console:** zero errors/warnings across the full pass, in both languages, at all three widths.
+- **Known tooling limitation (recurring, not new):** the sandboxed browser used for this pass's visual
+  QA reproduced the exact same issue Version 1/2 already documented — a screenshot taken at any
+  scrolled position (even after an explicit `scrollTo`/instant `scrollIntoView`, confirmed via
+  `scrollY` readback) reliably comes back solid black, while a screenshot at `scrollY:0` renders
+  correctly and matches DOM/computed-style assertions taken at the same scrolled position. Because
+  this pass's new near-black palette is close in color to that failure mode, this is flagged more
+  emphatically here than before: **a final human visual pass in a normal desktop browser, scrolling
+  through the whole page, is now more important than ever before sending this to the prospect** —
+  a blank/broken render would be harder to eyeball-catch against a legitimately very dark page than it
+  was against the old page's more visibly distinct green-black. Every visual claim in this QA section
+  was independently confirmed via `getComputedStyle`/`getBoundingClientRect`/`get_page_text` at the
+  same positions where screenshots failed, not asserted from a screenshot alone.
+- **Build/verify method:** served locally via a plain Python `http.server` (no build step, matches
+  the "no dependencies" standing rule) and driven through a real browser tab, not a static file
+  preview — file:// previews outside the tool's project sandbox render as non-interactive static
+  snapshots and cannot run this page's JS, which would have hidden the reveal/gating/accordion
+  behavior entirely.
+
+---
+
+## VERSION 2 — real photo/video added (reference below unchanged from its own pass)
 
 **The gap this pass fixes:** Version 1 shipped with zero photo, zero video, zero visual
 personalization of the client — a deliberate compensation (see §3 below) for the fact that his

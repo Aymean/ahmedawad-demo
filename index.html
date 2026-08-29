@@ -21,17 +21,17 @@
    TOKENS
    ============================================================ */
 :root{
-  --ink:#0d1815;
-  --ink-2:#132420;
-  --ink-3:#1b322c;
-  --paper:#f6f3ec;
-  --paper-dim:#e9e4d6;
+  --ink:#0b0b0c;
+  --ink-2:#151515;
+  --ink-3:#1e1e1e;
+  --paper:#f6f5f2;
+  --paper-dim:#e7e5df;
   --gold:#c39a5c;
   --gold-soft:#dcc294;
-  --line:rgba(246,243,236,0.14);
-  --line-strong:rgba(246,243,236,0.28);
-  --muted:rgba(246,243,236,0.62);
-  --muted-2:rgba(246,243,236,0.42);
+  --line:rgba(246,245,242,0.14);
+  --line-strong:rgba(246,245,242,0.28);
+  --muted:rgba(246,245,242,0.62);
+  --muted-2:rgba(246,245,242,0.42);
   --radius:2px;
   --maxw:1120px;
   --ease:cubic-bezier(.22,.68,.35,1);
@@ -84,7 +84,7 @@ section{position:relative;}
    ============================================================ */
 .nav{
   position:fixed; inset-inline:0; top:0; z-index:50;
-  background:rgba(13,24,21,0.82);
+  background:rgba(11,11,12,0.82);
   backdrop-filter:blur(10px);
   -webkit-backdrop-filter:blur(10px);
   border-bottom:1px solid var(--line);
@@ -168,13 +168,21 @@ section{position:relative;}
   margin:14px 0 28px;
 }
 .hero-bio{
-  max-width:640px; font-size:17px; color:var(--muted); margin:0 0 40px;
+  max-width:640px; font-size:17px; color:var(--muted); margin:0 0 28px;
 }
+.hero-voice{
+  max-width:560px; margin:0 0 40px; padding-inline-start:18px; border-inline-start:2px solid var(--gold-soft);
+  font-family:"Plex Serif Display",serif; font-size:16.5px; font-style:italic; color:var(--paper); line-height:1.5;
+}
+[dir="rtl"] .hero-voice{ font-family:"Plex Arabic"; font-style:normal; }
+.hero-voice .src-cite{ font-style:normal; margin-top:8px; }
+[data-lang="en"] .hero h1, [data-lang="en"] .section-head h2{ font-family:"Plex Serif Display",serif; letter-spacing:0; }
 .hero-tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:44px;}
 .tag{
-  border:1px solid var(--line-strong); padding:9px 16px; border-radius:999px;
+  border:1px solid var(--line-strong); padding:9px 16px; border-radius:var(--radius);
   font-size:13px; color:var(--paper); display:flex; align-items:center; gap:8px;
 }
+.tag > span.en-only, .tag > b.en-only{text-transform:uppercase; letter-spacing:.04em;}
 .tag b{color:var(--gold-soft); font-family:"Plex Serif Display",serif; font-weight:600;}
 
 .hero-actions{display:flex; flex-wrap:wrap; gap:16px; align-items:center;}
@@ -184,8 +192,8 @@ section{position:relative;}
   transition:transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease), background var(--dur-fast) ease;
   position:relative;
 }
-.btn-primary{background:var(--gold); color:var(--ink);}
-.btn-primary:hover{transform:translateY(-2px); box-shadow:0 14px 30px -12px rgba(195,154,92,0.55);}
+.btn-primary{background:var(--paper); color:var(--ink);}
+.btn-primary:hover{transform:translateY(-2px); box-shadow:0 14px 30px -12px rgba(195,154,92,0.4);}
 .btn-ghost{border:1px solid var(--line-strong); color:var(--paper);}
 .btn-ghost:hover{border-color:var(--gold); color:var(--gold-soft); transform:translateY(-2px);}
 .btn svg{width:18px;height:18px;flex:none;}
@@ -270,7 +278,7 @@ section{position:relative;}
 .tl-item p{color:var(--muted); font-size:15px; margin:0; max-width:560px;}
 .tl-badge{
   display:inline-block; font-size:11px; letter-spacing:.06em; text-transform:uppercase;
-  color:var(--ink); background:var(--gold); padding:3px 10px; border-radius:999px; margin-inline-start:10px;
+  color:var(--ink); background:var(--gold); padding:3px 10px; border-radius:var(--radius); margin-inline-start:10px;
   vertical-align:middle;
 }
 
@@ -345,7 +353,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
    ============================================================ */
 .wa-float{
   position:fixed; bottom:26px; inset-inline-end:26px; z-index:60;
-  width:58px; height:58px; border-radius:50%; background:#25D366; color:#0d1815;
+  width:58px; height:58px; border-radius:50%; background:#25D366; color:#0b0b0c;
   display:flex; align-items:center; justify-content:center; box-shadow:0 10px 26px -8px rgba(0,0,0,.5);
   transition:transform var(--dur-fast) var(--ease);
 }
@@ -401,8 +409,8 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 }
 .phone-mock{
   position:relative; z-index:1; width:min(280px,72vw); aspect-ratio:9/19.3;
-  border-radius:40px; padding:9px; background:linear-gradient(160deg,#2a2a28,#0c0c0b);
-  box-shadow:0 40px 80px -24px rgba(0,0,0,0.65), 0 0 0 1px rgba(246,243,236,0.06);
+  border-radius:40px; padding:9px; background:linear-gradient(160deg,#2a2a2a,#0c0c0c);
+  box-shadow:0 40px 80px -24px rgba(0,0,0,0.65), 0 0 0 1px rgba(246,245,242,0.06);
   transform:rotate(-3.5deg);
   transition:transform .5s var(--ease);
 }
@@ -416,12 +424,12 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 }
 .phone-mock .notch{
   position:absolute; top:0; inset-inline-start:50%; transform:translateX(-50%);
-  width:38%; height:22px; background:#0c0c0b; border-radius:0 0 14px 14px; z-index:2;
+  width:38%; height:22px; background:#0c0c0c; border-radius:0 0 14px 14px; z-index:2;
 }
 [dir="rtl"] .phone-mock .notch{ transform:translateX(50%); }
 .phone-badge{
   position:absolute; z-index:2; bottom:14%; inset-inline-start:-8%;
-  background:rgba(13,24,21,0.92); border:1px solid var(--line-strong); backdrop-filter:blur(8px);
+  background:rgba(11,11,12,0.92); border:1px solid var(--line-strong); backdrop-filter:blur(8px);
   padding:12px 16px; border-radius:12px; max-width:210px;
   display:flex; align-items:center; gap:10px;
   box-shadow:0 16px 32px -12px rgba(0,0,0,0.5);
@@ -447,8 +455,8 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 
 .practice-video-col{display:flex; flex-direction:column; gap:26px; align-items:flex-start;}
 .practice-phone{ width:min(230px,60vw); aspect-ratio:9/19.3; border-radius:34px; padding:8px;
-  background:linear-gradient(160deg,#2a2a28,#0c0c0b);
-  box-shadow:0 30px 60px -20px rgba(0,0,0,0.55), 0 0 0 1px rgba(246,243,236,0.06);
+  background:linear-gradient(160deg,#2a2a2a,#0c0c0c);
+  box-shadow:0 30px 60px -20px rgba(0,0,0,0.55), 0 0 0 1px rgba(246,245,242,0.06);
 }
 .practice-phone .screen{position:relative;width:100%;height:100%;border-radius:27px;overflow:hidden;background:#111;}
 .practice-phone .screen video, .practice-phone .screen img{width:100%;height:100%;object-fit:cover;display:block;}
@@ -552,6 +560,15 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
         <p class="hero-bio">
           <span class="ar-only">أكثر من <span class="ltr">20</span> عاماً في جراحة التجميل والترميم — بين مستشفى حكومي وممارسة خاصة واستشارات، من نحت الجسم إلى جراحة اليد والمجهرية. حاصل على زمالة البورد الأوروبي للجراحة التجميلية (EBOPRAS) وزمالة البورد العربي للتخصصات الصحية.</span>
           <span class="en-only">Over <span class="ltr">20</span> years in plastic and reconstructive surgery — across a government hospital, private practice, and consultancy. Focused on body contouring and hand &amp; microsurgery. Fellow of the European Board of Plastic, Reconstructive and Aesthetic Surgery (EBOPRAS) and the Arab Board of Health Specialities.</span>
+        </p>
+        <p class="hero-voice">
+          <span class="ar-only">&laquo;مهمة جداً اختيار الجراح المناسب.&raquo;</span>
+          <span class="en-only">&ldquo;Choosing the right surgeon is very important.&rdquo;</span>
+          <span class="src-cite" style="display:flex;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+            <span class="ar-only">بكلماته هو، من مقطع حقيقي على إنستغرام</span>
+            <span class="en-only">In his own words, from a real Instagram reel</span>
+          </span>
         </p>
         <div class="hero-tags">
           <span class="tag"><b class="ltr">20+</b> <span class="ar-only">عاماً من الخبرة</span><span class="en-only">years in practice</span></span>
@@ -1159,8 +1176,8 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   /* ---------- nav background on scroll ---------- */
   var navEl = document.querySelector(".nav");
   function updateNav(){
-    if(window.scrollY > 20){ navEl.style.background = "rgba(13,24,21,0.94)"; }
-    else { navEl.style.background = "rgba(13,24,21,0.82)"; }
+    if(window.scrollY > 20){ navEl.style.background = "rgba(11,11,12,0.94)"; }
+    else { navEl.style.background = "rgba(11,11,12,0.82)"; }
   }
   window.addEventListener("scroll", updateNav, {passive:true});
   updateNav();
