@@ -9,7 +9,52 @@ no external CDN requests — fonts self-hosted in `fonts/`, real photo/video sel
 
 ---
 
-## VERSION 3 — visual-design revision to the locked personal-brand reference set (this pass)
+## VERSION 4 — swapped the second video clip for one the client actually reviewed
+
+**Why:** the "In Practice" section's second clip (`reel-technique-talk.mp4`, from IG post
+`DRT5tKECOWW`) was picked in Version 2 purely by engagement metadata (a metric, not a look at the
+footage) — nobody, human or agent, had actually watched it or the other candidate clips. Once the
+client watched the real candidate pool himself, he explicitly approved a different clip instead:
+IG post `DU2l9P4CAi3`, a real 42-second operating-room clip of Dr. Awad in surgical loupes/headlight
+and gown, marking a patient for a **blepharoplasty (eyelid lift)** — real on-screen Arabic label
+"شد الجفون", real Lamsa Clinics branding and contact info burned into the video by the clinic's own
+marketing team, his real name/title in a lower-third graphic. Nothing graphic — routine pre-op skin
+marking, no incisions, no exposed tissue.
+
+**What changed:**
+- Re-encoded a 9-second segment (source timestamp 20–29s of the original 42s clip) to
+  `media/reel-or-marking.mp4` — 540×850, muted, H.264 CRF 28, 464KB — matching the existing two
+  clips' size/treatment convention. Poster frame extracted to `media/reel-or-marking-poster.jpg`.
+  First crop attempt cut off the top banner (the label + clinic branding); redone taller
+  (540×850 vs. an initial 540×680) so both the "شد الجفون" label and the marking action stay
+  in frame together.
+- **The old clip's quote-block copy was removed, not reused.** The previous caption was a spoken
+  quote transcribed from the *old* clip ("Choosing the right surgeon is very important") — keeping
+  it attached to silent OR footage that never says it would have been a fabricated attribution.
+  Replaced with a factual caption (title + description + source line) in the same pattern already
+  used for the real conference photo, describing exactly what's on screen rather than inventing
+  dialogue.
+- **Decision on the burned-in Lamsa branding/Arabic label:** kept as-is, not cropped or masked.
+  It's real, it's accurate (Lamsa Clinics is his real, already-documented current practice per
+  Version 1's research), and cropping it out would make the content look more staged, not less.
+- Deleted `media/reel-technique-talk.mp4` and `media/reel-technique-talk-poster.jpg` entirely —
+  removed from git, not just unreferenced.
+
+**Sourcing note:** the agency's Apify account ran out of balance mid-task on a first attempt at
+this swap (confirmed: $0.000973 remaining, actor minimum charge $0.002) — the source video was
+instead pulled from a local copy already downloaded during the client's own review round, so no
+re-scrape was needed. Worth knowing for whoever picks up billing.
+
+**QA:** every real link/date/citation format elsewhere on the page was left untouched by this
+pass — only the one video, its poster, and its caption changed. Re-check the full bidirectional
+AR/EN sweep and responsive widths before shipping, since this session's local environment has no
+safe way to run a browser-based QA pass (a known GPU/RAM constraint on the machine doing this
+edit) — this pass was done via file-level edits and ffmpeg only, not verified in an actual browser.
+**A real visual check by a human, in an actual browser, is still outstanding for this version.**
+
+---
+
+## VERSION 3 — visual-design revision to the locked personal-brand reference set
 
 **The gap this pass fixes:** Versions 1–2 built the right *content* register (personal-brand
 framing, real career facts, real photo/video from his own Instagram) but the *visual* palette was
