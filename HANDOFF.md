@@ -5,9 +5,142 @@ This is a **personal professional-brand site**, not a clinic site. He does not o
 fixed address, and has no in-house team — every section is built around that fact deliberately.
 
 Repo: `github.com/Aymean/ahmedawad-demo` (public). Single self-contained `index.html`, no framework,
-no external CDN requests — fonts are self-hosted in `fonts/`.
+no external CDN requests — fonts self-hosted in `fonts/`, real photo/video self-hosted in `media/`.
 
 ---
+
+## VERSION 2 — real photo/video added (this pass)
+
+**The gap this pass fixes:** Version 1 shipped with zero photo, zero video, zero visual
+personalization of the client — a deliberate compensation (see §3 below) for the fact that his
+Instagram could not be read at the time. That workaround is no longer needed or appropriate: his
+Instagram is fully readable through a different scraping method, and it contains substantial real,
+verifiable, on-brand video and photo content. This version replaces the typography-only hero and
+credential-list body with real footage and a real photo throughout, while keeping every previously
+verified fact (career timeline, credentials, contact info, Lamsa/Serene resolution) unchanged.
+
+### How the Instagram content was retrieved
+Version 1 hit an age-restriction wall trying to read `dr.ahmed_awad_plastic_surgeon`'s profile via a
+profile-info scraper. This pass used a **posts-scraper** instead — Apify actor
+`data-slayer/instagram-posts`, input `{"username":"dr.ahmed_awad_plastic_surgeon","maxPages":3}` —
+which bypasses that wall entirely. It returned **24 real posts** (dataset reports 36 total available;
+24 were pulled), dated November 2025 – August 2026, with real captions, real engagement (like/comment
+counts), real timestamps, and working (if signed/expiring) CDN URLs for thumbnails and full video
+files. Every photo and video used on the site was downloaded from those URLs and is now self-hosted
+in `media/` — nothing hotlinked, per this pipeline's standing rule that Instagram's signed CDN URLs
+expire and must never be referenced directly from a shipped page.
+
+### What was reviewed, and the editorial calls made
+All 24 posts were inspected (thumbnails for photo posts, sampled frames for every video candidate)
+before anything was chosen:
+- **5 real, high-quality assets were selected** — see the media table below.
+- **Explicitly excluded, and why:** two posts contained genuine before/after surgical photography
+  (a gynecomastia/male breast-reduction case with visible bruising, and the graphic resected-tissue
+  close-up illustrating the breast-reduction educational post). Both are **real, not fabricated** —
+  they were excluded on editorial/taste grounds, not verification grounds: graphic clinical photography
+  reads as clinic-marketing material, not the restrained personal-brand register this site is built
+  around, and is a poor first impression for a cold-outreach demo. The breast-reduction post's real
+  **written** content (his own patient-education text) was kept and used — see below — just not its
+  photo.
+- Every hashtag set on his posts is generic/spammy (`#تجمع_بنات_جده`, `#ترند_تيك_توك`, etc.) and was
+  **not** treated as reliable subject-matter labeling — e.g. one video tagged with rhinoplasty/facelift
+  hashtags is actually, by its own burned-in captions, about breast augmentation. Only what is visibly
+  or textually verifiable in the media itself was used in any on-site caption.
+- Other platforms named in the brief (Facebook, TikTok, YouTube, Snapchat) were not re-scraped this
+  pass for additional visual content — the Instagram pull alone yielded more real, on-brand material
+  than the site needed. This remains available for a future pass if wanted.
+- `@lamsa.ksa` was never touched (per the brief's correction that it is an unrelated handbag shop, not
+  Lamsa Clinics) — not used, not re-investigated.
+
+### Media used on the site (all self-hosted in `media/`)
+
+| File | Source post | Date | What it is |
+|---|---|---|---|
+| `media/conference-mesei-riyadh.jpg` | Instagram, code `DU1FUuZCI2L` | 2026-02-16 | Real photo of Dr. Awad at the **Middle East Symposium of Ergonomix® Implants (MESEI)**, brought by Medica, Riyadh — badge/lanyard visible, real step-and-repeat backdrop. His own caption names it "مؤتمر موتيفا لجراحات الثدى المتقدمة" (Motiva Advanced Breast Surgery Conference); Motiva's flagship implant line is literally called "Ergonomix," so the caption and the backdrop's official event name are consistent, not conflicting. Highest-engagement photo on his account (54 likes / 24 comments). Downloaded at native 1080×1080. |
+| `media/reel-augmentation-talk.mp4` (+ poster) | Instagram, code `DZDs-ytI7k8` | 2026-06-01 | Real talking-head clip, home/lounge setting, white coat with embroidered "Ahmed Awad, Plastic Surg[eon]". Content (per burned-in live captions) is about breast augmentation with implants and recovery — not what its hashtags suggest. Most-liked video on the account (40 likes / 18 comments). Source is 720×1280 @ 30fps, 14.9s; re-encoded here to a clean 9s loop (bottom caption band cropped out, mild contrast/saturation grade, muted, H.264, ~410KB). Used as the hero's device-mockup video. |
+| `media/reel-technique-talk.mp4` (+ poster) | Instagram, code `DRT5tKECOWW` | 2025-11-21 | Real talking-head clip, clinic-office setting, visible real "لمسة LAMSA" on-screen branding + the same phone numbers/Al-Hamra-Jeddah address already verified in §1 below (independent third confirmation of the Lamsa/Serene affiliation). Burned-in caption at this clip's most legible frame reads **"مهمة جداً اختيار الجراح المناسب"** ("Choosing the right surgeon is very important") — used as the section's pull-quote, sourced exactly as shown, not paraphrased. 42 likes / 9 comments. Re-encoded to an 8s loop, top+bottom branding bars cropped out, muted, ~357KB. |
+| (text only, no image) | Instagram, code `DS4zqzcCCOD` | 2025-12-30 | A real, substantial educational post he wrote himself explaining breast reduction surgery — indications, candidacy, scar placement, recovery timeline, complications, permanence — reproduced in full (bilingual) in the new "How He Explains It" section. Its accompanying photo (real resected tissue) was excluded — see above. |
+
+All five are traceable to a specific, named, dated, real post on his own verified Instagram account —
+nothing AI-generated, nothing stock, nothing staged for this build.
+
+### New benchmark reference: real device-mockup video treatment
+In addition to the four references from Version 1 (still valid, still the basis for the overall
+register — see §2 below), this pass benchmarked **`garyvaynerchuk.com`** specifically for how to
+present real video/photo of a named individual without it reading as a generic hero banner. Verified
+live: dark charcoal/smoke-textured background, a monogram signature mark replacing a text logo, and —
+the specific device borrowed — a **tilted phone-mockup frame showing a real media player with his own
+photo**, next to a print-mockup, both laid over hand-drawn-style texture, with a platform-icon row
+underneath. This is the direct source for this version's `.phone-mock` component: a real vertical
+Instagram-shaped video inside a bezel-and-notch device frame, tilted a few degrees, with a soft radial
+glow behind it and a small floating citation badge — reused twice (hero + "In Practice" section) at
+two different sizes. The device-frame choice was also the pragmatic fix for the source footage's
+aspect ratio: his real clips are vertical (Instagram Reels, 9:16), and a phone mockup is the honest,
+premium way to present vertical footage rather than stretching/cropping it into a false widescreen.
+
+### New sections added
+1. **Hero** — restructured from a single centered column into a two-column split: existing copy/CTAs
+   on one side, a real device-mockup with the augmentation-talk video autoplaying (muted, looped) on
+   the other, with a small "From his real Instagram account" citation badge. The old monogram
+   watermark remains as a faint background texture (kept for brand continuity) but is no longer the
+   page's only visual — it's now a supporting texture, not a photo substitute.
+2. **"In Practice" (`#practice`)** — new section between About and Journey. Two columns: the framed
+   MESEI conference photo with a translated caption and source citation, and the technique-talk video
+   in a smaller device mockup next to the real pull-quote.
+3. **"How He Explains It" (`#explains`)** — new section between Education and Focus Areas. An
+   accordion (four expandable panels: why performed / candidacy / scars &amp; recovery / complications)
+   built entirely from his own real Instagram educational post, bilingual, with a source citation and
+   a closing "Is the result permanent? Yes." line matching his own post's structure exactly.
+
+Every new real-content block carries a small, honest, on-page source citation (platform + exact date)
+— not just documented here in HANDOFF, but visible to the client himself when he reviews the site.
+
+### QA specific to this pass
+- **Lang-leak sweep, both directions:** re-run in full via `get_page_text` after adding ~40 new
+  bilingual strings (In Practice + How He Explains It sections). Zero leaks in either direction —
+  only shared proper nouns (Instagram, EBOPRAS, MESEI, MRM) appear identically in both, as before.
+- **Overflow, 375/768/1440px, both languages:** re-verified after the hero/practice layout rework
+  (new grid columns, device mockups, absolute-positioned badges are common overflow sources).
+  `scrollWidth` ≤ `innerWidth` at all six combinations (3 widths × 2 languages).
+- **Capability gating extended to video:** the two `<video>` elements ship with `preload="none"` and
+  **no `src`** in the raw HTML — only a `data-src` attribute and a poster JPG. A small init script
+  (`initReels()`) only attaches a real `<source>` and calls `.load()`/`.play()` when
+  `prefers-reduced-motion` is NOT set, `deviceMemory` is not low, and Save-Data is off — verified by
+  code path (same honest caveat as Version 1: this session's real device doesn't report the low-
+  resource signals, so the negative branch was verified by reading the code, not by triggering it
+  live). Confirmed live on this session's normal device: both videos reach `readyState 4`
+  (`HAVE_ENOUGH_DATA`) and play muted/looped without console errors.
+- **Accordion interaction:** verified programmatically (`.click()` + `aria-expanded` + `.open` class
+  checks) that exactly one panel is open at a time and toggles correctly — not just visually inspected.
+- **Links:** re-audited all `href`s after the rebuild — identical set to Version 1's verified list
+  (WhatsApp, email, six socials, all in-page anchors); nothing changed, nothing broken.
+- **Console:** zero errors across the full pass (one harmless one-off `console.warn` from the page's
+  own dev-only overflow-QA helper, caused by `window.innerWidth` reading `0` for a single frame during
+  this sandbox's initial layout — not reproducible on reload, not a real page defect, confirmed by the
+  overflow re-checks above all passing cleanly).
+- **Performance:** total page weight is now ~1.4MB (70KB HTML + 460KB fonts + 880KB media: 1 photo +
+  2 muted/cropped/graded video loops + 2 poster JPGs) — up from Version 1's ~490KB text-only page, but
+  still light for a page now carrying real video, and every media byte is gated behind the capability
+  checks above for the users who shouldn't be paying for it.
+- **Known tooling note, refined from Version 1:** Version 1 reported the sandboxed browser's
+  screenshot capture as unreliable at certain scroll depths on this page. This pass isolated the actual
+  trigger more precisely: a screenshot taken **during** a CSS `scroll-behavior: smooth` scroll (the
+  page's own smooth-scroll, or a tool-driven `scrollIntoView()`/`scrollTo()` without an explicit
+  `behavior:'instant'`) reliably comes back solid black; the same scroll position captured **after**
+  an instant/already-settled scroll renders correctly and matches the DOM/computed-style checks run in
+  parallel. Every visual claim in this QA section was confirmed either with an instant-scroll
+  screenshot or with direct DOM/computed-style/`readyState` assertions — **a final human visual pass
+  in a normal desktop browser is still recommended** before sending this to the prospect, standard
+  practice regardless of tooling.
+- **Minor pre-existing cosmetic note (not introduced this pass, not fixed):** the fixed WhatsApp button
+  (`.wa-float`, unchanged from Version 1) can transiently sit over the corner of the About section's
+  stat-grid at certain scroll positions on narrow (≤375px) viewports, partially covering a stat digit
+  until the user scrolls a little further. This is inherent to any fixed corner button and was already
+  present in Version 1; flagged here for transparency rather than left silently unmentioned.
+
+---
+
+## VERSION 1 (original build) — reference below unchanged
 
 ## 1. What was verified, and how
 
@@ -107,7 +240,12 @@ green/ink palette, IBM Plex (sans + serif) instead of Fraunces, no 3D/WebGL, and
 
 ---
 
-## 3. The no-photo decision (read this before adding one later)
+## 3. The no-photo decision (SUPERSEDED in Version 2 — kept below for the record)
+
+**Status: no longer true.** Version 2 (see top of this file) found a working method to read his
+Instagram and added a real photo and two real videos of him throughout the site. The reasoning below
+is kept as-written because it explains an honest, correct decision at the time it was made — not
+because it still describes the current site.
 
 There is **no photo of Dr. Ahmed Awad anywhere on this site.** This was deliberate, not an oversight:
 - His Instagram (where his own patient/practice photos would most likely live) is age-restricted and
@@ -226,4 +364,7 @@ small addition, not a redesign.
 - `fonts/` — IBM Plex Sans Arabic (Regular/Medium/SemiBold/Bold) + IBM Plex Serif (Regular/SemiBold),
   both OFL-licensed, pulled directly from `github.com/IBM/plex` and self-hosted; `LICENSE-*.txt` kept
   alongside them for attribution.
+- `media/` — real photo + video, self-hosted (Version 2). All sourced from Dr. Awad's own public
+  Instagram, re-encoded/cropped/graded locally with ffmpeg, never hotlinked. See the Version 2 media
+  table near the top of this file for exact source post/date per file.
 - No build step, no dependencies, no external requests at runtime.
