@@ -1,0 +1,8 @@
+* text=auto eol=lf
+*.webp binary
+*.jpg  binary
+*.jpeg binary
+*.png  binary
+*.mp4  binary
+*.woff2 binary
+vendor/*.js -text
