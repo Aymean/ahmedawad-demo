@@ -6,7 +6,214 @@ fixed address, and has no in-house team — every section is built around that f
 
 Repo: `github.com/Aymean/ahmedawad-demo` (public). Single self-contained `index.html`, no framework,
 no external CDN requests — fonts self-hosted in `fonts/`, real photo/video self-hosted in `media/`,
-Three.js/GSAP self-hosted copies in `vendor/`.
+GSAP self-hosted copies in `vendor/` (Three.js was removed in v7 along with the section that used it
+— see below).
+
+---
+
+## VERSION 7 — the client's concrete, evidence-backed punch list (2026-08-29)
+
+**Why this pass exists:** the client reviewed Version 6 and rated it 6-7/10 — genuine improvement over
+v5's 4-5/10, but this time with a specific, itemized punch list instead of open-ended direction. This
+entry documents each of the 9 items and the real-material research behind the biggest one (color).
+
+### 1. Color system — rebuilt from his own real material, not an invented scheme
+The client's exact words: he hates the flat black/dark-navy background and the invented copper/teal
+accent system — "generic, unrelated to the client" — and explicitly warned against copying De Praxes'
+own literal bronze/cream (that palette belongs to De Praxes, not him). Direction given: use colors
+"related to him, to what he does."
+
+**Method:** rather than guess, actual frames from his own real footage already in this repo were
+pixel-sampled with Python/PIL (`media/reel-or-marking.mp4` frame-by-frame via `ffmpeg -vf fps=1`,
+`media/conference-mesei-riyadh.jpg`, `media/testimonial-lift-clip.mp4`) and averaged over small
+regions to get real, defensible hex values — not eyeballed from a screenshot.
+
+**What was found, and what it became:**
+- **Lamsa Clinics' own real lower-third graphic** (the "د/ أحمد عوض" name-bar burned into the
+  OR-marking video by the clinic's own marketing team): a warm gold-bronze bar, sampled at multiple
+  x-positions across the bar and averaged → **`#b6924f`**. This became the new `--gold` token
+  (previously an invented copper `#c9713f` with no source). `--gold-soft:#ddbd88` and
+  `--gold-deep:#7c5e30` are lighter/darker steps off the same real sample, not separately invented.
+- **The real sterile drape/gown blue**, visible throughout the same OR footage (the surgical drapes
+  and his own gown): sampled across the drape at several points, ranging `#1c5193`–`#527ebd` →
+  averaged to **`#3f6ea5`**, the new `--blue` token (replaces the invented `--teal`, which had no
+  connection to anything on the page — teal reads "spa/wellness," not surgery). `--blue-soft:#8fb4da`
+  and a new `--blue-deep:#244168` (used in the new booking-section shader, see item 8) are steps off
+  the same sample.
+- **A warm charcoal-brown, not flat black or navy**: sampled from two independent real dark surfaces —
+  the OR clip's own lower-third dark bar under the name (`~#2d2925`, warm neutral-dark) and the
+  conference photo's step-and-repeat backdrop (`~#3d2a1f`/`#492e27`, warm brown-black under the event's
+  gold lighting). Both agreed on "warm dark," not the old `#0a0a10` near-black-navy the client called
+  generic. Became the new `--ink:#171310` / `--ink-2:#221c17` / `--ink-3:#2d251f` — darkened versions
+  of the sampled tones (the raw samples were lit/exposed footage, too light for a full-page background;
+  the *hue*, not the raw lightness, is what was kept).
+- **Warm cream**, sampled from his real office walls/desk in `media/testimonial-lift-clip.mp4` (the
+  in-office consultation clip, where his real desk, gold nameplate, and cream walls are visible) and
+  cross-checked against Lamsa's own cream badge ground in the OR clip's logo. Became `--paper:#f5eee1`
+  (previously `#f7f4ee` — close by coincidence, nudged slightly warmer to match the real samples) and
+  `--paper-dim:#e4d8bd`.
+
+All 36 places that had the old accent colors **hardcoded as literal `rgba()`/hex** instead of
+referencing the CSS variables (the exact bug class Version 3's own HANDOFF entry warned about) were
+found by grepping for the old literal values after the token change and fixed — including the nav's
+scroll-state JS, the mobile bottom bar, every gradient glow, and every SVG `stroke`/`fill` that had a
+hardcoded value. `--line`/`--line-strong`/`--muted`/`--muted-2` (all defined as `rgba(paper-rgb, alpha)`)
+were also updated to the new paper RGB so text/border opacity tokens stay internally consistent with
+the new cream, not silently left keyed to the old one.
+
+### 2. WhatsApp button — the real bug, found fresh, not assumed
+Investigated from scratch per the brief's instruction, rather than trusting v6's claim that a recolor
+pass had already fixed it. Grepped every `opacity="0"` in the file and found exactly one: the **hero's
+primary "Message on WhatsApp" button** — the single most prominent WhatsApp CTA on the page — had its
+icon's outer bubble-outline `<path>` set to `opacity="0"`, leaving only the disconnected phone-handset
+squiggle visible with no bubble around it. This bug pre-dates every prior recolor pass (it's a markup
+attribute, not a color), which is exactly why recoloring the `.wa-float` circle in v6 never touched it
+— the client was almost certainly reacting to this one, not the floating corner circle, since it's the
+button every visitor sees first. **Fixed** by removing the stray `opacity="0"` attribute so both paths
+render, matching the correct two-path icon already used correctly by `.wa-float`, the mobile bottom
+bar, and both contact-section buttons. Verified via DOM inspection: both `<path>` elements now read
+`opacity: null` (unset), not `"0"`.
+
+### 3. Signature 3D — removed, not retrofitted
+The client was explicit: the icosahedron "changes color with no meaning" and has "no value" — and,
+more broadly, "sections should come based on his elements... not create a section for a section."
+No real fact, credential, or piece of his own material could honestly justify a faceted-icosahedron
+3D scene (the copy tried to tie it to "precision," which is exactly the kind of generic post-hoc
+justification the client is pushing back on). Per the brief's own explicit permission to remove rather
+than force a fix, the entire `#signature` section was deleted: the HTML section, its `.sig3d-*` CSS
+block, the `initSignature3D()` JS (including the Three.js scene setup, lighting, geometry, render
+loop), the now-orphaned `.sig3d-copy h2` typography selectors, and `vendor/three.module.min.js` itself
+(`git rm`, not just unreferenced — a dead asset of exactly the kind this repo's own QA standard flags).
+`gpuCapable()` was kept (it's generic, not 3D-specific) and reused for the new booking-section shader
+in item 8, so the page's one real GPU-driven moment now has an honest reason to exist.
+
+### 4. Conference photo — resized, no longer dominant
+`.editorial-photo` (the Riyadh MESEI conference photo in "In Practice") had no size cap at all — it
+rendered the full 1080×1080 source at its grid column's full width, meaning ~600px+ tall on desktop
+and a full-bleed square on mobile, next to a video panel capped at 340-400px. The client called it
+"too big, not compatible." **Fixed**: capped to `max-width:420px; aspect-ratio:4/5` — the same scale
+as this page's other real-photo device (`.cine-panel`, max 400px) — with `object-fit:cover` so the
+real photo still fills the frame with genuine presence, just no longer oversized. `.practice-grid`
+was also rebalanced from an asymmetric `1.1fr .9fr` to an even `1fr 1fr` now that the photo isn't
+trying to dominate a wider column, and its gap tightened from 56px to 40px (also serves item 7).
+
+### 5. Journey timeline — restored the original pre-v6 animation
+The client's own words: "restore the first animation, it was better." Rather than eyeball a visual
+match, the actual prior implementation was recovered from git history: `git diff` between the
+Version-5 commit (`d3bdccb`) and the Version-6 commit (`8e014d2`) isolated exactly what v6 changed —
+a new `.tl-track`/`.tl-track i`/`.tl-marker` CSS block (added *after* the original rules in source
+order, so it silently overrode them via cascade) that thickened the 1px hairline to a glowing 2px
+teal→gold gradient spine with a separate traveling dot riding `#tlProgress`'s height percentage a
+second way. **Fixed** by deleting that entire v6-added block outright, which lets the original,
+untouched rules earlier in the file (a plain 1px `--line-strong` hairline with a 5px-wide gold
+`<i id="tlProgress">` bar that grows in height on scroll — no glow, no second marker) take effect
+again unmodified — a real revert to the actual prior code, not a new implementation that looks
+similar. The `<span class="tl-marker" id="tlMarker">` element was removed from the HTML, and the
+`tlMarker` variable plus its two `.style.top` assignments were removed from `updateTimeline()` in JS.
+
+### 6. Three review-adjacent sections → one
+The client was explicit: keep the real patient-testimonial video section untouched, but the separate
+`#trust` section (numeral + 5 stars + a radial SVG gauge, added in v6) and `#reviews` section
+(auto-scrolling real Google review columns, also added in v6) did overlapping jobs — both displayed
+the same real 4.8/38 figure a second time, with three different visual devices for one fact. **Fixed**
+by deleting `#trust` entirely and folding its content (the radial gauge + numeral + stars) into
+`#reviews`'s left column, next to the existing curated-review-count note and citation — one heading,
+one numeral, one star row, one gauge, sitting beside the real auto-scrolling review cards. The now-
+orphaned `.trust-panel`/`.trust-wrap`/`.trust-score`/`.trust-note` CSS rules were removed (`.trust-
+stars` was kept — it's reused in the merged markup). The old trust-note's copy ("stronger still,
+below: real video reviews") was rewritten since document order changed — testimonials now sits
+*before*, not after, this section, so pointing "below" would have been wrong. Net result: exactly two
+review-adjacent sections remain, as instructed — `#testimonials` (unchanged) and the merged `#reviews`.
+
+### 7. Spacing tightened sitewide to De Praxes' density
+Both sites were rendered and compared directly. De Praxes' own section rhythm (Tailwind `py-16
+sm:py-24` = 64px mobile / 96px desktop) is meaningfully denser than this page's prior `110px`/`76px`
+`.section-pad`. Tightened to **88px desktop / 60px mobile** — not matched 1:1 to De Praxes' exact
+numbers (this page's sections carry less content per section, so identical density would feel
+cramped), but a real, deliberate reduction in the same direction. Also tightened: `.section-head`
+margin-bottom (56px→40px), `.about-grid` gap (64px→44px), `.contact-grid` gap (56px→40px), `.tmn-grid`
+gap (28px→22px), `.greviews-grid` gap (48px→36px), `.focus-row` padding (30px→22px vertical), the
+hero's own top/bottom padding (130px/80px→112px/64px), and `.portrait-band`'s height clamp
+(440-760px→400-620px, which also independently helps address the "oversized photography" complaint
+in the spirit of item 4).
+
+### 8. New booking section — WhatsApp-first, with real shader depth
+De Praxes has a real booking flow with its own WebGL depth device (`#bookshader`, a hand-written raw-
+GLSL warp/plasma field, itself ported from 21st.dev's Warmth Ripple / the open-source
+paper-design/shaders "warp" family). Ahmed Awad has no booking system to replicate the flow itself —
+building a fake department/calendar picker would violate this project's own zero-fabrication rule.
+**What was built instead**: the existing `#contact` section was kept honest (real WhatsApp number,
+real email, real social accounts — nothing changed there) but given real visual weight: a heading
+that states plainly there's no online booking system, three honest steps (message him on WhatsApp →
+briefly describe your case → he replies personally — no fabricated calendar, no call center framing),
+and the *technique*, not the file, studied from De Praxes' shader: a hand-written raw-GLSL warp field
+was reimplemented from scratch (`initBookShader()`, same vertex/fragment shader *mechanism* — value-
+noise domain warp + iterative swirl + a 4-stop gradient mix), retinted to this page's own real gold/
+blue tokens (`--ink → --blue-deep → --gold → --gold-soft`, all four converted to 0–1 floats from the
+real-sampled hex values in item 1) instead of De Praxes' char/bronze/sand. Same capability gate as
+every other heavy element on the page (`gpuCapable()`, kept from the removed Signature 3D section —
+see item 3 — so it isn't orphaned, it now gates this instead), plus its own `IntersectionObserver` so
+the render loop only runs while the section is on screen. Verified live: the canvas reaches its `.on`
+class (first frame rendered) and its opacity transitions from 0 toward its resting 0.32.
+
+### 9. New "where to find him" section — real Lamsa Clinics location, honestly framed
+De Praxes has a map/location section; Ahmed Awad's site had no equivalent. Built `#visit`, using the
+real, already-verified Lamsa Clinics address and phone from this repo's own research (HANDOFF v1 §1,
+Version 1's original verification): **7726 Al Fadl St., Al Hamra District, Jeddah 23324 · 012 661
+4000**. The heading and body copy state explicitly that this is not his own clinic — "لا يملك عيادة،
+لكنه يمارس هنا حالياً" / "He owns no clinic — but this is where he currently practices" — matching
+this whole site's standing rule (see the top of this file) never to imply Lamsa is "his" clinic. A
+real Google Maps iframe embed (same technique De Praxes' own `#visit` section uses: a plain
+`maps.google.com/maps?q=…&output=embed` query, no API key needed) resolves correctly to the real
+location — confirmed live: the embedded map's own pin label reads "Lamsa Clinic" at the matching
+district. The reception phone number is explicitly labeled "not his personal line" (his real personal
+WhatsApp stays the primary contact channel in the Contact section) so the two numbers are never
+conflated. One markup bug caught and fixed during build: the reception phone row's icon was first
+copy-pasted as a WhatsApp glyph (wrong — it's a `tel:` link to a landline), swapped for a proper phone-
+handset icon before shipping.
+
+### QA — this session, independently verified
+- **Responsive, 375 / 768 / 1440px, both languages:** `document.documentElement.scrollWidth` vs.
+  `window.innerWidth` — 375: 375/375 (both languages). 768: 753/768. 1440: 1425/1440. No overflow at
+  any width (the few px under `innerWidth` at 768/1440 is the scrollbar, not overflow) — re-confirmed
+  after every structural change in this pass, not just once at the end.
+- **Bidirectional lang-leak sweep:** 160 `.en-only` / 160 `.ar-only` nodes (symmetric, up from Version
+  6's 155/155 — the new `#visit` section added matched pairs on both sides). Programmatic sweep in
+  both language modes: 0 visible `.en-only` nodes in Arabic mode, 0 visible `.ar-only` nodes in English
+  mode.
+- **Console:** zero real errors across every reload, both languages, all three viewports. The one
+  recurring `[QA] horizontal overflow detected: 103 > 0` warning is the same harmless
+  `window.innerWidth`-reads-0-at-`load` harness artifact every prior version's HANDOFF has already
+  documented — reconfirmed here, not newly introduced.
+- **GSAP/ScrollTrigger defer-bug fix (v6) re-verified after this pass's changes:**
+  `ScrollTrigger.getAll().length` still reads **2** (the editorial-photo parallax + the portrait-band
+  parallax — unaffected by removing Signature 3D, which never used ScrollTrigger) — confirming the v6
+  fix (dropping `defer` from the two vendor `<script src>` tags) still holds.
+- **Section count sanity check:** 12 `<section>` open tags, 12 close tags, in the expected order (top,
+  about, portrait, practice, journey, education, explains, focus, testimonials, reviews, visit,
+  contact) — confirms the `#signature` removal and `#trust`/`#reviews` merge left no orphaned or
+  malformed markup.
+- **Capability gating:** the new booking-section shader checks `gpuCapable()` (WebGL support +
+  `reduce` flag, which itself folds in `prefers-reduced-motion`/low-memory/Save-Data/slow-2G) before
+  ever touching a WebGL context, same as every other heavy element on the page; falls back to the
+  section's existing `.book-scrim` gradient (no canvas, no visual gap) for anyone gated off.
+- **Real screenshot verification, section-isolation method** (reused from prior versions' HANDOFF,
+  not rediscovered): every changed/new section — Hero (WhatsApp icon), In Practice (resized photo),
+  Journey (restored spine), Reviews (merged), Visit (new, both desktop and 375px mobile), Contact
+  (shader visible and animating in) — screenshotted and visually confirmed correct, not just asserted
+  from code.
+- **Real device colors independently re-checked**: after shipping, re-sampled `#171310`/`#b6924f`/
+  `#3f6ea5`/`#f5eee1` against the original video-frame/photo crops used to derive them — all four
+  still trace cleanly to their real source region, not drifted during implementation.
+
+### Files changed this version
+- `index.html` — all 9 punch-list items.
+- `vendor/three.module.min.js` — **removed** (`git rm`), no longer referenced by anything on the page.
+- `HANDOFF.md` — this entry.
+
+No new media/font assets this pass — every new section (Visit, the enhanced Contact/Booking) reuses
+real facts and contact details already verified in earlier versions; the color research read existing
+`media/` files but did not add, crop, or re-encode any new ones.
 
 ---
 

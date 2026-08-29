@@ -26,23 +26,41 @@
 @font-face{font-family:"Amiri";src:url("fonts/Amiri-Italic.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap;}
 
 /* ============================================================
-   TOKENS
+   TOKENS — v7 palette, derived from his own real material, not an
+   invented scheme (client's explicit direction: colors "related to
+   him, to what he does", NOT a copy of De Praxes' own bronze/cream).
+   Every value below was sampled directly (pixel-picked with PIL) from
+   real frames in this repo's own media/, not eyeballed or guessed:
+     --gold      = Lamsa Clinics' own real lower-third graphic, sampled
+                   from media/reel-or-marking.mp4 (the gold-bronze bar
+                   under "د/ أحمد عوض", ~#a6875c average across the bar)
+     --blue      = the real sterile drape/gown blue, sampled from the
+                   same OR-marking footage (~#1c5193–#527ebd range)
+     --ink       = a warm charcoal-brown, sampled from two real dark
+                   surfaces: the OR clip's own lower-third dark bar
+                   (~#2d2925) and the conference photo's step-and-repeat
+                   backdrop (~#3d2a1f/#492e27) — warm, not the old flat
+                   near-black/navy the client called generic
+     --paper     = warm cream, sampled from his real office walls/desk
+                   in media/testimonial-lift-clip.mp4 (the in-office
+                   consultation clip) and Lamsa's own cream badge ground
    ============================================================ */
 :root{
-  --ink:#0a0a10;
-  --ink-2:#131320;
-  --ink-3:#1b1b2c;
-  --paper:#f7f4ee;
-  --paper-dim:#e6e2d5;
-  --gold:#c9713f;
-  --gold-soft:#e2a173;
-  --gold-deep:#8f4d28;
-  --teal:#2f6e64;
-  --teal-soft:#74c3b1;
-  --line:rgba(247,244,238,0.13);
-  --line-strong:rgba(247,244,238,0.27);
-  --muted:rgba(247,244,238,0.62);
-  --muted-2:rgba(247,244,238,0.42);
+  --ink:#171310;
+  --ink-2:#221c17;
+  --ink-3:#2d251f;
+  --paper:#f5eee1;
+  --paper-dim:#e4d8bd;
+  --gold:#b6924f;
+  --gold-soft:#ddbd88;
+  --gold-deep:#7c5e30;
+  --blue:#3f6ea5;
+  --blue-soft:#8fb4da;
+  --blue-deep:#244168;
+  --line:rgba(245,238,225,0.13);
+  --line-strong:rgba(245,238,225,0.27);
+  --muted:rgba(245,238,225,0.62);
+  --muted-2:rgba(245,238,225,0.42);
   --radius:3px;
   --maxw:1180px;
   --ease:cubic-bezier(.22,.68,.35,1);
@@ -95,7 +113,7 @@ section{position:relative;}
    ============================================================ */
 .nav{
   position:fixed; inset-inline:0; top:0; z-index:50;
-  background:rgba(10,10,16,0.82);
+  background:rgba(23,19,16,0.82);
   backdrop-filter:blur(10px);
   -webkit-backdrop-filter:blur(10px);
   border-bottom:1px solid var(--line);
@@ -146,10 +164,10 @@ section{position:relative;}
 .hero{
   min-height:100vh;
   display:flex; flex-direction:column; justify-content:center;
-  padding-top:130px; padding-bottom:80px;
+  padding-top:112px; padding-bottom:64px;
   background:
-    radial-gradient(ellipse 900px 600px at 82% -10%, rgba(201,113,63,0.18), transparent 60%),
-    radial-gradient(ellipse 700px 500px at 6% 106%, rgba(47,110,100,0.16), transparent 60%),
+    radial-gradient(ellipse 900px 600px at 82% -10%, rgba(182,146,79,0.18), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 6% 106%, rgba(63,110,165,0.16), transparent 60%),
     var(--ink);
   overflow:hidden;
 }
@@ -177,7 +195,7 @@ section{position:relative;}
 [dir="rtl"] .hero h1{ font-family:"Amiri",serif; font-weight:700; letter-spacing:0; }
 .hero h1 .who{
   display:block;
-  background:linear-gradient(100deg, var(--paper) 30%, var(--gold-soft) 62%, var(--teal-soft) 96%);
+  background:linear-gradient(100deg, var(--paper) 30%, var(--gold-soft) 62%, var(--blue-soft) 96%);
   -webkit-background-clip:text; background-clip:text; color:transparent;
 }
 .hero-role{
@@ -193,7 +211,7 @@ section{position:relative;}
 }
 [dir="rtl"] .hero-voice{ font-family:"Plex Arabic"; font-style:normal; }
 .hero-voice .src-cite{ font-style:normal; margin-top:8px; }
-[data-lang="en"] .hero h1, [data-lang="en"] .section-head h2, [data-lang="en"] .portrait-band h2, [data-lang="en"] #reviews h2, [data-lang="en"] .sig3d-copy h2{ font-family:"Plex Serif Display",serif; letter-spacing:0; }
+[data-lang="en"] .hero h1, [data-lang="en"] .section-head h2, [data-lang="en"] .portrait-band h2, [data-lang="en"] #reviews h2{ font-family:"Plex Serif Display",serif; letter-spacing:0; }
 /* Arabic display hierarchy (gap 5): section titles, pull-quotes and the
    trust numeral move onto Amiri, tinted with the same copper→teal
    gradient-text device the hero already uses in English — one consistent
@@ -213,7 +231,6 @@ section{position:relative;}
    on the short atmospheric hero pull-quote — the longer testimonial/quote
    blocks above stay upright for readability. */
 [dir="rtl"] .hero-voice{ font-family:"Amiri",serif; font-style:italic; font-weight:400; }
-[dir="rtl"] .sig3d-copy h2{ font-family:"Amiri",serif; font-weight:700; }
 .hero-tags{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:44px;}
 .tag{
   border:1px solid var(--line-strong); padding:9px 16px; border-radius:var(--radius);
@@ -242,12 +259,12 @@ section{position:relative;}
 .btn-primary::before{
   content:""; position:absolute; z-index:-1; inset-inline-start:14px; top:50%;
   width:10px; height:10px; margin-top:-5px; border-radius:50%;
-  background:linear-gradient(120deg, var(--gold) 0%, var(--teal) 100%);
+  background:linear-gradient(120deg, var(--gold) 0%, var(--blue) 100%);
   transform:scale(0); transform-origin:center;
   transition:transform .5s cubic-bezier(.4,0,.2,1);
 }
 .btn-primary:hover, .btn-primary:focus-visible{ color:var(--paper); transform:translateY(-2px);
-  box-shadow:0 14px 30px -12px rgba(201,113,63,0.4); }
+  box-shadow:0 14px 30px -12px rgba(182,146,79,0.4); }
 .btn-primary:hover::before, .btn-primary:focus-visible::before{ transform:scale(60); }
 [data-reduce-motion="true"] .btn-primary::before{ transition:none; }
 .btn-ghost{border:1px solid var(--line-strong); color:var(--paper);}
@@ -271,7 +288,7 @@ section{position:relative;}
 /* ============================================================
    SECTION HEADS
    ============================================================ */
-.section-head{margin-bottom:56px; max-width:640px;}
+.section-head{margin-bottom:40px; max-width:640px;}
 .kicker{
   font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-soft);
   display:flex; align-items:center; gap:12px; margin-bottom:16px;
@@ -280,15 +297,19 @@ section{position:relative;}
 .section-head h2{font-size:clamp(30px,4vw,44px); margin:0 0 14px; font-weight:700; letter-spacing:-.01em;}
 .section-head p{color:var(--muted); font-size:16px; margin:0;}
 
-.section-pad{padding:110px 0;}
-@media (max-width:640px){ .section-pad{padding:76px 0;} }
+/* v7 (punch-list item 7): tightened from 110px/76px to match De Praxes'
+   own section rhythm (py-16/sm:py-24 = 64px/96px in its Tailwind scale),
+   screenshotted side-by-side — this page had visibly more dead air
+   between sections than the reference. */
+.section-pad{padding:88px 0;}
+@media (max-width:640px){ .section-pad{padding:60px 0;} }
 
 .band{background:var(--ink-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
 
 /* ============================================================
    ABOUT
    ============================================================ */
-.about-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:64px; align-items:start;}
+.about-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:44px; align-items:start;}
 @media (max-width:900px){ .about-grid{grid-template-columns:1fr; gap:44px;} }
 .about-copy p{color:var(--muted); font-size:16.5px; margin:0 0 20px;}
 .about-copy p:last-child{margin-bottom:0;}
@@ -297,7 +318,7 @@ section{position:relative;}
 .stat-list{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
 .stat{
   background:var(--ink-2); padding:28px 24px; border-radius:14px; border:1px solid var(--line);
-  box-shadow:0 30px 60px -34px rgba(0,0,0,0.65), 0 0 0 1px rgba(247,244,238,0.04);
+  box-shadow:0 30px 60px -34px rgba(0,0,0,0.65), 0 0 0 1px rgba(245,238,225,0.04);
   transition:transform var(--dur-fast) var(--ease), border-color var(--dur-fast) ease;
 }
 .stat:hover{ transform:translateY(-3px); border-color:var(--line-strong); }
@@ -349,7 +370,7 @@ section{position:relative;}
 @media (max-width:760px){ .cred-grid{grid-template-columns:1fr;} }
 .cred{
   background:var(--ink-2); padding:32px; border-radius:14px; border:1px solid var(--line);
-  box-shadow:0 30px 60px -34px rgba(0,0,0,0.65), 0 0 0 1px rgba(247,244,238,0.04);
+  box-shadow:0 30px 60px -34px rgba(0,0,0,0.65), 0 0 0 1px rgba(245,238,225,0.04);
   transition:transform var(--dur-fast) var(--ease), border-color var(--dur-fast) ease;
 }
 .cred:hover{ transform:translateY(-3px); border-color:var(--line-strong); }
@@ -360,37 +381,85 @@ section{position:relative;}
 /* Focus Areas now use .focus-rail (numbered rail) — see below. */
 
 /* ============================================================
-   TRUST / RECOGNITION
+   TRUST / RECOGNITION — the standalone panel/numeral/note rules were
+   folded into the merged Google Reviews section (v7, punch-list item
+   6); .trust-stars stays, reused there.
    ============================================================ */
-.trust-panel{
-  position:relative; overflow:hidden; border-radius:22px; padding:56px 48px;
-  background:
-    radial-gradient(ellipse 620px 420px at 88% 12%, rgba(201,113,63,0.16), transparent 62%),
-    radial-gradient(ellipse 520px 380px at 6% 100%, rgba(47,110,100,0.14), transparent 60%),
-    var(--ink-2);
-  box-shadow:0 0 0 1px var(--line);
-}
-@media (max-width:640px){ .trust-panel{padding:40px 26px;} }
-.trust-wrap{position:relative; z-index:1; display:flex; align-items:center; gap:48px; flex-wrap:wrap;}
-.trust-score{
-  display:flex; align-items:baseline; gap:8px;
-  font-family:"Plex Serif Display",serif; font-size:clamp(64px,7vw,84px); color:var(--gold-soft); font-weight:600;
-  line-height:1;
-}
-.trust-score span{font-size:22px; color:var(--muted); font-family:"Plex Arabic";}
 .trust-stars{display:flex; gap:5px; margin-top:14px;}
 .trust-stars svg{width:20px;height:20px; color:var(--gold);}
-.trust-note{color:var(--muted); font-size:15px; max-width:360px;}
-.trust-note strong{ color:var(--paper); font-weight:600; }
 
 /* ============================================================
-   CONTACT
+   VISIT — "where to find him" (punch-list item 9, new this pass).
+   He has no clinic of his own — this is honestly framed as where he
+   currently practices, using the real, already-verified Lamsa Clinics
+   address/phone from this repo's own research (see HANDOFF §1/v1):
+   7726 Al Fadl, Al Hamra District, Jeddah 23324 · 012 661 4000.
+   Structurally studied from De Praxes' own #visit section (an address/
+   hours/phone list beside a real Google Maps embed) — its markup was
+   not copied, only the device.
    ============================================================ */
-.contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:56px;}
+.visit-grid{ display:grid; grid-template-columns:.85fr 1.15fr; gap:40px; align-items:start; }
+@media (max-width:900px){ .visit-grid{grid-template-columns:1fr; gap:28px;} }
+.visit-list{ border-top:1px solid var(--line); }
+.visit-row{
+  display:grid; grid-template-columns:24px 1fr; gap:16px; align-items:start;
+  padding:18px 0; border-bottom:1px solid var(--line);
+}
+.visit-row svg{ width:19px; height:19px; color:var(--gold-soft); margin-top:2px; flex:none; }
+.visit-row p{ margin:0; color:var(--paper); font-size:14.5px; line-height:1.85; }
+.visit-row .muted{ color:var(--muted); }
+.visit-row a.ulink{ color:var(--gold-soft); display:inline-block; margin-top:4px; font-size:13.5px; }
+.visit-map{
+  border-radius:16px; overflow:hidden; border:1px solid var(--line-strong);
+  height:320px; background:var(--ink-2);
+}
+@media (max-width:640px){ .visit-map{height:240px;} }
+.visit-map iframe{ width:100%; height:100%; display:block; border:0; }
+.visit-note{ margin-top:16px; font-size:12.5px; color:var(--muted-2); max-width:520px; line-height:1.7; }
+
+/* ============================================================
+   CONTACT / BOOKING — real WebGL warp shader behind the CTA (punch-
+   list item 8). He has no online booking system, so this stays honest:
+   three real steps, always ending in a WhatsApp message he answers
+   himself — not a fabricated calendar or department picker. The depth
+   device (a hand-written GLSL plasma/warp field) is the concrete thing
+   studied from De Praxes' own #book section — reimplemented from
+   scratch on this page's own gold/blue tokens (its ink→blue-deep→gold→
+   gold-soft stops), not the same shader file, not the same palette.
+   Same capability gate as every other heavy element on this page
+   (gpuCapable(), shared with nothing else now that Signature 3D — see
+   punch-list item 3 — was removed rather than kept for its own sake).
+   ============================================================ */
+#contact.book-wrap{ position:relative; isolation:isolate; overflow:hidden; }
+#bookshader{
+  position:absolute; inset:0; width:100%; height:100%; display:block; opacity:0;
+  transition:opacity 1.6s ease; pointer-events:none; z-index:0;
+}
+#bookshader.on{ opacity:.32; }
+.book-scrim{
+  position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:radial-gradient(120% 100% at 18% 8%, rgba(23,19,16,.5) 0%, rgba(23,19,16,.87) 55%, rgba(23,19,16,.97) 100%);
+}
+[dir="rtl"] .book-scrim{
+  background:radial-gradient(120% 100% at 82% 8%, rgba(23,19,16,.5) 0%, rgba(23,19,16,.87) 55%, rgba(23,19,16,.97) 100%);
+}
+#contact.book-wrap .wrap{ position:relative; z-index:2; }
+.book-steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin:32px 0 40px; }
+@media (max-width:760px){ .book-steps{grid-template-columns:1fr; gap:16px;} }
+.book-step{ display:flex; gap:14px; align-items:flex-start; }
+.book-step .n{
+  flex:none; width:32px; height:32px; border-radius:50%; border:1px solid var(--gold-soft);
+  display:flex; align-items:center; justify-content:center;
+  font-family:"Plex Serif Display",serif; font-size:13.5px; color:var(--gold-soft);
+}
+.book-step p{ margin:0; font-size:13.5px; color:var(--muted); line-height:1.65; }
+.book-step b{ display:block; color:var(--paper); font-size:14.5px; font-weight:600; margin-bottom:4px; }
+
+.contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:40px;}
 @media (max-width:860px){ .contact-grid{grid-template-columns:1fr; gap:40px;} }
 .contact-card{
   border:1px solid var(--line-strong); padding:40px; display:flex; flex-direction:column; gap:22px;
-  background:linear-gradient(160deg, rgba(201,113,63,0.07), rgba(47,110,100,0.04) 70%, transparent);
+  background:linear-gradient(160deg, rgba(182,146,79,0.07), rgba(63,110,165,0.04) 70%, transparent);
 }
 .contact-card h3{margin:0; font-size:22px; font-weight:600;}
 .contact-line{display:flex; align-items:center; gap:14px; font-size:15px;}
@@ -427,7 +496,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   background:var(--ink); color:var(--gold-soft);
   border:1px solid var(--line-strong);
   display:flex; align-items:center; justify-content:center;
-  box-shadow:0 16px 34px -12px rgba(0,0,0,.65), 0 0 0 1px rgba(247,244,238,0.05);
+  box-shadow:0 16px 34px -12px rgba(0,0,0,.65), 0 0 0 1px rgba(245,238,225,0.05);
   opacity:0; transform:translateY(22px) scale(.92);
   transition:transform .5s var(--ease), box-shadow var(--dur-fast) var(--ease),
              background var(--dur-fast) ease, color var(--dur-fast) ease, opacity .5s var(--ease);
@@ -435,7 +504,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 }
 .wa-float.is-visible{ opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
 .wa-float:hover{ background:var(--gold); color:var(--ink); transform:translateY(-3px) scale(1.06);
-  box-shadow:0 20px 40px -12px rgba(201,113,63,.5), 0 0 0 1px rgba(247,244,238,0.05); }
+  box-shadow:0 20px 40px -12px rgba(182,146,79,.5), 0 0 0 1px rgba(245,238,225,0.05); }
 .wa-float svg{width:26px;height:26px;}
 [data-reduce-motion="true"] .wa-float{ transition:opacity .3s ease; transform:none; }
 [data-reduce-motion="true"] .wa-float.is-visible{ transform:none; }
@@ -446,7 +515,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 .mbar{
   position:fixed; inset-inline:0; bottom:0; z-index:65; display:none;
   grid-template-columns:1fr 1fr;
-  background:rgba(10,10,16,0.96); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  background:rgba(23,19,16,0.96); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
   border-top:1px solid var(--line);
   transform:translateY(100%); transition:transform .45s var(--ease);
 }
@@ -514,14 +583,14 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 .hero-stage::before{
   content:""; position:absolute; width:520px; height:520px; border-radius:50%;
   background:
-    radial-gradient(circle at 35% 30%, rgba(201,113,63,0.30), transparent 55%),
-    radial-gradient(circle at 68% 70%, rgba(47,110,100,0.28), transparent 58%);
+    radial-gradient(circle at 35% 30%, rgba(182,146,79,0.30), transparent 55%),
+    radial-gradient(circle at 68% 70%, rgba(63,110,165,0.28), transparent 58%);
   filter:blur(10px); z-index:0;
 }
 .cine-panel{
   position:relative; z-index:1; width:min(400px,84vw); aspect-ratio:3/4;
   border-radius:22px; overflow:hidden; background:#0c0c10;
-  box-shadow:0 50px 100px -30px rgba(0,0,0,0.7), 0 0 0 1px rgba(247,244,238,0.08);
+  box-shadow:0 50px 100px -30px rgba(0,0,0,0.7), 0 0 0 1px rgba(245,238,225,0.08);
   transition:transform .6s var(--ease);
 }
 .cine-panel:hover{ transform:translateY(-6px); }
@@ -531,7 +600,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 }
 .cine-panel .cine-scrim{
   position:absolute; inset:0; pointer-events:none;
-  background:linear-gradient(to top, rgba(6,6,9,0.92) 0%, rgba(6,6,9,0.15) 42%, transparent 62%);
+  background:linear-gradient(to top, rgba(10,8,6,0.92) 0%, rgba(10,8,6,0.15) 42%, transparent 62%);
 }
 .cine-panel .cine-cite{
   position:absolute; z-index:2; bottom:18px; inset-inline:18px;
@@ -546,23 +615,31 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 /* ============================================================
    IN PRACTICE — editorial full-panel photo + cinematic video
    ============================================================ */
-.practice-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:56px; align-items:start;}
-@media (max-width:900px){ .practice-grid{grid-template-columns:1fr; gap:44px;} }
+.practice-grid{display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:start;}
+@media (max-width:900px){ .practice-grid{grid-template-columns:1fr; gap:36px;} }
 
 .editorial-photo{
+  /* v7: was rendering the full 1080x1080 source at the grid column's full
+     width with no size cap — on a wide desktop column that meant a photo
+     ~600px+ tall dominating the section, and full-bleed-square on mobile.
+     Client called it "too big, not compatible" (punch list item 4). Capped
+     to a size comparable to this page's other real-photo device (.cine-panel,
+     max 400px) — still real presence, no longer oversized. */
   position:relative; border-radius:20px; overflow:hidden;
-  box-shadow:0 40px 90px -30px rgba(0,0,0,0.65), 0 0 0 1px rgba(247,244,238,0.08);
+  max-width:420px; aspect-ratio:4/5; margin-inline:auto;
+  box-shadow:0 30px 70px -28px rgba(0,0,0,0.6), 0 0 0 1px rgba(245,238,225,0.08);
 }
-.editorial-photo img{ width:100%; display:block; will-change:transform; }
+@media (max-width:900px){ .editorial-photo{ margin-inline:0; } }
+.editorial-photo img{ width:100%; height:100%; display:block; object-fit:cover; object-position:50% 30%; will-change:transform; }
 .editorial-photo .grade{
   position:absolute; inset:0; pointer-events:none;
   background:
-    linear-gradient(160deg, rgba(201,113,63,0.16), rgba(47,110,100,0.12) 55%, transparent 85%);
+    linear-gradient(160deg, rgba(182,146,79,0.16), rgba(63,110,165,0.12) 55%, transparent 85%);
   mix-blend-mode:overlay;
 }
 .editorial-photo .cine-scrim{
   position:absolute; inset:0; pointer-events:none;
-  background:linear-gradient(to top, rgba(6,6,9,0.94) 0%, rgba(6,6,9,0.05) 46%, transparent 60%);
+  background:linear-gradient(to top, rgba(10,8,6,0.94) 0%, rgba(10,8,6,0.05) 46%, transparent 60%);
 }
 .editorial-photo .ed-cap{
   position:absolute; z-index:2; inset-inline:22px; bottom:20px;
@@ -619,48 +696,19 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 .edu-final b{ color:var(--gold-soft); }
 
 /* ============================================================
-   SIGNATURE 3D — self-hosted Three.js, capability-gated
-   ============================================================ */
-.sig3d-section{
-  position:relative; overflow:hidden;
-  background:
-    radial-gradient(ellipse 900px 620px at 14% 8%, rgba(47,110,100,0.20), transparent 60%),
-    radial-gradient(ellipse 800px 560px at 90% 96%, rgba(201,113,63,0.20), transparent 60%),
-    var(--ink-2);
-}
-.sig3d-grid{ display:grid; grid-template-columns:.85fr 1.15fr; gap:56px; align-items:center; }
-@media (max-width:940px){ .sig3d-grid{grid-template-columns:1fr; gap:40px;} }
-.sig3d-copy p{ color:var(--muted); font-size:16.5px; margin:0 0 20px; max-width:460px; }
-.sig3d-facts{ display:flex; gap:28px; margin-top:8px; flex-wrap:wrap; }
-.sig3d-facts div b{ display:block; font-family:"Plex Serif Display",serif; font-size:30px; color:var(--gold-soft); }
-.sig3d-facts div span{ font-size:12.5px; color:var(--muted); }
-.sig3d-stage{
-  position:relative; width:100%; max-width:520px; aspect-ratio:1/1; margin-inline:auto;
-  border-radius:24px; overflow:hidden;
-  background:radial-gradient(circle at 50% 50%, rgba(201,113,63,0.10), transparent 70%);
-}
-.sig3d-stage canvas{ position:absolute; inset:0; width:100% !important; height:100% !important; display:block; }
-.sig3d-fallback{
-  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-}
-.sig3d-fallback svg{ width:64%; height:64%; opacity:.9; }
-.sig3d-stage:not(.on) canvas{ opacity:0; }
-.sig3d-stage.on .sig3d-fallback{ display:none; }
-
-/* ============================================================
    TESTIMONIALS — real, video-verified patient quotes
    ============================================================ */
-.tmn-grid{ display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+.tmn-grid{ display:grid; grid-template-columns:1fr 1fr; gap:22px; }
 @media (max-width:860px){ .tmn-grid{grid-template-columns:1fr;} }
 .tmn-card{
   display:grid; grid-template-columns:150px 1fr; gap:20px;
   border:1px solid var(--line); border-radius:16px; padding:20px;
-  background:linear-gradient(160deg, rgba(201,113,63,0.05), rgba(47,110,100,0.04)), var(--ink-2);
-  box-shadow:0 34px 70px -34px rgba(0,0,0,0.6), 0 0 0 1px rgba(247,244,238,0.04);
+  background:linear-gradient(160deg, rgba(182,146,79,0.05), rgba(63,110,165,0.04)), var(--ink-2);
+  box-shadow:0 34px 70px -34px rgba(0,0,0,0.6), 0 0 0 1px rgba(245,238,225,0.04);
   transition:border-color var(--dur-fast) ease, transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
 }
 .tmn-card:hover{ border-color:var(--line-strong); transform:translateY(-5px);
-  box-shadow:0 40px 80px -30px rgba(0,0,0,0.7), 0 0 0 1px rgba(247,244,238,0.06); }
+  box-shadow:0 40px 80px -30px rgba(0,0,0,0.7), 0 0 0 1px rgba(245,238,225,0.06); }
 @media (max-width:520px){ .tmn-card{grid-template-columns:1fr;} }
 .tmn-media{
   position:relative; width:150px; aspect-ratio:3/4; border-radius:12px; overflow:hidden; flex:none;
@@ -669,16 +717,16 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 @media (max-width:520px){ .tmn-media{width:100%; max-width:200px;} }
 .tmn-media video, .tmn-media img{ width:100%; height:100%; object-fit:cover; display:block; }
 .tmn-media .cine-scrim{ position:absolute; inset:0; pointer-events:none;
-  background:linear-gradient(to top, rgba(6,6,9,0.7) 0%, transparent 55%); }
+  background:linear-gradient(to top, rgba(10,8,6,0.7) 0%, transparent 55%); }
 .tmn-media.text-only{
   position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden;
   background:
-    radial-gradient(circle at 30% 20%, rgba(116,195,177,0.20), transparent 55%),
+    radial-gradient(circle at 30% 20%, rgba(143,180,218,0.20), transparent 55%),
     linear-gradient(160deg, var(--gold-deep), var(--ink-3) 70%);
 }
 .tmn-media.text-only::before{
   content:""; position:absolute; inset:0; opacity:.5;
-  background-image:radial-gradient(rgba(247,244,238,0.16) 1px, transparent 1px);
+  background-image:radial-gradient(rgba(245,238,225,0.16) 1px, transparent 1px);
   background-size:14px 14px;
   mask-image:linear-gradient(to bottom, transparent, black 40%, black 70%, transparent);
 }
@@ -686,7 +734,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 .tmn-play-badge{
   position:absolute; z-index:2; top:10px; inset-inline-start:10px;
   font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--paper);
-  background:rgba(6,6,9,0.55); border:1px solid rgba(247,244,238,0.2); border-radius:999px;
+  background:rgba(10,8,6,0.55); border:1px solid rgba(245,238,225,0.2); border-radius:999px;
   padding:3px 9px;
 }
 .tmn-body blockquote{ margin:0 0 12px; font-size:18px; line-height:1.55; font-weight:500; }
@@ -696,7 +744,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   margin-top:36px; font-size:13px; color:var(--muted-2); max-width:640px;
   display:flex; gap:10px; align-items:flex-start;
 }
-.tmn-note svg{ width:16px; height:16px; color:var(--teal-soft); flex:none; margin-top:2px; }
+.tmn-note svg{ width:16px; height:16px; color:var(--blue-soft); flex:none; margin-top:2px; }
 
 /* ============================================================
    FOCUS AREAS — numbered rail (replaces the old flat grid)
@@ -704,10 +752,10 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 .focus-rail{ border-top:1px solid var(--line); }
 .focus-row{
   display:grid; grid-template-columns:110px 1fr 40px; align-items:center; gap:24px;
-  padding:30px 4px; border-bottom:1px solid var(--line);
+  padding:22px 4px; border-bottom:1px solid var(--line);
   transition:background var(--dur-fast) ease;
 }
-.focus-row:hover, .focus-row.is-active{ background:rgba(201,113,63,0.05); }
+.focus-row:hover, .focus-row.is-active{ background:rgba(182,146,79,0.05); }
 @media (max-width:700px){ .focus-row{grid-template-columns:60px 1fr; gap:16px;} .focus-row .focus-arrow{display:none;} }
 .focus-num{
   font-family:"Plex Serif Display",serif; font-weight:600; font-size:clamp(28px,3.2vw,44px);
@@ -735,7 +783,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
    ============================================================ */
 .portrait-band{
   position:relative; overflow:hidden; background:var(--ink);
-  height:clamp(440px,72vw,760px);
+  height:clamp(400px,58vw,620px);
 }
 .portrait-band .pb-bleed{
   position:absolute; inset:0; width:100%; height:118%; top:-9%;
@@ -748,17 +796,17 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 .portrait-band .pb-duo{
   position:absolute; inset:0; pointer-events:none; mix-blend-mode:color;
   background:
-    linear-gradient(115deg, rgba(201,113,63,0.85) 0%, rgba(201,113,63,0.15) 46%),
-    linear-gradient(295deg, rgba(47,110,100,0.85) 0%, rgba(47,110,100,0.1) 55%);
+    linear-gradient(115deg, rgba(182,146,79,0.85) 0%, rgba(182,146,79,0.15) 46%),
+    linear-gradient(295deg, rgba(63,110,165,0.85) 0%, rgba(63,110,165,0.1) 55%);
 }
 .portrait-band .pb-duo::after{
   content:""; position:absolute; inset:0; mix-blend-mode:overlay;
-  background:linear-gradient(160deg, rgba(201,113,63,0.3), rgba(47,110,100,0.24) 70%);
+  background:linear-gradient(160deg, rgba(182,146,79,0.3), rgba(63,110,165,0.24) 70%);
 }
 .portrait-band .pb-scrim{
   position:absolute; inset:0; pointer-events:none;
   background:
-    linear-gradient(to top, rgba(6,6,9,0.98) 0%, rgba(6,6,9,0.86) 22%, rgba(6,6,9,0.3) 48%, rgba(6,6,9,0.1) 65%, rgba(6,6,9,0.5) 100%);
+    linear-gradient(to top, rgba(10,8,6,0.98) 0%, rgba(10,8,6,0.86) 22%, rgba(10,8,6,0.3) 48%, rgba(10,8,6,0.1) 65%, rgba(10,8,6,0.5) 100%);
 }
 .portrait-band .pb-content{
   position:relative; z-index:1; height:100%; display:flex; flex-direction:column; justify-content:flex-end;
@@ -779,7 +827,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 .trust-gauge{ position:relative; width:132px; height:132px; flex:none; }
 .trust-gauge svg{ width:100%; height:100%; transform:rotate(-90deg); }
 .trust-gauge circle{ fill:none; stroke-width:7; }
-.trust-gauge .tg-track{ stroke:rgba(247,244,238,0.1); }
+.trust-gauge .tg-track{ stroke:rgba(245,238,225,0.1); }
 .trust-gauge .tg-fill{
   stroke:url(#tgGrad); stroke-linecap:round;
   stroke-dasharray:345; stroke-dashoffset:345;
@@ -801,7 +849,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
    motion-variety both land in one device (gap 3 + the reviews brief).
    Real names/dates/quotes only; no avatars invented. (HANDOFF v6)
    ============================================================ */
-.greviews-grid{ display:grid; grid-template-columns:.62fr 1fr; gap:48px; align-items:start; }
+.greviews-grid{ display:grid; grid-template-columns:.62fr 1fr; gap:36px; align-items:start; }
 @media (max-width:900px){ .greviews-grid{grid-template-columns:1fr; gap:32px;} }
 .greviews-score{ display:flex; align-items:center; gap:20px; margin-bottom:18px; }
 .greviews-score .num{
@@ -819,7 +867,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 .gcard{
   border:1px solid var(--line); border-radius:14px; padding:20px 22px;
   background:var(--ink-2);
-  box-shadow:0 26px 54px -30px rgba(0,0,0,0.6), 0 0 0 1px rgba(247,244,238,0.04);
+  box-shadow:0 26px 54px -30px rgba(0,0,0,0.6), 0 0 0 1px rgba(245,238,225,0.04);
 }
 .gcard .gstars{ display:flex; gap:3px; margin-bottom:10px; }
 .gcard .gstars svg{ width:14px; height:14px; color:var(--gold); }
@@ -834,25 +882,12 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 [data-reduce-motion="true"] .gcol-track{ animation:none; }
 [data-reduce-motion="true"] .gcol:nth-child(2){ display:block; }
 
-/* ============================================================
-   JOURNEY spine — strengthened + a real scroll-synced traveling
-   marker (gap 3 + gap 7's "second device" for the timeline). The
-   fill (#tlProgress) already ties to scroll in JS; this just gives
-   it a visible glow and a marker riding its tip instead of a plain
-   flat-color bar.
-   ============================================================ */
-.tl-track{ width:2px; background:rgba(247,244,238,0.14); border-radius:2px; }
-.tl-track i{
-  width:2px; border-radius:2px;
-  background:linear-gradient(to bottom, var(--teal-soft), var(--gold));
-  box-shadow:0 0 16px 1px rgba(201,113,63,0.55);
-}
-.tl-marker{
-  position:absolute; inset-inline-start:-4px; width:11px; height:11px; border-radius:50%;
-  background:var(--gold); box-shadow:0 0 0 4px rgba(201,113,63,0.22), 0 0 14px 2px rgba(201,113,63,0.6);
-  top:0%; transform:translateY(-50%); transition:top 1.1s var(--ease);
-}
-[data-reduce-motion="true"] .tl-marker{ display:none; }
+/* Journey timeline: v7 restores the ORIGINAL pre-v6 spine treatment
+   (a plain 1px hairline track with a 5px gold fill bar that grows in
+   height on scroll — see the .tl-track rule up in the TIMELINE block
+   above) per the client's explicit "restore the first animation, it
+   was better" — the v6 "strengthened glow + traveling marker" version
+   that lived here has been removed, not just visually reverted. */
 </style>
 </head>
 <body data-lang="ar">
@@ -881,6 +916,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
       <a href="#journey"><span class="ar-only">المسيرة المهنية</span><span class="en-only">Journey</span></a>
       <a href="#education"><span class="ar-only">التعليم والزمالات</span><span class="en-only">Education</span></a>
       <a href="#focus"><span class="ar-only">مجالات التركيز</span><span class="en-only">Focus</span></a>
+      <a href="#visit"><span class="ar-only">أين تجده</span><span class="en-only">Where to Find Him</span></a>
       <a href="#contact"><span class="ar-only">تواصل</span><span class="en-only">Contact</span></a>
     </nav>
     <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch language">
@@ -932,7 +968,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
         <div class="hero-actions">
           <span class="magnetic" data-magnetic>
             <a class="btn btn-primary" href="https://wa.me/966563681087" target="_blank" rel="noopener">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.5s-.6-1.5-.9-2c-.2-.5-.5-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3c1.5.8 3.2 1.3 5.1 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.5.9.9-3.4-.2-.3C3.5 14.4 3 12.7 3 10.9 3 6 6.9 2 11.9 2c5 0 9 4 9 9s-4 9-9 9z" opacity="0"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.5s-.6-1.5-.9-2c-.2-.5-.5-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3c1.5.8 3.2 1.3 5.1 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.5.9.9-3.4-.2-.3C3.5 14.4 3 12.7 3 10.9 3 6 6.9 2 11.9 2c5 0 9 4 9 9s-4 9-9 9z"/></svg>
               <span class="ar-only">تواصل عبر واتساب</span>
               <span class="en-only">Message on WhatsApp</span>
             </a>
@@ -1013,40 +1049,6 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   </div>
 </section>
 
-<!-- ============================================================ SIGNATURE 3D — precision, materialized -->
-<section class="section-pad sig3d-section" id="signature">
-  <div class="wrap">
-    <div class="sig3d-grid">
-      <div class="sig3d-copy reveal">
-        <div class="kicker"><span class="rule"></span><span class="ar-only">معيار العمل</span><span class="en-only">The Standard</span></div>
-        <h2 style="font-size:clamp(28px,3.6vw,42px); margin:0 0 18px; font-weight:700; letter-spacing:-.01em;">
-          <span class="ar-only">دقة تُقاس، لا تُدّعى</span>
-          <span class="en-only">Precision you can measure, not just claim</span>
-        </h2>
-        <p class="ar-only">عشرون عاماً من الجراحة الدقيقة — من نحت الجسم إلى الجراحة المجهرية — تختصر في فكرة واحدة: كل وجه، كل زاوية، يجب أن يوضع في مكانه الصحيح تماماً.</p>
-        <p class="en-only">Two decades of precise surgery — from body contouring to hand &amp; microsurgery — come down to one idea: every facet, every angle, has to sit exactly where it belongs.</p>
-        <div class="sig3d-facts">
-          <div><b class="ltr">20+</b><span class="ar-only">عاماً من الدقة الجراحية</span><span class="en-only">years of surgical precision</span></div>
-          <div><b class="ltr">2</b><span class="ar-only">تخصصان دقيقان: نحت وترميم</span><span class="en-only">precision disciplines: contouring &amp; reconstruction</span></div>
-        </div>
-      </div>
-      <div class="sig3d-stage reveal" id="sig3dStage">
-        <div class="sig3d-fallback" aria-hidden="true">
-          <svg viewBox="0 0 200 200" fill="none">
-            <polygon points="100,14 178,60 178,140 100,186 22,140 22,60" stroke="var(--gold-soft)" stroke-width="1.2" fill="rgba(201,113,63,0.08)"/>
-            <polygon points="100,14 178,60 100,100" stroke="var(--teal-soft)" stroke-width="1" fill="rgba(47,110,100,0.10)"/>
-            <polygon points="178,60 178,140 100,100" stroke="var(--gold-soft)" stroke-width="1" fill="rgba(201,113,63,0.06)"/>
-            <polygon points="178,140 100,186 100,100" stroke="var(--teal-soft)" stroke-width="1" fill="rgba(47,110,100,0.08)"/>
-            <polygon points="100,186 22,140 100,100" stroke="var(--gold-soft)" stroke-width="1" fill="rgba(201,113,63,0.06)"/>
-            <polygon points="22,140 22,60 100,100" stroke="var(--teal-soft)" stroke-width="1" fill="rgba(47,110,100,0.10)"/>
-            <polygon points="22,60 100,14 100,100" stroke="var(--gold-soft)" stroke-width="1" fill="rgba(201,113,63,0.08)"/>
-          </svg>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ============================================================ IN PRACTICE — real conference photo + real video quote -->
 <section class="section-pad band" id="practice">
   <div class="wrap">
@@ -1103,7 +1105,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
     </div>
 
     <div class="timeline reveal" id="timeline">
-      <div class="tl-track"><i id="tlProgress"></i><span class="tl-marker" id="tlMarker" aria-hidden="true"></span></div>
+      <div class="tl-track"><i id="tlProgress"></i></div>
 
       <div class="tl-item">
         <span class="tl-dot"></span>
@@ -1347,45 +1349,6 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 </section>
 
 <!-- ============================================================ TRUST -->
-<section class="section-pad" id="trust">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="kicker"><span class="rule"></span><span class="ar-only">التقييم</span><span class="en-only">Recognition</span></div>
-      <h2><span class="ar-only">تقييم موثّق على خرائط جوجل</span><span class="en-only">A verified rating on Google</span></h2>
-    </div>
-    <div class="trust-panel reveal">
-    <div class="trust-wrap">
-      <div class="trust-gauge" id="trustGauge" aria-hidden="true">
-        <svg viewBox="0 0 120 120">
-          <defs>
-            <linearGradient id="tgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#c9713f"/>
-              <stop offset="100%" stop-color="#74c3b1"/>
-            </linearGradient>
-          </defs>
-          <circle class="tg-track" cx="60" cy="60" r="55"/>
-          <circle class="tg-fill" cx="60" cy="60" r="55"/>
-        </svg>
-        <span class="tg-label ltr">4.8/5</span>
-      </div>
-      <div>
-        <div class="trust-score"><span class="ltr">4.8</span><span class="ar-only">من 5</span><span class="en-only">/ 5</span></div>
-        <div class="trust-stars" aria-hidden="true">
-          <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1l2.6 6 6.4.6-4.8 4.2 1.4 6.2L10 15l-5.6 3 1.4-6.2L1 7.6 7.4 7z"/></svg>
-          <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1l2.6 6 6.4.6-4.8 4.2 1.4 6.2L10 15l-5.6 3 1.4-6.2L1 7.6 7.4 7z"/></svg>
-          <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1l2.6 6 6.4.6-4.8 4.2 1.4 6.2L10 15l-5.6 3 1.4-6.2L1 7.6 7.4 7z"/></svg>
-          <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1l2.6 6 6.4.6-4.8 4.2 1.4 6.2L10 15l-5.6 3 1.4-6.2L1 7.6 7.4 7z"/></svg>
-          <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1l2.6 6 6.4.6-4.8 4.2 1.4 6.2L10 15l-5.6 3 1.4-6.2L1 7.6 7.4 7z"/></svg>
-        </div>
-      </div>
-      <p class="trust-note">
-        <span class="ar-only"><strong><span class="ltr">38</span> تقييماً</strong> على خرائط Google، بحسب آخر رصد في أغسطس <span class="ltr">2026</span>. الرقم قابل للتغير مع تقييمات جديدة — والأقوى منه أدناه: مراجعات فيديو حقيقية بصوت المريضات أنفسهن.</span>
-        <span class="en-only"><strong><span class="ltr">38</span> reviews</strong> on Google Maps, as last checked in August <span class="ltr">2026</span>. This figure may change as new reviews are added — and stronger still, below: real video reviews in patients' own voices.</span>
-      </p>
-    </div>
-    </div>
-  </div>
-</section>
 
 <!-- ============================================================ TESTIMONIALS — real, video-verified patient quotes -->
 <section class="section-pad band" id="testimonials">
@@ -1514,23 +1477,40 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   <div class="wrap">
     <div class="greviews-grid">
       <div class="reveal">
+        <!-- v7 (punch-list item 6): this is now the ONE combined
+             rating+reviews section — the old separate #trust section
+             (numeral+stars+gauge) and this #reviews section (auto-scroll
+             review columns) did overlapping jobs (both showed the same
+             4.8/38 figure a second time) and have been merged into a
+             single block. The real, video-verified patient testimonials
+             (#testimonials, above this section) are left completely
+             untouched per the client's explicit instruction. -->
         <div class="kicker"><span class="rule"></span><span class="ar-only">تقييمات جوجل</span><span class="en-only">Google Reviews</span></div>
         <h2><span class="ar-only">ماذا يقول مرضاه على جوجل</span><span class="en-only">What his patients say on Google</span></h2>
         <div class="greviews-score">
-          <span class="num ltr">4.8</span>
-          <span>
-            <span class="trust-stars" aria-hidden="true" style="margin-top:0;">
+          <div class="trust-gauge" id="trustGauge" aria-hidden="true">
+            <svg viewBox="0 0 120 120">
+              <defs>
+                <linearGradient id="tgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#b6924f"/>
+                  <stop offset="100%" stop-color="#8fb4da"/>
+                </linearGradient>
+              </defs>
+              <circle class="tg-track" cx="60" cy="60" r="55"/>
+              <circle class="tg-fill" cx="60" cy="60" r="55"/>
+            </svg>
+            <span class="tg-label ltr">4.8/5</span>
+          </div>
+          <div>
+            <span class="num ltr">4.8</span>
+            <span class="trust-stars" aria-hidden="true" style="margin-top:6px;">
               <svg viewBox="0 0 20 20"><use href="#i-gstar"></use></svg><svg viewBox="0 0 20 20"><use href="#i-gstar"></use></svg><svg viewBox="0 0 20 20"><use href="#i-gstar"></use></svg><svg viewBox="0 0 20 20"><use href="#i-gstar"></use></svg><svg viewBox="0 0 20 20"><use href="#i-gstar"></use></svg>
             </span>
-            <span class="greviews-note" style="margin-top:6px; display:block;">
-              <span class="ar-only"><span class="ltr">38</span> تقييماً موثقاً على خرائط جوجل</span>
-              <span class="en-only"><span class="ltr">38</span> verified reviews on Google Maps</span>
-            </span>
-          </span>
+          </div>
         </div>
         <p class="greviews-note">
-          <span class="ar-only">عشرة تقييمات حقيقية مختارة من أصل خمس عشرة تقييماً حقيقياً موثقاً — أسماء حقيقية، تواريخ حقيقية، بلا صور مُلفّقة للمُراجِعات.</span>
-          <span class="en-only">Ten real reviews, a curated cross-section of fifteen real, verified 5-star reviews — real names, real dates, no invented reviewer photos.</span>
+          <span class="ar-only"><strong><span class="ltr">38</span> تقييماً</strong> موثقاً على خرائط Google، بحسب آخر رصد في أغسطس <span class="ltr">2026</span> — عشرة منها معروضة هنا كنموذج حقيقي، بأسماء وتواريخ حقيقية، بلا صور مُلفّقة للمُراجِعات.</span>
+          <span class="en-only"><strong><span class="ltr">38</span> reviews</strong> on Google Maps, as last checked in August <span class="ltr">2026</span> — ten shown here as a real sample, with real names and dates, no invented reviewer photos.</span>
         </p>
         <p class="src-cite" style="margin-top:16px;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
@@ -1658,12 +1638,86 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 </section>
 
 <!-- ============================================================ CONTACT -->
-<section class="section-pad band" id="contact">
+<!-- ============================================================ VISIT — real "where to find him" section (punch-list item 9) -->
+<section class="section-pad" id="visit">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="kicker"><span class="rule"></span><span class="ar-only">أين تجده</span><span class="en-only">Where to Find Him</span></div>
+      <h2><span class="ar-only">لا يملك عيادة، لكنه يمارس هنا حالياً</span><span class="en-only">He owns no clinic — but this is where he currently practices</span></h2>
+      <p><span class="ar-only">لا عنوان شخصي أو "عيادة أحمد عوض" — هذا واقعي وصادق: يمارس حالياً في عيادات لمسة، جدة.</span><span class="en-only">No personal address or a "Dr. Awad Clinic" — this is stated honestly: he currently practices at Lamsa Clinics, Jeddah.</span></p>
+    </div>
+    <div class="visit-grid reveal">
+      <div>
+        <div class="visit-list">
+          <div class="visit-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21s7-6.5 7-12a7 7 0 10-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            <p>
+              <span class="ar-only">عيادات لمسة، <span class="ltr">7726</span> شارع الفضل، حي الحمراء، جدة <span class="ltr">23324</span></span>
+              <span class="en-only">Lamsa Clinics, <span class="ltr">7726</span> Al Fadl St., Al Hamra District, Jeddah <span class="ltr">23324</span></span><br>
+              <a class="ulink" href="https://maps.google.com/maps?q=%D8%B9%D9%8A%D8%A7%D8%AF%D8%A7%D8%AA%20%D9%84%D9%85%D8%B3%D8%A9%D8%8C%20%D8%B7%D8%B1%D9%8A%D9%82%20%D8%A7%D9%84%D9%81%D8%B6%D9%84%D8%8C%20%D8%AD%D9%8A%20%D8%A7%D9%84%D8%AD%D9%85%D8%B1%D8%A7%D8%A1%D8%8C%20%D8%AC%D8%AF%D8%A9" target="_blank" rel="noopener">
+                <span class="ar-only">افتح في خرائط جوجل</span><span class="en-only">Open in Google Maps</span>
+              </a>
+            </p>
+          </div>
+          <div class="visit-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            <p>
+              <span class="ar-only muted">هاتف عيادات لمسة (استقبال، لا خطه الشخصي)</span>
+              <span class="en-only muted">Lamsa Clinics reception line (not his personal number)</span><br>
+              <a class="ulink" href="tel:+966126614000"><span class="ltr">012 661 4000</span></a>
+            </p>
+          </div>
+          <div class="visit-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+            <p>
+              <span class="ar-only">ساعات العمل تُحدَّد بحسب مواعيده الشخصية عبر واتساب — <span class="muted">لا جدول ثابت معلن</span></span>
+              <span class="en-only">Hours are set around his own personal appointments via WhatsApp — <span class="muted">no fixed published schedule</span></span>
+            </p>
+          </div>
+        </div>
+        <p class="visit-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" style="width:13px;height:13px;display:inline-block;vertical-align:-1px;margin-inline-end:6px;"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+          <span class="ar-only">هذا هو المكان الذي يمارس فيه حالياً كاستشاري — لا عيادة يملكها باسمه، ولا هوية ثابتة مستقلة. عنوان عيادات لمسة موثّق ومتحقق منه (انظر البحث الأصلي في هذا المشروع).</span>
+          <span class="en-only">This is where he currently practices as a consultant — not a clinic he owns, not an independent fixed identity of his own. Lamsa Clinics' address is documented and independently verified (see this project's own research).</span>
+        </p>
+      </div>
+      <div class="visit-map reveal">
+        <iframe title="Lamsa Clinics on the map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen
+                src="https://maps.google.com/maps?q=%D8%B9%D9%8A%D8%A7%D8%AF%D8%A7%D8%AA%20%D9%84%D9%85%D8%B3%D8%A9%D8%8C%20%D8%B7%D8%B1%D9%8A%D9%82%20%D8%A7%D9%84%D9%81%D8%B6%D9%84%D8%8C%20%D8%AD%D9%8A%20%D8%A7%D9%84%D8%AD%D9%85%D8%B1%D8%A7%D8%A1%D8%8C%20%D8%AC%D8%AF%D8%A9&hl=ar&z=15&output=embed"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ CONTACT / BOOKING — WhatsApp-first, real shader depth (punch-list item 8) -->
+<section class="section-pad band book-wrap" id="contact">
+  <canvas id="bookshader" aria-hidden="true"></canvas>
+  <div class="book-scrim" aria-hidden="true"></div>
   <div class="wrap">
     <div class="section-head reveal">
       <div class="kicker"><span class="rule"></span><span class="ar-only">تواصل</span><span class="en-only">Contact</span></div>
-      <h2><span class="ar-only">للاستفسار أو حجز موعد</span><span class="en-only">For inquiries or an appointment</span></h2>
+      <h2><span class="ar-only">لا نظام حجز إلكتروني — رسالة واتساب واحدة تكفي</span><span class="en-only">No online booking system — one WhatsApp message is enough</span></h2>
       <p><span class="ar-only">لا يوجد عنوان ثابت أو ساعات عمل معلنة — التواصل المباشر هو الطريق الأقصر.</span><span class="en-only">No fixed address or published hours — direct contact is the fastest way to reach him.</span></p>
+    </div>
+    <div class="book-steps reveal">
+      <div class="book-step">
+        <span class="n">1</span>
+        <p><b class="ar-only">راسله على واتساب</b><b class="en-only">Message him on WhatsApp</b>
+          <span class="ar-only">اضغط الزر أدناه — يفتح محادثة مباشرة مع رقمه الشخصي.</span>
+          <span class="en-only">Tap the button below — it opens a direct chat with his personal number.</span></p>
+      </div>
+      <div class="book-step">
+        <span class="n">2</span>
+        <p><b class="ar-only">اشرح حالتك بإيجاز</b><b class="en-only">Briefly describe your case</b>
+          <span class="ar-only">اسمك، وما تحتاجه — بلا نماذج أو خطوات معقدة.</span>
+          <span class="en-only">Your name and what you need — no forms, no complicated steps.</span></p>
+      </div>
+      <div class="book-step">
+        <span class="n">3</span>
+        <p><b class="ar-only">يرد عليك شخصياً</b><b class="en-only">He replies personally</b>
+          <span class="ar-only">لا مركز اتصال — هو من يقرأ ويرد على رسالتك بنفسه.</span>
+          <span class="en-only">No call center — he reads and replies to your message himself.</span></p>
+      </div>
     </div>
     <div class="contact-grid reveal">
       <div class="contact-card">
@@ -1857,7 +1911,6 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   /* ---------- timeline progress fill on scroll ---------- */
   var timeline = document.getElementById("timeline");
   var tlProgress = document.getElementById("tlProgress");
-  var tlMarker = document.getElementById("tlMarker");
   function updateTimeline(){
     if(!timeline || !tlProgress) return;
     var rect = timeline.getBoundingClientRect();
@@ -1866,11 +1919,9 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
     var visible = vh - rect.top;
     var ratio = Math.max(0, Math.min(1, visible / (total + vh*0.3)));
     tlProgress.style.height = (ratio*100) + "%";
-    if(tlMarker) tlMarker.style.top = (ratio*100) + "%";
   }
   if(reduce){
     if(tlProgress) tlProgress.style.height = "100%";
-    if(tlMarker) tlMarker.style.top = "100%";
   } else {
     window.addEventListener("scroll", updateTimeline, {passive:true});
     window.addEventListener("resize", updateTimeline);
@@ -1927,8 +1978,8 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   /* ---------- nav background on scroll ---------- */
   var navEl = document.querySelector(".nav");
   function updateNav(){
-    if(window.scrollY > 20){ navEl.style.background = "rgba(10,10,16,0.94)"; }
-    else { navEl.style.background = "rgba(10,10,16,0.82)"; }
+    if(window.scrollY > 20){ navEl.style.background = "rgba(23,19,16,0.94)"; }
+    else { navEl.style.background = "rgba(23,19,16,0.82)"; }
   }
   window.addEventListener("scroll", updateNav, {passive:true});
   updateNav();
@@ -2208,95 +2259,132 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
     onScroll();
   })();
 
-  /* ---------- SIGNATURE 3D — self-hosted Three.js, lazy + capability-gated ----------
-     No CDN: vendor/three.module.min.js is a local, self-hosted copy of the
-     same MIT-licensed build already vetted for this agency's De Praxes
-     build. Mounted only when the stage scrolls into view, only on a
-     WebGL-capable / not-reduced-motion / not-low-memory / not-save-data
-     connection (gpuCapable() above already folds in `reduce`, which itself
-     already folds in prefers-reduced-motion + deviceMemory<4 + saveData).
-     A static faceted-icosahedron SVG (already in the raw HTML) is the
-     fallback for every gated-off visitor, so the section is never empty. */
-  (function initSignature3D(){
-    var stage = document.getElementById("sig3dStage");
-    if(!stage) return;
-    var mounted = false;
-    function mount(){
-      if(mounted || !gpuCapable()) return;
-      mounted = true;
-      import("./vendor/three.module.min.js").then(function(THREE){
-        var width = stage.clientWidth, height = stage.clientHeight;
-        var renderer = new THREE.WebGLRenderer({ alpha:true, antialias:true });
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-        renderer.setSize(width, height);
-        stage.appendChild(renderer.domElement);
+  /* ---------- CONTACT/BOOKING section — real WebGL warp shader background
+     (punch-list item 8, replaces the removed Signature 3D as this page's
+     one real GPU-driven moment). Hand-written raw GLSL, no dependency,
+     technique studied from depraxis-demo's own #book section (itself
+     ported from 21st.dev's Warmth Ripple / the open-source
+     paper-design/shaders "warp" family) — reimplemented from scratch here
+     on this page's own gold/blue tokens, not the same shader file or
+     palette. Same gpuCapable() gate as everything else on this page, plus
+     its own IntersectionObserver so the render loop only runs on screen. ---------- */
+  function initBookShader(){
+    if(!gpuCapable()) return;
+    var canvas = document.getElementById("bookshader");
+    if(!canvas) return;
+    var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+    if(!gl) return;
 
-        var scene = new THREE.Scene();
-        var camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
-        camera.position.set(0, 0, 6.4);
+    var vsSrc = "attribute vec2 p;void main(){gl_Position=vec4(p,0.0,1.0);}";
+    /* Palette stops = this file's own --ink / --blue-deep / --gold / --gold-soft
+       tokens, converted to 0-1 floats (not De Praxes' char/bronze/sand). */
+    var fsSrc = [
+      "precision highp float;",
+      "uniform vec2 uRes; uniform float uTime;",
+      "#define TWO_PI 6.28318530718",
+      "const vec3 C0 = vec3(0.0902,0.0745,0.0627);", /* --ink #171310 */
+      "const vec3 C1 = vec3(0.1412,0.2549,0.4078);", /* --blue-deep #244168 */
+      "const vec3 C2 = vec3(0.7137,0.5725,0.3098);", /* --gold #b6924f */
+      "const vec3 C3 = vec3(0.8667,0.7412,0.5333);", /* --gold-soft #ddbd88 */
+      "float hash(vec2 p){ vec3 q = fract(vec3(p.xyx) * 0.1031);",
+      "  q += dot(q, q.yzx + 33.33); return fract((q.x + q.y) * q.z); }",
+      "float valueNoise(vec2 st){",
+      "  vec2 i = floor(st), f = fract(st);",
+      "  float a = hash(i), b = hash(i + vec2(1.0,0.0));",
+      "  float c = hash(i + vec2(0.0,1.0)), d = hash(i + vec2(1.0,1.0));",
+      "  vec2 u = f * f * (3.0 - 2.0 * f);",
+      "  return mix(mix(a,b,u.x), mix(c,d,u.x), u.y); }",
+      "float stopMix(float mixer, float idx, float softness){",
+      "  float m = clamp(mixer - idx, 0.0, 1.0);",
+      "  float start = floor(m);",
+      "  float soft = 0.5 * softness + 0.01;",
+      "  float sm = smoothstep(max(0.0, 0.5 - soft - 0.01), min(1.0, 0.5 + soft + 0.01), m - start);",
+      "  return mix(start + sm, m, softness); }",
+      "void main(){",
+      "  vec2 uv = (gl_FragCoord.xy - 0.5 * uRes) / max(uRes.y, 1.0);",
+      "  uv *= 1.45; uv *= 0.5;",
+      "  float t = 0.0625 * (uTime + 118.0);",
+      "  float n1 = valueNoise(uv * 1.0 + t);",
+      "  float n2 = valueNoise(uv * 2.0 - t);",
+      "  float angle = n1 * TWO_PI;",
+      "  const float distortion = 0.30;",
+      "  const float swirl = 0.55;",
+      "  uv.x += 4.0 * distortion * n2 * cos(angle);",
+      "  uv.y += 4.0 * distortion * n2 * sin(angle);",
+      "  for (int i = 1; i < 8; i++) {",
+      "    float fi = float(i);",
+      "    uv.x += swirl / fi * cos(t + fi * 1.5 * uv.y);",
+      "    uv.y += swirl / fi * cos(t + fi * 1.0 * uv.x); }",
+      "  const float proportion = 0.40;",
+      "  const float softness = 0.9;",
+      "  const float shapeScale = 0.55;",
+      "  vec2 sUv = uv * (2.0 * shapeScale);",
+      "  float fy = fract(sUv.y);",
+      "  float shape = smoothstep(0.0, 0.55, fy) * (1.0 - smoothstep(0.45, 1.0, fy));",
+      "  shape += 0.48 * sign(proportion - 0.5) * pow(abs(proportion - 0.5), 0.5);",
+      "  float mixer = shape * 3.0;",
+      "  vec3 grad = C0;",
+      "  grad = mix(grad, C1, stopMix(mixer, 0.0, softness));",
+      "  grad = mix(grad, C2, stopMix(mixer, 1.0, softness));",
+      "  grad = mix(grad, C3, stopMix(mixer, 2.0, softness));",
+      "  gl_FragColor = vec4(grad, 1.0); }"
+    ].join("\n");
 
-        var ambient = new THREE.AmbientLight(0x2b2430, 1.1);
-        scene.add(ambient);
-        var copperLight = new THREE.PointLight(0xe2a173, 14, 20);
-        copperLight.position.set(3.2, 2.4, 3.5);
-        scene.add(copperLight);
-        var tealLight = new THREE.PointLight(0x74c3b1, 10, 20);
-        tealLight.position.set(-3, -2, 2.6);
-        scene.add(tealLight);
-
-        var coreGeo = new THREE.IcosahedronGeometry(1.55, 1);
-        var coreMat = new THREE.MeshStandardMaterial({
-          color: 0xc9713f, metalness: 0.72, roughness: 0.28, flatShading: true
-        });
-        var core = new THREE.Mesh(coreGeo, coreMat);
-        scene.add(core);
-
-        var wireGeo = new THREE.IcosahedronGeometry(2.05, 1);
-        var wireMat = new THREE.MeshBasicMaterial({ color: 0x74c3b1, wireframe: true, transparent: true, opacity: 0.35 });
-        var wire = new THREE.Mesh(wireGeo, wireMat);
-        scene.add(wire);
-
-        var clock = new THREE.Clock();
-        var raf = null;
-        var visible = true;
-        function tick(){
-          raf = requestAnimationFrame(tick);
-          if(!visible) return;
-          var dt = clock.getDelta();
-          core.rotation.y += dt * 0.22;
-          core.rotation.x += dt * 0.07;
-          wire.rotation.y -= dt * 0.14;
-          wire.rotation.x -= dt * 0.05;
-          renderer.render(scene, camera);
-        }
-        tick();
-        stage.classList.add("on");
-
-        var pio = new IntersectionObserver(function(entries){
-          entries.forEach(function(e){ visible = e.isIntersecting; });
-        }, {threshold:0.05});
-        pio.observe(stage);
-
-        window.addEventListener("resize", function(){
-          var w = stage.clientWidth, h = stage.clientHeight;
-          if(!w || !h) return;
-          renderer.setSize(w, h);
-          camera.aspect = w / h;
-          camera.updateProjectionMatrix();
-        });
-      }).catch(function(){ /* stays on the static SVG fallback, no error surfaced to the visitor */ });
+    function compile(type, src){
+      var s = gl.createShader(type);
+      gl.shaderSource(s, src);
+      gl.compileShader(s);
+      if(!gl.getShaderParameter(s, gl.COMPILE_STATUS)){ gl.deleteShader(s); return null; }
+      return s;
     }
+    var vs = compile(gl.VERTEX_SHADER, vsSrc);
+    var fs = compile(gl.FRAGMENT_SHADER, fsSrc);
+    if(!vs || !fs) return;
+    var prog = gl.createProgram();
+    gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
+    if(!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+    gl.useProgram(prog);
+
+    var quad = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, quad);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 3,-1, -1,3]), gl.STATIC_DRAW);
+    var pLoc = gl.getAttribLocation(prog, "p");
+    gl.enableVertexAttribArray(pLoc);
+    gl.vertexAttribPointer(pLoc, 2, gl.FLOAT, false, 0, 0);
+
+    var uRes = gl.getUniformLocation(prog, "uRes");
+    var uTime = gl.getUniformLocation(prog, "uTime");
+
+    function resize(){
+      var host = canvas.parentNode;
+      var w = host.clientWidth, h = host.clientHeight;
+      if(!w || !h) return;
+      var dpr = Math.min(window.devicePixelRatio || 1, w < 700 ? 0.85 : 1.15);
+      canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+      gl.viewport(0, 0, canvas.width, canvas.height);
+    }
+    resize();
+    window.addEventListener("resize", resize, {passive:true});
+
+    var running = false, started = false, t0 = performance.now();
     if("IntersectionObserver" in window){
-      var sio = new IntersectionObserver(function(entries){
-        entries.forEach(function(entry){
-          if(entry.isIntersecting){ mount(); sio.unobserve(entry.target); }
-        });
-      }, {threshold:0.15});
-      sio.observe(stage);
-    } else {
-      mount();
+      new IntersectionObserver(function(en){ running = en[0].isIntersecting; }, {threshold:0.02})
+        .observe(canvas.parentNode);
+    } else { running = true; }
+
+    function frame(now){
+      requestAnimationFrame(frame);
+      if(!running) return;
+      var t = (now - t0) / 1000;
+      gl.uniform2f(uRes, canvas.width, canvas.height);
+      gl.uniform1f(uTime, t);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      if(!started){ started = true; canvas.classList.add("on"); }
     }
-  })();
+    requestAnimationFrame(frame);
+  }
+  if("requestIdleCallback" in window) requestIdleCallback(initBookShader, {timeout:3000});
+  else window.addEventListener("load", function(){ setTimeout(initBookShader, 600); });
 })();
 </script>
 </body>
