@@ -11,6 +11,20 @@ GSAP self-hosted copies in `vendor/` (Three.js was removed in v7 along with the 
 
 ---
 
+## VERSION 18 — hero video now visible on first phone landing (2026-08-30)
+
+On phones, `.hero-split` stacks the two hero columns vertically in DOM order — text block first, then
+`.hero-stage` (the video). That meant the video sat below the entire text block, off-screen until scrolled
+past, on first landing on the page. Client wants the video visible immediately on load, phone or not.
+Fixed with a mobile-only visual reorder (`order:-1` on `.hero-stage`, `order:1` on the text column at
+max-width:980px) — the video now renders first on screen. DOM/reading order is untouched (text is still
+first for screen readers), only the visual grid order changes. Verified at 390×844: video card is the
+first thing visible below the header on load, no scroll needed.
+
+**Files changed:** `index.html` only (`.hero-stage`'s existing max-width:980px media block).
+
+---
+
 ## VERSION 17 — Real Moments section removed, portrait photo swapped for a sharp one, floating icon enlarged (2026-08-30)
 
 **Removed `#moments` entirely**, per direct client instruction. After v14 dropped the before/after mechanic

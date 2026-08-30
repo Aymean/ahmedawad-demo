@@ -674,7 +674,14 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   position:relative; display:flex; align-items:center; justify-content:center;
   min-height:560px;
 }
-@media (max-width:980px){ .hero-stage{min-height:0; padding:8px 0;} }
+@media (max-width:980px){
+  .hero-stage{min-height:0; padding:8px 0; order:-1;}
+  /* v18: on phones the hero stacks (see .hero-split above) — DOM order put the
+     video below the whole text block, off-screen on first landing. Client
+     wants the video visible immediately on load. Reorder visually only
+     (video first); reading/DOM order is untouched for screen readers. */
+  .hero-split > div:first-child{order:1;}
+}
 .hero-stage::before{
   content:""; position:absolute; width:520px; height:520px; border-radius:50%;
   background:
