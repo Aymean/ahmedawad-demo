@@ -593,7 +593,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 }
 .wa-float.is-visible{ opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
 .wa-float:hover{ background:var(--gold-deep); color:var(--paper); transform:translateY(-3px) scale(1.06); }
-.wa-float svg{width:26px;height:26px;}
+.wa-float svg{width:31px;height:31px;}
 [data-reduce-motion="true"] .wa-float{ transition:opacity .3s ease; transform:none; }
 [data-reduce-motion="true"] .wa-float.is-visible{ transform:none; }
 @media (max-width:640px){ .wa-float{display:none;} }
@@ -952,13 +952,14 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 @media (max-width:860px){ .portrait-grid{grid-template-columns:1fr; gap:32px;} }
 .portrait-photo{
   position:relative; border-radius:20px; overflow:hidden;
-  max-width:300px; aspect-ratio:4/5; margin-inline:auto;
+  max-width:380px; aspect-ratio:4/5; margin-inline:auto;
   box-shadow:0 30px 70px -28px rgba(23,19,16,0.28), 0 0 0 1px rgba(23,19,16,0.06);
 }
-@media (max-width:860px){ .portrait-photo{ margin-inline:0; max-width:260px; } }
+@media (max-width:860px){ .portrait-photo{ margin-inline:0; max-width:320px; } }
 .portrait-photo img{
-  width:100%; height:100%; object-fit:cover; object-position:50% 22%; display:block; will-change:transform;
-  filter:contrast(1.08) saturate(1.05);
+  width:100%; height:100%; object-fit:cover; object-position:50% 12%; display:block; will-change:transform;
+  transform:scale(1.55); transform-origin:50% 8%;
+  filter:contrast(1.05) saturate(1.04);
 }
 .portrait-photo .grade{
   position:absolute; inset:0; pointer-events:none; mix-blend-mode:multiply;
@@ -1182,25 +1183,28 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   </div>
 </section>
 
-<!-- ============================================================ PORTRAIT — the one real portrait still in the repo. v8 (punch-
-     list item 2): capped card at .editorial-photo's own scale instead
-     of the old full-bleed hero treatment, which stretched this genuinely
-     low-res (640x800) extracted frame well past native resolution. -->
+<!-- ============================================================ PORTRAIT. v17: swapped the low-res (640x800, visibly soft) extracted
+     video frame for the sharp 1080x1080 MESEI conference photo (same real
+     source also used in #practice) — no higher-quality close-up of him
+     exists among the scraped candidates (checked: a before/after surgical
+     graphic, a surgical-specimen photo, and an Eid greeting card, none usable
+     — see HANDOFF v17). Cropped/zoomed tighter here so it reads as its own
+     portrait, not a duplicate of the #practice usage. -->
 <section class="section-pad" id="portrait">
   <div class="wrap">
     <div class="portrait-grid reveal">
       <div class="portrait-photo" data-parallax>
-        <img src="media/consult-still-portrait.jpg" width="640" height="800" loading="lazy" alt="Dr. Ahmed Awad, a real still from his own patient-consultation footage">
+        <img src="media/conference-mesei-riyadh.jpg" width="1080" height="1080" loading="lazy" alt="Dr. Ahmed Awad at the Middle East Symposium of Ergonomix Implants, Riyadh">
         <div class="grade" aria-hidden="true"></div>
       </div>
       <div class="portrait-copy">
         <div class="kicker"><span class="rule"></span><span class="ar-only">الاستشاري</span><span class="en-only">The Consultant</span></div>
         <h2><span class="ar-only">الوجه خلف عشرين عاماً من العمل الجراحي</span><span class="en-only">The face behind twenty years of surgical work</span></h2>
-        <p><span class="ar-only">إطار حقيقي، لا صورة معدّة، مأخوذ من لقطة استشارة حقيقية معه.</span><span class="en-only">A real, unstaged frame — extracted from his own real consultation footage.</span></p>
+        <p><span class="ar-only">صورة حقيقية غير معدّة، من حضوره العلمي في مؤتمر موتيفا بالرياض.</span><span class="en-only">A real, unstaged photo — from his real scientific attendance at the Motiva conference in Riyadh.</span></p>
         <p class="src-cite">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
-          <span class="ar-only">إطار حقيقي من مقطع فيديو حقيقي لاستشارة، عيادات لمسة</span>
-          <span class="en-only">A real frame from a real consultation video, Lamsa Clinics</span>
+          <span class="ar-only">إنستغرام، <span class="ltr">16</span> فبراير <span class="ltr">2026</span></span>
+          <span class="en-only">Instagram, Feb <span class="ltr">16</span>, <span class="ltr">2026</span></span>
         </p>
       </div>
     </div>
@@ -1637,50 +1641,6 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
       <span class="ar-only">جميع المقاطع من مقابلات حقيقية أجرتها عيادات لمسة مع مريضات حقيقيات بعد عملياتهن الفعلية — لا تمثيل ولا تعويض بممثلين. تم اختيار الاقتباسات بعد مشاهدة كامل مدة كل فيديو (من <span class="ltr">43</span> إلى <span class="ltr">99</span> ثانية).</span>
       <span class="en-only">All clips are from real interviews Lamsa Clinics conducted with real patients after their actual procedures — nothing staged, no actors. Quotes were selected after watching each video's full duration (<span class="ltr">43</span>&ndash;<span class="ltr">99</span> seconds).</span>
     </p>
-  </div>
-</section>
-
-<!-- ============================================================ REAL MOMENTS — plain colour gallery. v14 dropped the v12 grayscale/
-     hover-reveal mechanic forked from De Praxes' before/after case grid —
-     no real before/after photos exist for him, and the reveal interaction
-     implied a comparison that wasn't there. See HANDOFF v14. -->
-<section class="section-pad" id="moments">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div class="kicker"><span class="rule"></span><span class="ar-only">لحظات حقيقية</span><span class="en-only">Real Moments</span></div>
-      <h2><span class="ar-only">أربع لحظات حقيقية، بلا فبركة</span><span class="en-only">Four real moments, nothing staged</span></h2>
-      <p><span class="ar-only">لا صور نتائج قبل وبعد على هذا الموقع، ولن تجدها أبداً — هذا معياره في كل ما ينشره. هذه أربع لقطات من مقاطع فيديو حقيقية بالكامل من حساباته.</span><span class="en-only">You won't find before/after result photos on this site — that's a standard he holds to across everything he publishes. These four frames are pulled from genuinely real video clips on his own accounts.</span></p>
-    </div>
-    <div class="moments-grid reveal" id="momentsGrid">
-      <figure class="moment" tabindex="0">
-        <div class="moment-frame">
-          <img src="media/reel-augmentation-talk-poster.jpg" loading="lazy" decoding="async" alt="Dr. Ahmed Awad, a still from his most-liked real Instagram video">
-          <div class="moment-veil" aria-hidden="true"></div>
-        </div>
-        <figcaption><span class="ar-only">من الفيديو الأكثر تفاعلاً في حسابه — عن تكبير الثدي</span><span class="en-only">From the most-liked video on his account — about breast augmentation</span></figcaption>
-      </figure>
-      <figure class="moment" tabindex="0">
-        <div class="moment-frame">
-          <img src="media/reel-or-marking-poster.jpg" loading="lazy" decoding="async" alt="A pre-operative marking moment inside the operating room">
-          <div class="moment-veil" aria-hidden="true"></div>
-        </div>
-        <figcaption><span class="ar-only">لحظة تعليم حقيقية قبل الجراحة، داخل غرفة العمليات</span><span class="en-only">A real pre-operative marking moment, inside the OR</span></figcaption>
-      </figure>
-      <figure class="moment" tabindex="0">
-        <div class="moment-frame">
-          <img src="media/testimonial-lift-clip-poster.jpg" loading="lazy" decoding="async" alt="A frame from a real in-office patient interview">
-          <div class="moment-veil" aria-hidden="true"></div>
-        </div>
-        <figcaption><span class="ar-only">من مقابلة حقيقية داخل العيادة</span><span class="en-only">From a real in-office interview</span></figcaption>
-      </figure>
-      <figure class="moment" tabindex="0">
-        <div class="moment-frame">
-          <img src="media/testimonial-home-clip-poster.jpg" loading="lazy" decoding="async" alt="A frame from a real home follow-up visit">
-          <div class="moment-veil" aria-hidden="true"></div>
-        </div>
-        <figcaption><span class="ar-only">من زيارة متابعة منزلية حقيقية</span><span class="en-only">From a real home follow-up visit</span></figcaption>
-      </figure>
-    </div>
   </div>
 </section>
 

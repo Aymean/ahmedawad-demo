@@ -11,6 +11,33 @@ GSAP self-hosted copies in `vendor/` (Three.js was removed in v7 along with the 
 
 ---
 
+## VERSION 17 — Real Moments section removed, portrait photo swapped for a sharp one, floating icon enlarged (2026-08-30)
+
+**Removed `#moments` entirely**, per direct client instruction. After v14 dropped the before/after mechanic
+and rewrote the copy, the client decided the section itself still wasn't earning its place — direct
+instruction was to delete it, not iterate on it again. Section, its CSS (`.moments-grid`/`.moment`/
+`.moment-frame`/`.moment-veil`/`.moments-note`), and the four still-frame images it referenced are removed
+from the page (image files left in `media/` in case a future section wants them — not deleted from disk).
+
+**Portrait photo swapped.** `#portrait`'s image was `media/consult-still-portrait.jpg`, a genuinely
+low-resolution (640×800) extracted video frame with visible motion blur — flagged by the client directly
+from a live screenshot. Checked `photo-candidates/` (untracked, gathered but never used) for a better
+close-up: one is a before/after surgical graphic (forbidden content anyway), one is a surgical tissue
+specimen photo, one is a generic Eid-greeting graphic template — none usable. The best real alternative
+already in the project is `media/conference-mesei-riyadh.jpg` (1080×1080, sharp, already used in
+`#practice`) — swapped it in here too, but cropped/zoomed tighter (`transform:scale(1.55)`, top-weighted
+`object-position`/`transform-origin`) so it reads as its own portrait crop, not a duplicate of the
+`#practice` usage. Copy and source citation updated to match (was citing "consultation footage", now
+correctly cites the real MESEI conference source, same as `#practice`). Container `max-width` restored to
+380px/320px since the new source is high-res enough that display size is no longer the constraint.
+
+**Floating WhatsApp icon enlarged** slightly (`.wa-float svg`, 26px → 31px within the 58px button) per
+client feedback that it still read as too small/thin even after v16's icon swap.
+
+**Files changed:** `index.html` only.
+
+---
+
 ## VERSION 16 — replaced the WhatsApp icon everywhere with De Praxes' real approved glyph (2026-08-30)
 
 v15's fix (restoring the missing bubble-outline path to the generic Feather-style two-path icon) was
