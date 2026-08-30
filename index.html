@@ -668,19 +668,23 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
    ============================================================ */
 .hero-split{
   display:grid; grid-template-columns:1.05fr .95fr; gap:56px; align-items:center;
+  grid-template-areas:"top stage" "bottom stage";
 }
-@media (max-width:980px){ .hero-split{grid-template-columns:1fr; gap:48px;} }
+.hero-top{grid-area:top;}
+.hero-bottom{grid-area:bottom;}
 .hero-stage{
+  grid-area:stage;
   position:relative; display:flex; align-items:center; justify-content:center;
   min-height:560px;
 }
 @media (max-width:980px){
-  .hero-stage{min-height:0; padding:8px 0; order:-1;}
-  /* v18: on phones the hero stacks (see .hero-split above) — DOM order put the
-     video below the whole text block, off-screen on first landing. Client
-     wants the video visible immediately on load. Reorder visually only
-     (video first); reading/DOM order is untouched for screen readers. */
-  .hero-split > div:first-child{order:1;}
+  /* v19: client wants the video between the role line and the bio paragraph
+     on phones, not above everything or below everything — the hero text was
+     split into .hero-top (eyebrow/name/role) and .hero-bottom (bio onward)
+     specifically so grid-template-areas can place the video between them
+     without touching DOM/reading order. */
+  .hero-split{grid-template-columns:1fr; grid-template-areas:"top" "stage" "bottom"; gap:32px;}
+  .hero-stage{min-height:0; padding:8px 0;}
 }
 .hero-stage::before{
   content:""; position:absolute; width:520px; height:520px; border-radius:50%;
@@ -1094,7 +1098,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   <div class="hero-watermark" aria-hidden="true">أع</div>
   <div class="wrap">
     <div class="hero-split">
-      <div>
+      <div class="hero-top">
         <p class="hero-eyebrow"><span class="rule"></span>
           <span class="ar-only">جدة، المملكة العربية السعودية</span>
           <span class="en-only">Jeddah, Saudi Arabia</span>
@@ -1107,6 +1111,8 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
           <span class="ar-only">استشاري جراحات التجميل والترميم</span>
           <span class="en-only">Consultant Plastic &amp; Reconstructive Surgeon</span>
         </p>
+      </div>
+      <div class="hero-bottom">
         <p class="hero-bio">
           <span class="ar-only">أكثر من <span class="ltr">20</span> عاماً في جراحة التجميل والترميم — بين مستشفى حكومي وممارسة خاصة واستشارات، من نحت الجسم إلى جراحة اليد والمجهرية. حاصل على زمالة البورد الأوروبي للجراحة التجميلية (EBOPRAS) وزمالة البورد العربي للتخصصات الصحية.</span>
           <span class="en-only">Over <span class="ltr">20</span> years in plastic and reconstructive surgery — across a government hospital, private practice, and consultancy. Focused on body contouring and hand &amp; microsurgery. Fellow of the European Board of Plastic, Reconstructive and Aesthetic Surgery (EBOPRAS) and the Arab Board of Health Specialities.</span>

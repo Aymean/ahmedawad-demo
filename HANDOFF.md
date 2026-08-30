@@ -11,17 +11,23 @@ GSAP self-hosted copies in `vendor/` (Three.js was removed in v7 along with the 
 
 ---
 
-## VERSION 18 — hero video now visible on first phone landing (2026-08-30)
+## VERSION 19 — hero video repositioned to right after the role line, not above/below everything (2026-08-30)
 
-On phones, `.hero-split` stacks the two hero columns vertically in DOM order — text block first, then
-`.hero-stage` (the video). That meant the video sat below the entire text block, off-screen until scrolled
-past, on first landing on the page. Client wants the video visible immediately on load, phone or not.
-Fixed with a mobile-only visual reorder (`order:-1` on `.hero-stage`, `order:1` on the text column at
-max-width:980px) — the video now renders first on screen. DOM/reading order is untouched (text is still
-first for screen readers), only the visual grid order changes. Verified at 390×844: video card is the
-first thing visible below the header on load, no scroll needed.
+V18's fix put the video first on mobile, above the name entirely — client clarified that's not what he
+wanted: the video should sit specifically *after* the eyebrow/name/role block and *before* the bio
+paragraph, on both phone and desktop (desktop already effectively does this via the two-column layout, so
+this was really a phone-only gap). A simple `order` swap on the two original hero-split children couldn't
+express "between the two halves of the same div" — so the hero text was split into two real elements,
+`.hero-top` (eyebrow, name, role) and `.hero-bottom` (bio, quote, tags, actions), as direct children of
+`.hero-split` alongside `.hero-stage`. `.hero-split` now uses `grid-template-areas` — desktop:
+`"top stage" / "bottom stage"` (video spans both rows as the right column, same visual result as before);
+mobile (max-width:980px): `"top" / "stage" / "bottom"` (video sits between the two text halves). No `order`
+hacks needed, and DOM/reading order matches visual order now instead of diverging like v18's fix did.
+Verified at 390×844 (video between role and bio, matching the request exactly) and 1440×900 (desktop
+layout unchanged from before v18/v19).
 
-**Files changed:** `index.html` only (`.hero-stage`'s existing max-width:980px media block).
+**Files changed:** `index.html` only (`.hero-split` HTML split into `.hero-top`/`.hero-bottom`, `.hero-split`/
+`.hero-stage` CSS rewritten to use grid-template-areas, replacing v18's order-based rule).
 
 ---
 
