@@ -582,20 +582,32 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
    ============================================================ */
 .wa-float{
   position:fixed; bottom:26px; inset-inline-end:26px; z-index:60;
-  width:60px; height:60px; border-radius:50%;
-  background:var(--ink); color:var(--gold-soft);
-  border:1px solid var(--line-strong);
+  width:62px; height:62px; border-radius:50%; isolation:isolate;
+  background:var(--gold); color:var(--ink);
+  border:1px solid rgba(245,238,225,0.5);
   display:flex; align-items:center; justify-content:center;
-  box-shadow:0 16px 34px -12px rgba(0,0,0,.65), 0 0 0 1px rgba(245,238,225,0.05);
+  box-shadow:0 16px 34px -12px rgba(23,19,16,.4), 0 0 0 1px rgba(23,19,16,0.06);
   opacity:0; transform:translateY(22px) scale(.92);
   transition:transform .5s var(--ease), box-shadow var(--dur-fast) var(--ease),
              background var(--dur-fast) ease, color var(--dur-fast) ease, opacity .5s var(--ease);
   pointer-events:none;
 }
+.wa-float::before{
+  content:""; position:absolute; inset:-6px; z-index:-1; border-radius:50%;
+  border:1.5px solid var(--gold-deep); opacity:.55;
+  animation:wa-pulse 2.6s var(--ease) infinite;
+}
+@keyframes wa-pulse{
+  0%{ transform:scale(.86); opacity:.6; }
+  70%{ transform:scale(1.22); opacity:0; }
+  100%{ transform:scale(1.22); opacity:0; }
+}
 .wa-float.is-visible{ opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
-.wa-float:hover{ background:var(--gold); color:var(--ink); transform:translateY(-3px) scale(1.06);
-  box-shadow:0 20px 40px -12px rgba(182,146,79,.5), 0 0 0 1px rgba(245,238,225,0.05); }
-.wa-float svg{width:26px;height:26px;}
+.wa-float:hover{ background:var(--ink); color:var(--gold-soft); transform:translateY(-3px) scale(1.06);
+  box-shadow:0 20px 42px -12px rgba(23,19,16,.5), 0 0 0 1px rgba(23,19,16,0.06); }
+.wa-float svg{width:27px;height:27px;}
+[data-reduce-motion="true"] .wa-float::before{ animation:none; opacity:.35; }
+@media (prefers-reduced-motion:reduce){ .wa-float::before{ animation:none; opacity:.35; } }
 [data-reduce-motion="true"] .wa-float{ transition:opacity .3s ease; transform:none; }
 [data-reduce-motion="true"] .wa-float.is-visible{ transform:none; }
 @media (max-width:640px){ .wa-float{display:none;} }

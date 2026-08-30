@@ -11,6 +11,33 @@ GSAP self-hosted copies in `vendor/` (Three.js was removed in v7 along with the 
 
 ---
 
+## VERSION 9 — floating WhatsApp button, real design fix not another bug hunt (2026-08-30)
+
+**Why this needed a different approach:** three prior versions (v6, v7, v8) each found and fixed a
+genuine *rendering* bug on a WhatsApp icon somewhere on the page (a zeroed-opacity path, a missing
+second path, etc.) and each time reported it fixed — correctly, each specific bug really was real
+and really was fixed. The client kept calling the icon "trash" anyway. The actual problem was never
+a rendering bug at all: `.wa-float` (the floating circular button, bottom-corner, desktop only) was
+styled with `background:var(--ink); color:var(--gold-soft)` — the exact *inverse* of the site's own
+real premium-button language, `.btn-primary{background:var(--gold); color:var(--ink)}`. After v8's
+color flip put the whole page on a light cream canvas, this one dark ink circle was the single
+remaining element that didn't belong to the new palette — it read as a generic bolted-on plugin
+widget, not a rendering defect.
+
+**Fix:** recolored `.wa-float` to match `.btn-primary`'s real identity (gold fill, ink icon at
+rest; inverts to ink fill/gold-soft icon on hover, mirroring the site's other hover inversions).
+Added a soft pulsing ring (`::before`, a thin gold-deep outline scaling/fading on a 2.6s loop) for
+a deliberate, premium "notice me" cue instead of a static flat circle — gated off entirely under
+`[data-reduce-motion="true"]` and `prefers-reduced-motion:reduce`, same convention as every other
+motion on the page. Icon bumped 26px→27px. The mobile bottom action bar (`#mBar`) was checked and
+is already consistent with the light palette (paper-toned bar, gold-deep icons, gold active-state
+fill) — untouched.
+
+No new bug existed here; this was a design-system consistency miss, not a defect, which is why
+grep-for-broken-attributes passes in prior versions never caught it.
+
+---
+
 ## VERSION 8 — color-application flip + booking rebuild, evidence-backed (2026-08-29)
 
 **Why this pass exists:** the client rejected v7 outright on sight: "the black is bullshit... use
