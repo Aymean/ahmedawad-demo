@@ -11,6 +11,51 @@ GSAP self-hosted copies in `vendor/` (Three.js was removed in v7 along with the 
 
 ---
 
+## VERSION 14 — drop the before/after mechanic on Real Moments; retract a false overflow finding; dark-background request declined (2026-08-30)
+
+**Fixed: the moments-grid grayscale/hover-reveal interaction.** v12 forked De Praxes' `.ba`/`.ba-veil`
+before/after grayscale-to-colour reveal mechanic onto the `#moments` "Real Moments" grid, since this client
+has no real before/after result photos. On review, re-skinning the caption didn't fix the underlying
+problem: the *interaction itself* implies a before/after comparison, and there's nothing being compared —
+random video stills going from grey to colour on hover reads as pointless, not clever. Dropped the mechanic
+entirely: `.moment-frame img` no longer carries `filter:grayscale(1)`, `.moment-veil` is now a fixed
+caption-legibility gradient (not hover/`is-seen`-toggled), and the `initMoments()` IntersectionObserver IIFE
+was removed as dead code. Section copy was rewritten to drop the now-nonexistent "hover to reveal" instruction
+and reframe the no-before/after disclosure as a transparency/trust statement rather than an apology, in both
+AR and EN.
+
+**Retracted: a "103px horizontal overflow" finding from an earlier audit pass was a tooling artifact, not a
+real bug.** It was measured with the browser pane hidden, which collapses `window.innerWidth`/`innerHeight`
+to 0 in this environment — comparing a real `scrollWidth` against a phantom `0` viewport produces a fake
+overflow number. Re-measured with explicit forced viewports: 375 → 375/375, 768 → 753/768, 1440 → 1425/1440,
+identical to every prior version's own QA numbers. No overflow bug exists. Flagging this so it isn't chased
+again in a future round.
+
+**Declined: converting `#focus` into a dark contrast rail.** A fresh audit read the current build's 5 sections
+sharing one flat `--paper-dim` tan background as bland/repetitive and, by analogy to De Praxes' own dark
+`#departments` rail, proposed re-doing `#focus` as a real dark/near-black section for contrast. Before
+implementing, this project's own HANDOFF (Version 12, above) was read and shows the client **explicitly
+rejected dark backgrounds twice** — once in the v8 round, and again when asked directly during the v12 pass.
+Doing this anyway would have shipped something already twice declined. Not implemented. The actual
+"gray/generic section" complaint that triggered this audit is still unresolved — background-color inspection
+found no gray or dark section anywhere in the current code (every section resolves to `--paper` or
+`--paper-dim`, per the Version 12 sweep), so the complaint may refer to something other than a fill color.
+Needs the client to point at the specific section before any fix is attempted here.
+
+**Files changed:** `index.html` only (`.moments-grid`/`.moment-frame`/`.moment-veil` CSS, `#moments` markup
+and copy, `initMoments()` removed from the script block).
+
+---
+
+## VERSION 13 — mobile bottom bar to Call/WhatsApp/Book, drop Email (2026-08-30, shipped without a HANDOFF entry at the time)
+
+Backfilled here for continuity. Client asked for the mobile bottom action bar (`#mBar`) to match De Praxes'
+real pattern: Call / WhatsApp / Book, with Email dropped. Also fixed the mobile WhatsApp icon carrying the
+same redundant double-shape bug as the floating button (see Versions 10-11) — not yet fixed on this
+separate piece of markup at the time.
+
+---
+
 ## VERSION 12 — structural fork of De Praxes per direct client instruction (2026-08-30)
 
 **Why this pass exists, and why it supersedes prior direction:** every version through v11 was built under

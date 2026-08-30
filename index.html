@@ -858,40 +858,31 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 .tmn-note svg{ width:16px; height:16px; color:var(--blue-deep); flex:none; margin-top:2px; }
 
 /* ============================================================
-   REAL MOMENTS — grayscale-to-colour reveal grid, forked from
-   De Praxes' own grayscale-to-colour before/after case grid (.ba /
-   .ba-veil: rest state grayscale(1), hover/tap/scroll-into-view
-   reveals full colour). Ahmed Awad has no real before/after case
-   photos to put in this slot (none exist, none are published — see
-   HANDOFF), so the same interaction mechanism is adapted onto real
-   still frames from his own real video clips instead, never onto a
-   fabricated result photo.
+   REAL MOMENTS — plain colour gallery. v13 forked De Praxes' before/after
+   grayscale-reveal mechanic onto these stills; dropped in v14 — the
+   interaction implied a before/after comparison that doesn't exist for
+   this client (no result photos, none published — see HANDOFF). Stills
+   are shown in full colour with a fixed caption-legibility gradient,
+   no reveal gimmick.
    ============================================================ */
 .moments-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
 @media (max-width:900px){ .moments-grid{grid-template-columns:repeat(2,1fr); gap:14px;} }
 .moment{ margin:0; }
 .moment-frame{
   position:relative; overflow:hidden; border-radius:14px; aspect-ratio:4/5;
-  background:var(--paper-dim); cursor:pointer;
+  background:var(--paper-dim);
   box-shadow:0 20px 40px -24px rgba(0,0,0,0.35);
 }
 .moment-frame img{
   width:100%; height:100%; object-fit:cover;
-  filter:grayscale(1) contrast(1.1) brightness(.95);
   transform:scale(1);
-  transition:filter 1.1s var(--ease), transform 1.1s var(--ease);
+  transition:transform 1.1s var(--ease);
 }
-.moment-frame:hover img, .moment-frame:focus-visible img, .moment.is-seen .moment-frame img{
-  filter:grayscale(0) contrast(1) brightness(1); transform:scale(1.03);
-}
-.moment-frame:active img{ filter:grayscale(0) contrast(1) brightness(1); }
-[data-reduce-motion="true"] .moment-frame img{ filter:grayscale(0) contrast(1) brightness(1); transition:none; }
+.moment-frame:hover img, .moment-frame:focus-visible img{ transform:scale(1.03); }
 .moment-veil{
   position:absolute; inset:0; pointer-events:none;
-  background:linear-gradient(to top, rgba(23,19,16,0.5), transparent 45%);
-  opacity:1; transition:opacity 1.1s var(--ease);
+  background:linear-gradient(to top, rgba(23,19,16,0.38), transparent 45%);
 }
-.moment-frame:hover .moment-veil, .moment-frame:focus-visible .moment-veil, .moment.is-seen .moment-frame .moment-veil{ opacity:.4; }
 .moment figcaption{ margin-top:10px; font-size:12.5px; line-height:1.6; color:var(--muted); }
 .moments-note{ font-size:11.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--muted-2); margin:0 0 22px; }
 [dir="rtl"] .moments-note{ letter-spacing:0; }
@@ -1655,13 +1646,9 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   <div class="wrap">
     <div class="section-head reveal">
       <div class="kicker"><span class="rule"></span><span class="ar-only">لحظات حقيقية</span><span class="en-only">Real Moments</span></div>
-      <h2><span class="ar-only">مرّر أو المس لرؤية اللحظة كاملة</span><span class="en-only">Hover or tap to bring the moment into focus</span></h2>
-      <p><span class="ar-only">لا صور نتائج قبل وبعد على هذا الموقع — لا توجد صور جراحية من هذا النوع منشورة عنه أصلاً. هذه أربع لقطات ثابتة من مقاطع فيديو حقيقية بالكامل بدلاً من ذلك.</span><span class="en-only">There are no before/after result photos on this site — no surgical photography of that kind has ever been published for him. These are four still frames from genuinely real video clips instead.</span></p>
+      <h2><span class="ar-only">أربع لحظات حقيقية، بلا فبركة</span><span class="en-only">Four real moments, nothing staged</span></h2>
+      <p><span class="ar-only">لا صور نتائج قبل وبعد على هذا الموقع، ولن تجدها أبداً — هذا معياره في كل ما ينشره. هذه أربع لقطات من مقاطع فيديو حقيقية بالكامل من حساباته.</span><span class="en-only">You won't find before/after result photos on this site — that's a standard he holds to across everything he publishes. These four frames are pulled from genuinely real video clips on his own accounts.</span></p>
     </div>
-    <p class="moments-note reveal">
-      <span class="ar-only">مرّر فوق أي صورة — أو المسها — لرؤيتها بالألوان</span>
-      <span class="en-only">Hover any frame — or tap it — to bring it into colour</span>
-    </p>
     <div class="moments-grid reveal" id="momentsGrid">
       <figure class="moment" tabindex="0">
         <div class="moment-frame">
@@ -2463,24 +2450,6 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
       onScroll();
     }
   }
-  /* ---------- Real Moments — grayscale-to-colour reveal, forked from
-     De Praxes' own before/after case grid (.ba / .ba-seen): fine-pointer
-     devices get the deliberate hover-to-reveal (pure CSS :hover above);
-     touch/coarse-pointer devices reveal on scroll-into-view instead,
-     exactly the same split De Praxes' own case grid makes. ---------- */
-  (function initMoments(){
-    var frames = Array.prototype.slice.call(document.querySelectorAll("#momentsGrid .moment-frame"));
-    if(!frames.length) return;
-    if("IntersectionObserver" in window && !window.matchMedia("(hover: hover) and (pointer: fine)").matches){
-      var mio = new IntersectionObserver(function(entries){
-        entries.forEach(function(entry){
-          if(entry.isIntersecting) entry.target.closest(".moment").classList.add("is-seen");
-        });
-      }, {threshold:0.55});
-      frames.forEach(function(f){ mio.observe(f); });
-    }
-  })();
-
   initParallax();
 
   /* ---------- Scroll-tilt on the conference photo (In Practice), forked
