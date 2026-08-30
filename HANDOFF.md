@@ -11,6 +11,22 @@ GSAP self-hosted copies in `vendor/` (Three.js was removed in v7 along with the 
 
 ---
 
+## VERSION 16 — replaced the WhatsApp icon everywhere with De Praxes' real approved glyph (2026-08-30)
+
+v15's fix (restoring the missing bubble-outline path to the generic Feather-style two-path icon) was
+technically correct but the client still called it bad on sight — a fair call, that icon is a generic
+icon-library glyph, not a refined rendition of the real WhatsApp brand mark. Pulled the client's own
+previously-approved icon directly from `depraxis-demo`'s `#i-wa` `<symbol>` (single detailed path, more
+accurate curves than the generic version) and defined the identical symbol here. Replaced all 6 places
+this site used the old two-path icon (hero CTA, booking send button, contact-line link, contact CTA button,
+floating button, mobile bottom bar) with `<use href="#i-wa">` against the new shared symbol — one icon
+asset, used consistently, matching the reference the client actually likes.
+
+**Files changed:** `index.html` only (new `#i-wa` `<symbol>` in the hidden defs block at top of `<body>`,
+6 `<svg>` call sites switched to `<use>`).
+
+---
+
 ## VERSION 15 — real WhatsApp icon regression fixed, gauge color clash fixed, portrait upscale fixed (2026-08-30)
 
 Found via the client reviewing the live deployed site directly (screenshots), not a self-run audit.

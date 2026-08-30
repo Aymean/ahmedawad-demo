@@ -1042,6 +1042,9 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 <body data-lang="ar">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-gstar" viewBox="0 0 20 20"><path fill="currentColor" d="M10 1l2.6 6 6.4.6-4.8 4.2 1.4 6.2L10 15l-5.6 3 1.4-6.2L1 7.6 7.4 7z"/></symbol>
+  <!-- v16: the real WhatsApp glyph, matching De Praxes' own #i-wa symbol exactly (client-approved
+       reference icon) — replaces the generic Feather-style two-path icon used everywhere before. -->
+  <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2C6.6 2 2.2 6.4 2.2 11.83c0 1.95.55 3.77 1.5 5.32L2 22.4l5.4-1.66a9.8 9.8 0 0 0 4.64 1.17h.01c5.43 0 9.84-4.4 9.84-9.83C21.89 6.4 17.47 2 12.04 2Zm0 17.96h-.01a8.16 8.16 0 0 1-4.15-1.14l-.3-.18-3.08.95.98-3-.2-.31a8.1 8.1 0 0 1-1.25-4.35c0-4.5 3.67-8.16 8.18-8.16 2.18 0 4.23.85 5.78 2.4a8.11 8.11 0 0 1 2.39 5.77c0 4.5-3.67 8.17-8.17 8.17Zm4.48-6.12c-.24-.12-1.45-.72-1.68-.8-.22-.08-.39-.12-.55.13-.16.24-.63.79-.77.95-.14.16-.28.18-.52.06-.25-.12-1.04-.38-1.97-1.22-.73-.65-1.22-1.45-1.36-1.7-.15-.24-.02-.37.1-.5.11-.1.25-.28.37-.42.12-.14.16-.24.24-.4.08-.17.04-.31-.02-.43-.06-.12-.55-1.33-.76-1.82-.2-.48-.4-.41-.55-.42h-.47c-.16 0-.43.06-.65.3-.22.25-.86.84-.86 2.05s.88 2.38 1 2.54c.13.17 1.74 2.65 4.2 3.71.59.26 1.05.4 1.4.52.6.19 1.13.16 1.56.1.48-.07 1.45-.6 1.66-1.17.2-.58.2-1.07.14-1.18-.06-.1-.22-.16-.46-.28Z"/></symbol>
 </svg>
 <div class="grain" aria-hidden="true"></div>
 <a href="#main" class="skip-link">تخطي إلى المحتوى / Skip to content</a>
@@ -1118,7 +1121,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
         <div class="hero-actions">
           <span class="magnetic" data-magnetic>
             <a class="btn btn-primary" href="https://wa.me/966563681087" target="_blank" rel="noopener">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.5s-.6-1.5-.9-2c-.2-.5-.5-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3c1.5.8 3.2 1.3 5.1 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.5.9.9-3.4-.2-.3C3.5 14.4 3 12.7 3 10.9 3 6 6.9 2 11.9 2c5 0 9 4 9 9s-4 9-9 9z"/></svg>
+              <svg viewBox="0 0 24 24"><use href="#i-wa"></use></svg>
               <span class="ar-only">تواصل عبر واتساب</span>
               <span class="en-only">Message on WhatsApp</span>
             </a>
@@ -2000,7 +2003,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
         <button type="button" class="btn btn-ghost bk-back" disabled><span class="ar-only">السابق</span><span class="en-only">Back</span></button>
         <button type="button" class="btn btn-primary bk-next" disabled><span class="ar-only">التالي</span><span class="en-only">Next</span></button>
         <button type="button" class="btn btn-primary bk-send" style="display:none;" disabled>
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.5s-.6-1.5-.9-2c-.2-.5-.5-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3c1.5.8 3.2 1.3 5.1 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.5.9.9-3.4-.2-.3C3.5 14.4 3 12.7 3 10.9 3 6 6.9 2 11.9 2c5 0 9 4 9 9s-4 9-9 9z"/></svg>
+          <svg viewBox="0 0 24 24"><use href="#i-wa"></use></svg>
           <span class="ar-only">إرسال عبر واتساب</span>
           <span class="en-only">Send via WhatsApp</span>
         </button>
@@ -2022,7 +2025,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
       <div class="contact-card">
         <h3><span class="ar-only">تواصل مباشر</span><span class="en-only">Direct Contact</span></h3>
         <a class="contact-line" href="https://wa.me/966563681087" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.5s-.6-1.5-.9-2c-.2-.5-.5-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3c1.5.8 3.2 1.3 5.1 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.5.9.9-3.4-.2-.3C3.5 14.4 3 12.7 3 10.9 3 6 6.9 2 11.9 2c5 0 9 4 9 9s-4 9-9 9z"/></svg>
+          <svg viewBox="0 0 24 24"><use href="#i-wa"></use></svg>
           <span class="ltr">+966 56 368 1087</span>
         </a>
         <a class="contact-line" href="mailto:ahmedplastic2010@gmail.com">
@@ -2031,7 +2034,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
         </a>
         <span class="magnetic" data-magnetic style="align-self:flex-start;">
           <a class="btn btn-primary" href="https://wa.me/966563681087" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.5s-.6-1.5-.9-2c-.2-.5-.5-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3c1.5.8 3.2 1.3 5.1 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.5.9.9-3.4-.2-.3C3.5 14.4 3 12.7 3 10.9 3 6 6.9 2 11.9 2c5 0 9 4 9 9s-4 9-9 9z"/></svg>
+            <svg viewBox="0 0 24 24"><use href="#i-wa"></use></svg>
             <span class="ar-only">راسله الآن</span>
             <span class="en-only">Message him now</span>
           </a>
@@ -2084,7 +2087,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 </footer>
 
 <a class="wa-float" id="waFloat" href="https://wa.me/966563681087" target="_blank" rel="noopener" aria-label="WhatsApp">
-  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.5s-.6-1.5-.9-2c-.2-.5-.5-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3c1.5.8 3.2 1.3 5.1 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.5.9.9-3.4-.2-.3C3.5 14.4 3 12.7 3 10.9 3 6 6.9 2 11.9 2c5 0 9 4 9 9s-4 9-9 9z"/></svg>
+  <svg viewBox="0 0 24 24"><use href="#i-wa"></use></svg>
 </a>
 
 <nav class="mbar" id="mBar" aria-label="Quick contact">
@@ -2095,7 +2098,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   </a>
   <a href="https://wa.me/966563681087" target="_blank" rel="noopener" aria-label="WhatsApp">
     <span class="mbar-dot" aria-hidden="true"></span>
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.5s-.6-1.5-.9-2c-.2-.5-.5-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2.1 3.2 5 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3c1.5.8 3.2 1.3 5.1 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.5.9.9-3.4-.2-.3C3.5 14.4 3 12.7 3 10.9 3 6 6.9 2 11.9 2c5 0 9 4 9 9s-4 9-9 9z"/></svg>
+    <svg viewBox="0 0 24 24"><use href="#i-wa"></use></svg>
     <span class="ar-only">واتساب</span><span class="en-only">WhatsApp</span>
   </a>
   <a href="#booking" aria-label="Book">
