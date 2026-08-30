@@ -714,6 +714,14 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
    ============================================================ */
 .practice-grid{display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:start;}
 @media (max-width:900px){ .practice-grid{grid-template-columns:1fr; gap:36px;} }
+/* Scroll-tilt on the conference photo — forked from De Praxes' own
+   tilt-scroll interior showcase (its removed #showcase section,
+   documented in its HANDOFF v3 as a scroll-driven rotateX+scale card,
+   the same underlying "Container Scroll" mechanism). Real photo, real
+   scroll progress; the inner <img> keeps its own separate parallax
+   drift via [data-parallax] (initParallax()), so the two motions
+   compose instead of fighting. */
+.editorial-photo{ transform-style:preserve-3d; will-change:transform; }
 
 .editorial-photo{
   /* v7: was rendering the full 1080x1080 source at the grid column's full
@@ -850,8 +858,67 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
 .tmn-note svg{ width:16px; height:16px; color:var(--blue-deep); flex:none; margin-top:2px; }
 
 /* ============================================================
-   FOCUS AREAS — numbered rail (replaces the old flat grid)
+   REAL MOMENTS — grayscale-to-colour reveal grid, forked from
+   De Praxes' own grayscale-to-colour before/after case grid (.ba /
+   .ba-veil: rest state grayscale(1), hover/tap/scroll-into-view
+   reveals full colour). Ahmed Awad has no real before/after case
+   photos to put in this slot (none exist, none are published — see
+   HANDOFF), so the same interaction mechanism is adapted onto real
+   still frames from his own real video clips instead, never onto a
+   fabricated result photo.
    ============================================================ */
+.moments-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+@media (max-width:900px){ .moments-grid{grid-template-columns:repeat(2,1fr); gap:14px;} }
+.moment{ margin:0; }
+.moment-frame{
+  position:relative; overflow:hidden; border-radius:14px; aspect-ratio:4/5;
+  background:var(--paper-dim); cursor:pointer;
+  box-shadow:0 20px 40px -24px rgba(0,0,0,0.35);
+}
+.moment-frame img{
+  width:100%; height:100%; object-fit:cover;
+  filter:grayscale(1) contrast(1.1) brightness(.95);
+  transform:scale(1);
+  transition:filter 1.1s var(--ease), transform 1.1s var(--ease);
+}
+.moment-frame:hover img, .moment-frame:focus-visible img, .moment.is-seen .moment-frame img{
+  filter:grayscale(0) contrast(1) brightness(1); transform:scale(1.03);
+}
+.moment-frame:active img{ filter:grayscale(0) contrast(1) brightness(1); }
+[data-reduce-motion="true"] .moment-frame img{ filter:grayscale(0) contrast(1) brightness(1); transition:none; }
+.moment-veil{
+  position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(to top, rgba(23,19,16,0.5), transparent 45%);
+  opacity:1; transition:opacity 1.1s var(--ease);
+}
+.moment-frame:hover .moment-veil, .moment-frame:focus-visible .moment-veil, .moment.is-seen .moment-frame .moment-veil{ opacity:.4; }
+.moment figcaption{ margin-top:10px; font-size:12.5px; line-height:1.6; color:var(--muted); }
+.moments-note{ font-size:11.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--muted-2); margin:0 0 22px; }
+[dir="rtl"] .moments-note{ letter-spacing:0; }
+
+/* ============================================================
+   FOCUS AREAS — numbered rail, forked structurally from De Praxes'
+   own department rail (#departments .dept-index / .dept-num / ／04
+   fraction): a sticky index column tracking scroll position next to
+   full-width hairline rows, each with a giant serif numeral. Same
+   device, this page's own five real focus areas and gold/blue tokens.
+   ============================================================ */
+.focus-wrap{ display:grid; grid-template-columns:1fr; gap:0; }
+.focus-index{ display:none; }
+@media (min-width:1024px){
+  .focus-wrap{ grid-template-columns:170px 1fr; gap:40px; align-items:start; }
+  .focus-index{
+    display:flex; flex-direction:column; gap:2px; position:sticky; top:132px;
+  }
+  .focus-index a{
+    display:flex; align-items:baseline; gap:10px; padding:9px 0;
+    font-size:13px; color:var(--muted-2); border-inline-start:2px solid transparent;
+    padding-inline-start:14px; transition:color var(--dur-fast) ease, border-color var(--dur-fast) ease;
+  }
+  .focus-index a .fi-n{ font-variant-numeric:tabular-nums; direction:ltr; font-size:11px; color:var(--muted-2); }
+  .focus-index a.on{ color:var(--ink); border-inline-start-color:var(--gold-deep); }
+  .focus-index a.on .fi-n{ color:var(--gold-deep); }
+}
 .focus-rail{ border-top:1px solid var(--line); }
 .focus-row{
   display:grid; grid-template-columns:110px 1fr 40px; align-items:center; gap:24px;
@@ -864,6 +931,8 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
   font-family:"Plex Serif Display",serif; font-weight:600; font-size:clamp(28px,3.2vw,44px);
   color:var(--muted-2); line-height:1; transition:color var(--dur-fast) ease;
 }
+[dir="rtl"] .focus-num{ font-family:"Amiri",serif; }
+.focus-num-of{ font-size:.32em; color:var(--muted-2); opacity:.7; margin-inline-start:.2em; vertical-align:.85em; font-weight:400; }
 .focus-row:hover .focus-num, .focus-row.is-active .focus-num{ color:var(--gold-deep); }
 .focus-content h3{ margin:0 0 8px; font-size:19px; font-weight:600; display:flex; align-items:center; gap:10px; }
 .focus-content .icon{ width:22px; height:22px; color:var(--gold-deep); flex:none; }
@@ -1378,9 +1447,19 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
       <h2><span class="ar-only">حيث يتركز عمله</span><span class="en-only">Where his practice concentrates</span></h2>
       <p><span class="ar-only">كما وصفها بنفسه — بلا مبالغة أو قائمة إجراءات تسويقية.</span><span class="en-only">As described in his own words — not a marketing procedure list.</span></p>
     </div>
-    <div class="focus-rail reveal" id="focusRail">
-      <div class="focus-row" data-index="0">
-        <span class="focus-num">01</span>
+    <div class="focus-wrap">
+      <!-- Sticky index column — forked from De Praxes' own .dept-index
+           (desktop-only, position:sticky, highlights the row in view). -->
+      <nav class="focus-index" aria-label="Focus areas index">
+        <a href="#focus-0" data-fi="0"><span class="fi-n">01</span><span class="ar-only">نحت الجسم</span><span class="en-only">Body Contouring</span></a>
+        <a href="#focus-1" data-fi="1"><span class="fi-n">02</span><span class="ar-only">جراحة اليد</span><span class="en-only">Hand Surgery</span></a>
+        <a href="#focus-2" data-fi="2"><span class="fi-n">03</span><span class="ar-only">الحشوات التجميلية</span><span class="en-only">Fillers</span></a>
+        <a href="#focus-3" data-fi="3"><span class="fi-n">04</span><span class="ar-only">البحث السريري</span><span class="en-only">Research</span></a>
+        <a href="#focus-4" data-fi="4"><span class="fi-n">05</span><span class="ar-only">التعليم الطبي</span><span class="en-only">Education</span></a>
+      </nav>
+      <div class="focus-rail reveal" id="focusRail">
+      <div class="focus-row" id="focus-0" data-index="0">
+        <span class="focus-num">01<span class="focus-num-of">／05</span></span>
         <div class="focus-content">
           <h3>
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3a4 4 0 100 8 4 4 0 000-8zM5 21c0-4 3-7 7-7s7 3 7 7"/></svg>
@@ -1391,8 +1470,8 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
         </div>
         <svg class="focus-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </div>
-      <div class="focus-row" data-index="1">
-        <span class="focus-num">02</span>
+      <div class="focus-row" id="focus-1" data-index="1">
+        <span class="focus-num">02<span class="focus-num-of">／05</span></span>
         <div class="focus-content">
           <h3>
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 13V6a2 2 0 114 0v6m0-4a2 2 0 114 0v5m0-3a2 2 0 114 0v6a6 6 0 01-6 6h-1a6 6 0 01-5-2.7L6 15c-.6-.9-.3-2 .6-2.5.8-.4 1.7-.2 2.3.5"/></svg>
@@ -1403,8 +1482,8 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
         </div>
         <svg class="focus-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </div>
-      <div class="focus-row" data-index="2">
-        <span class="focus-num">03</span>
+      <div class="focus-row" id="focus-2" data-index="2">
+        <span class="focus-num">03<span class="focus-num-of">／05</span></span>
         <div class="focus-content">
           <h3>
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>
@@ -1415,8 +1494,8 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
         </div>
         <svg class="focus-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </div>
-      <div class="focus-row" data-index="3">
-        <span class="focus-num">04</span>
+      <div class="focus-row" id="focus-3" data-index="3">
+        <span class="focus-num">04<span class="focus-num-of">／05</span></span>
         <div class="focus-content">
           <h3>
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 19V5a2 2 0 012-2h9l5 5v11a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>
@@ -1427,8 +1506,8 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
         </div>
         <svg class="focus-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </div>
-      <div class="focus-row" data-index="4">
-        <span class="focus-num">05</span>
+      <div class="focus-row" id="focus-4" data-index="4">
+        <span class="focus-num">05<span class="focus-num-of">／05</span></span>
         <div class="focus-content">
           <h3>
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 4L2 9l10 5 10-5-10-5z"/><path d="M6 11.5V17c0 1.5 3 3 6 3s6-1.5 6-3v-5.5"/></svg>
@@ -1438,6 +1517,7 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
           <p class="en-only">Involvement in passing on expertise within medical circles.</p>
         </div>
         <svg class="focus-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </div>
       </div>
     </div>
   </div>
@@ -1563,6 +1643,55 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
       <span class="ar-only">جميع المقاطع من مقابلات حقيقية أجرتها عيادات لمسة مع مريضات حقيقيات بعد عملياتهن الفعلية — لا تمثيل ولا تعويض بممثلين. تم اختيار الاقتباسات بعد مشاهدة كامل مدة كل فيديو (من <span class="ltr">43</span> إلى <span class="ltr">99</span> ثانية).</span>
       <span class="en-only">All clips are from real interviews Lamsa Clinics conducted with real patients after their actual procedures — nothing staged, no actors. Quotes were selected after watching each video's full duration (<span class="ltr">43</span>&ndash;<span class="ltr">99</span> seconds).</span>
     </p>
+  </div>
+</section>
+
+<!-- ============================================================ REAL MOMENTS — grayscale-to-colour reveal grid, forked from
+     De Praxes' own before/after case grid. No real before/after case
+     photos exist for him (confirmed, none fabricated) — the same
+     interaction mechanism is adapted onto real still frames pulled
+     from his own real video clips instead. See HANDOFF. -->
+<section class="section-pad" id="moments">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="kicker"><span class="rule"></span><span class="ar-only">لحظات حقيقية</span><span class="en-only">Real Moments</span></div>
+      <h2><span class="ar-only">مرّر أو المس لرؤية اللحظة كاملة</span><span class="en-only">Hover or tap to bring the moment into focus</span></h2>
+      <p><span class="ar-only">لا صور نتائج قبل وبعد على هذا الموقع — لا توجد صور جراحية من هذا النوع منشورة عنه أصلاً. هذه أربع لقطات ثابتة من مقاطع فيديو حقيقية بالكامل بدلاً من ذلك.</span><span class="en-only">There are no before/after result photos on this site — no surgical photography of that kind has ever been published for him. These are four still frames from genuinely real video clips instead.</span></p>
+    </div>
+    <p class="moments-note reveal">
+      <span class="ar-only">مرّر فوق أي صورة — أو المسها — لرؤيتها بالألوان</span>
+      <span class="en-only">Hover any frame — or tap it — to bring it into colour</span>
+    </p>
+    <div class="moments-grid reveal" id="momentsGrid">
+      <figure class="moment" tabindex="0">
+        <div class="moment-frame">
+          <img src="media/reel-augmentation-talk-poster.jpg" loading="lazy" decoding="async" alt="Dr. Ahmed Awad, a still from his most-liked real Instagram video">
+          <div class="moment-veil" aria-hidden="true"></div>
+        </div>
+        <figcaption><span class="ar-only">من الفيديو الأكثر تفاعلاً في حسابه — عن تكبير الثدي</span><span class="en-only">From the most-liked video on his account — about breast augmentation</span></figcaption>
+      </figure>
+      <figure class="moment" tabindex="0">
+        <div class="moment-frame">
+          <img src="media/reel-or-marking-poster.jpg" loading="lazy" decoding="async" alt="A pre-operative marking moment inside the operating room">
+          <div class="moment-veil" aria-hidden="true"></div>
+        </div>
+        <figcaption><span class="ar-only">لحظة تعليم حقيقية قبل الجراحة، داخل غرفة العمليات</span><span class="en-only">A real pre-operative marking moment, inside the OR</span></figcaption>
+      </figure>
+      <figure class="moment" tabindex="0">
+        <div class="moment-frame">
+          <img src="media/testimonial-lift-clip-poster.jpg" loading="lazy" decoding="async" alt="A frame from a real in-office patient interview">
+          <div class="moment-veil" aria-hidden="true"></div>
+        </div>
+        <figcaption><span class="ar-only">من مقابلة حقيقية داخل العيادة</span><span class="en-only">From a real in-office interview</span></figcaption>
+      </figure>
+      <figure class="moment" tabindex="0">
+        <div class="moment-frame">
+          <img src="media/testimonial-home-clip-poster.jpg" loading="lazy" decoding="async" alt="A frame from a real home follow-up visit">
+          <div class="moment-veil" aria-hidden="true"></div>
+        </div>
+        <figcaption><span class="ar-only">من زيارة متابعة منزلية حقيقية</span><span class="en-only">From a real home follow-up visit</span></figcaption>
+      </figure>
+    </div>
   </div>
 </section>
 
@@ -2269,14 +2398,28 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
     if(!rail) return;
     var rows = Array.prototype.slice.call(rail.querySelectorAll(".focus-row"));
     if(!rows.length) return;
+    /* Sticky index column, forked from De Praxes' own dept-index
+       IntersectionObserver (its "the department in view carries the
+       highlight" device) — same mechanism drives both the row tint and
+       the index link's .on state, so the two stay in lockstep. */
+    var indexLinks = Array.prototype.slice.call(document.querySelectorAll(".focus-index a[data-fi]"));
+    function setIndexOn(i){
+      indexLinks.forEach(function(a){ a.classList.toggle("on", a.getAttribute("data-fi") === String(i)); });
+    }
     if("IntersectionObserver" in window && !reduce){
       var fio = new IntersectionObserver(function(entries){
         entries.forEach(function(entry){
-          if(entry.isIntersecting){ entry.target.classList.add("is-active"); }
-          else { entry.target.classList.remove("is-active"); }
+          if(entry.isIntersecting){
+            entry.target.classList.add("is-active");
+            setIndexOn(entry.target.getAttribute("data-index"));
+          } else {
+            entry.target.classList.remove("is-active");
+          }
         });
       }, {threshold:0.5, rootMargin:"-10% 0px -10% 0px"});
       rows.forEach(function(r){ fio.observe(r); });
+    } else if(indexLinks.length){
+      setIndexOn(0);
     }
   })();
 
@@ -2315,7 +2458,59 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
       onScroll();
     }
   }
+  /* ---------- Real Moments — grayscale-to-colour reveal, forked from
+     De Praxes' own before/after case grid (.ba / .ba-seen): fine-pointer
+     devices get the deliberate hover-to-reveal (pure CSS :hover above);
+     touch/coarse-pointer devices reveal on scroll-into-view instead,
+     exactly the same split De Praxes' own case grid makes. ---------- */
+  (function initMoments(){
+    var frames = Array.prototype.slice.call(document.querySelectorAll("#momentsGrid .moment-frame"));
+    if(!frames.length) return;
+    if("IntersectionObserver" in window && !window.matchMedia("(hover: hover) and (pointer: fine)").matches){
+      var mio = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting) entry.target.closest(".moment").classList.add("is-seen");
+        });
+      }, {threshold:0.55});
+      frames.forEach(function(f){ mio.observe(f); });
+    }
+  })();
+
   initParallax();
+
+  /* ---------- Scroll-tilt on the conference photo (In Practice), forked
+     from De Praxes' own tilt-scroll interior showcase — a real rotateX
+     tilt driven by scroll progress, the card settling flat as it centers
+     in the viewport. Same GSAP-or-fallback pattern as initParallax()
+     above, so it never hard-depends on the vendor scripts loading. ---------- */
+  function initTilt(){
+    if(reduce) return;
+    var stage = document.querySelector(".editorial-photo");
+    if(!stage) return;
+    if(window.gsap && window.ScrollTrigger){
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.fromTo(stage,
+        {rotateX:14, scale:.93, transformPerspective:1200, transformOrigin:"50% 100%"},
+        {rotateX:0, scale:1, ease:"none",
+         scrollTrigger:{trigger:stage, scrub:true, start:"top 88%", end:"top 38%"}});
+    } else {
+      var ticking = false;
+      function onScroll(){
+        if(ticking) return;
+        ticking = true;
+        requestAnimationFrame(function(){
+          var r = stage.getBoundingClientRect();
+          var vh = window.innerHeight;
+          var progress = Math.max(0, Math.min(1, (vh*0.88 - r.top) / (vh*0.5)));
+          stage.style.transform = "perspective(1200px) rotateX(" + (14*(1-progress)) + "deg) scale(" + (0.93+0.07*progress) + ")";
+          ticking = false;
+        });
+      }
+      window.addEventListener("scroll", onScroll, {passive:true});
+      onScroll();
+    }
+  }
+  initTilt();
 
   /* ---------- GSAP stagger enhancement on top of the existing IO reveal
      system. The .reveal / IntersectionObserver mechanism above is the

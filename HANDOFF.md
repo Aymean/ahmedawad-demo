@@ -11,6 +11,165 @@ GSAP self-hosted copies in `vendor/` (Three.js was removed in v7 along with the 
 
 ---
 
+## VERSION 12 — structural fork of De Praxes per direct client instruction (2026-08-30)
+
+**Why this pass exists, and why it supersedes prior direction:** every version through v11 was built under
+a "inspired by but distinct from De Praxes" brief — real content, but deliberately different geometry,
+accents, and component recipes so nothing read as a reskin. The client has now given a **direct, explicit
+instruction that overrides that constraint**: fork `depraxis-demo`'s actual structure, layout, and motion
+device-for-device, fill it with this site's own real content, and — the one confirmed constraint on top of
+that — **recolor the whole thing onto a light canvas**, never De Praxes' own actual dark bronze/near-black
+sections. He rejected dark backgrounds hard in the v8 round on this same project and reconfirmed it this
+round when asked directly.
+
+**What was studied before touching any code:** `depraxis-demo` was freshly cloned from `origin/main`
+(commit `876f8ad`) and its `HANDOFF.md` (813 lines, v1–v8) and `index.html` (2,707 lines) were read in full
+— not from memory of this project's own prior summaries of it, which pre-date its later versions (the v5
+tilt-scroll `#showcase` and the v5 3D `#standard` section were both **removed** in De Praxes' own v5, so
+"fork the tilt-scroll showcase" means forking the *documented technique*, not a section that still ships
+live — see item 3 below). Its real, current section flow: hero (background video, no scroll-expansion) →
+figures band → `#departments` (dark numbered rail with a sticky index column) → `#inside` (video/copy split)
+→ `#tech` (hairline numbered list) → `#cases` (grayscale-to-colour before/after grid) → `#team` (plain
+doctor grid, reverted from an accordion in its own v8) → `#reviews` (auto-scrolling masked review columns)
+→ `#book` (three-step form + a real raw-GLSL warp shader) → `#visit` (real map embed). Its real tokens:
+`ink #23201C`, `cream #F5F1E8`, `bronze #8C6A3F`, `sand #C8B08A`, `char #221F1B` (from `tailwind.config.js`).
+
+**The headline finding: most of this site's own structural forking work already happened, honestly,
+across v5–v9** — under the old "distinct" brief, each De Praxes device was independently rediscovered and
+adapted, and those adaptations turn out to already satisfy the new "literal fork" instruction on inspection:
+
+| De Praxes device (`depraxis-demo`, current `index.html`) | This site's equivalent | Version it shipped |
+|---|---|---|
+| Hero: real background video, muted/looped, no scroll-expansion | `#top`: real `reel-augmentation-talk.mp4` in a cinematic panel (kept as an inset panel, not full-bleed — his real footage is vertical 9:16 phone video, De Praxes' is wide establishing b-roll; stretching vertical footage into a false widescreen would look worse, not better, than presenting it honestly) | v2 |
+| `#departments`: numbered hairline rail, giant serif numeral, sticky index column | `#focus`: numbered hairline rail (`.focus-row`, `.focus-num`) | rail: v5 · **sticky index + ／05 fraction: this version, item 1** |
+| `#book`: 3-step form + real hand-written raw-GLSL warp/plasma shader | `#booking`: 3-step chip-based form (reason → urgency+time → details) + the same warp-shader *technique* reimplemented from scratch, retinted gold→blue | v7 item 8, retinted for the light canvas in v8 |
+| `#reviews`: two masked, auto-scrolling columns, doubled track + `translateY(-50%)` loop | `#reviews`: `.gcols`/`.gcol`/`.gcol-track`, same doubled-track+mask technique, 15 real Google reviews | v6 |
+| `#visit`: real Google Maps embed, address/hours/phone rows | `#visit`: real Lamsa Clinics address/phone + Google Maps embed (framed honestly as "where he practices," never "his clinic") | v7 item 9 |
+| `#team`: doctor grid | N/A — he's solo. Adapted to `#education`'s credentials grid (same card/grid visual language, his own 5 real qualifications instead of doctor cards) | v5 |
+| `#inside`: real interior video + copy split | `#practice`: real OR-marking video (`cine-panel`) + real conference photo, copy split | v2 (video), v4 (video swap), v7 item 4 (photo resize) |
+| `#tech`: hairline numbered list of named technologies | `#education`'s credential list already covers this role for a solo doctor (his qualifications *are* his "named technologies") — no separate section added, since a second numbered list of the same five facts would be padding, not a real device | n/a |
+
+**What was still genuinely missing, and closed this version:**
+
+### 1. Sticky index column + ／05 fraction on the Focus rail
+De Praxes' `#departments` pairs its numbered rail with a `position:sticky` index column (`.dept-index`)
+that tracks scroll position and highlights the department in view, plus a `／04` fraction suffix on every
+numeral. Prior versions here had the rail (giant numeral, hairline rows, hover/active tint) but not the
+index column or the fraction — the single most literal, most visually identifying piece of the device was
+missing. **Added**: `.focus-index`, a `position:sticky; top:132px` nav column (desktop ≥1024px only,
+`display:none` below it — the same breakpoint behavior as De Praxes' own `.dept-index`), five links
+matching the five real focus areas, and a `／05` fraction span on every `.focus-num`. The existing
+`initFocusRail()` `IntersectionObserver` (added in v5, unchanged in its row-highlighting behavior) now also
+calls `setIndexOn()` so the index link and the row tint move in lockstep — one observer, two synced UI
+pieces, exactly the coupling De Praxes' own rail has between its rows and its index.
+
+### 2. Scroll-tilt on the conference photo (In Practice)
+De Praxes' own tilt-scroll interior showcase (`#showcase`, documented in its `HANDOFF.md` v3 as a real
+`rotateX`+`scale` card driven by scroll progress, ported from the open-source Container Scroll Animation
+technique) was removed from its own live build in its v5 — but the brief is explicit that the *technique*,
+not the currently-shipped section, is what's being forked. Applied the same mechanism to the real
+conference photo (`media/conference-mesei-riyadh.jpg`) in `#practice`: a new `initTilt()` function
+(GSAP `ScrollTrigger.scrub` when available, a plain `rAF`/scroll-ratio fallback otherwise — the exact
+dual-path pattern `initParallax()` already established on this page) animates `.editorial-photo` from
+`rotateX(14deg) scale(.93)` to flat/full-scale as it centers in the viewport. This is independent of the
+image's own existing `[data-parallax]` drift (`initParallax()`, v6) — the outer panel tilts, the inner
+`<img>` still drifts — so the two motions compose rather than replace each other. Verified live:
+`ScrollTrigger.getAll().length` now reads **3** (was 2: editorial-photo parallax + portrait-photo parallax;
++1 for this new tilt instance).
+
+### 3. "Real Moments" — the grayscale-to-colour reveal grid, adapted (no case photos exist to put in it)
+De Praxes' `#cases` is a grayscale-at-rest, colour-on-hover/tap/scroll-into-view grid of 27 real
+before/after result photos (`.ba`/`.ba-veil`, `filter:grayscale(1)` → `grayscale(0)` on
+`:hover`/`:focus-visible`/`.ba-seen`, fine-pointer gets hover, touch gets `IntersectionObserver`-driven
+scroll reveal). **Ahmed Awad has no real before/after case photography — none exists, none is published,
+confirmed across every prior version's research, and none was fabricated to fill this slot**, exactly the
+scenario the brief anticipated and pre-authorized an adaptation for. Built `#moments` instead, using the
+brief's own suggested substitute: four real, distinct **video still frames** already in this repo but never
+given their own static presentation (`reel-augmentation-talk-poster.jpg`, `reel-or-marking-poster.jpg`,
+`testimonial-lift-clip-poster.jpg`, `testimonial-home-clip-poster.jpg` — previously only visible as
+instantly-covered `<video poster>` fallbacks). Same interaction mechanism, reimplemented on this page's own
+markup/tokens (`.moment-frame img{filter:grayscale(1) contrast(1.1) brightness(.95)}` →
+`grayscale(0)` on hover/focus-visible/`.is-seen`, `:active` fallback for touch devices with no IO): fine-
+pointer hover via pure CSS, touch/coarse-pointer scroll-reveal via a new `initMoments()` IntersectionObserver
+— the identical fine-pointer/coarse-pointer split De Praxes' own `.ba` grid makes. Every caption states
+plainly what the frame actually is (an OR-marking moment, a patient interview, a home follow-up visit) and
+the section intro states explicitly that these are not before/after result photos — nothing in this grid
+could be mistaken for surgical outcome photography.
+
+### 4. The floating WhatsApp button — confirmed correct, not touched
+v10 already re-matched `.wa-float` to De Praxes' own real `#wabubble` reference (`bg-ink`/`text-cream`,
+plain shadow, `hover:bg-bronze`-equivalent) after v9's invented gold-fill-plus-pulse missed the brief. That
+dark ink circle is **not** a violation of this version's light-palette instruction — it's a small, fixed
+accent control mirroring a real component De Praxes itself renders as a dark-on-light circle, not a section
+background. Re-verified this version: `background-color: rgb(23, 19, 16)` (`--ink`) /
+`color: rgb(245, 238, 225)` (`--paper`), unchanged.
+
+### What did NOT change
+Every real content decision from v1–v11 stands: the honest "no clinic, practices at Lamsa" framing (written
+without disclaimer tone since v8), the four real testimonial videos, the 15 real Google reviews, the real
+WhatsApp booking flow, all real credentials/timeline/contact facts. No new media was fabricated, cropped, or
+re-encoded — the four "Real Moments" frames are existing self-hosted assets, newly given a static
+presentation. Section count went from 13 to **14** (`#moments` is new); no section was removed.
+
+### QA — this session, independently verified, section-isolation method (reused, not rediscovered)
+- **Direct visual comparison against De Praxes' actual rendered site**: `depraxis-demo` was served locally
+  and its `#departments` section screenshotted (dark sticky-index rail, `01／04` numeral, hairline rows,
+  chevron rows) side by side with this site's `#focus` (same device — sticky index, `01／05` numeral,
+  hairline rows — rendered on the light `--paper`/`--paper-dim` canvas, never De Praxes' own dark ground).
+  Confirms the structural fork is real, not just described, and that the light-palette constraint held.
+- **Section backgrounds swept programmatically**: `getComputedStyle(section).backgroundColor` for all 14
+  sections — every value resolves to `--paper` (`rgb(245,238,225)`, transparent falling through to it) or
+  `--paper-dim` (`rgb(228,216,189)`, the `.band` step). Zero dark backgrounds anywhere on the page.
+- **`ScrollTrigger.getAll().length`**: now **3** (was 2), confirming the new tilt instance registered
+  without disturbing the two pre-existing parallax instances.
+- **Responsive, 375 / 768 / 1440px:** `document.documentElement.scrollWidth` vs. `window.innerWidth` —
+  375: 375/375. 768: 753/768. 1440: 1425/1440. Zero overflow at any width (identical to v8/v9's own
+  figures — the new sections introduced no regression). Nav re-checked at 1440px specifically (the exact
+  width v8 found a wrap bug at): all 10 links still sit on one row (`getBoundingClientRect().top` identical
+  for every link) — the new `#moments` section deliberately has no nav entry, matching `#portrait` and
+  `#explains`'s existing precedent of scroll-reachable-but-not-in-nav sections.
+- **Bidirectional lang-leak sweep:** 203 `.en-only` / 203 `.ar-only` nodes (symmetric, up from v9's 190/190
+  — the new `#moments` section's kicker/heading/intro/note/4 captions + the 5 new focus-index links account
+  for the +13). 0 visible `.en-only` in Arabic mode, 0 visible `.ar-only` in English mode.
+- **Console:** zero errors across every reload, both languages, all three viewports. The one recurring
+  `window.innerWidth`-reads-0-at-load warning is the same harness artifact every prior version's HANDOFF
+  already documents.
+- **Section-isolation screenshots** (the documented workaround for this harness's scrolled-position
+  black-screenshot bug — `display:none` on every `<main> > section>` but the one under review, forced
+  `scrollTop:0`): `#focus` (sticky index visible and highlighting correctly), `#practice` (tilted photo
+  settles flat), `#moments` (all four frames genuinely grayscale at rest, confirmed via
+  `getComputedStyle(img).filter === "grayscale(1) contrast(1.1) brightness(0.95)"` on all four, not just
+  eyeballed) — all screenshotted at 375px and 1440px, both languages. One capture-timing artifact hit and
+  worked around exactly as documented before: a screenshot taken immediately after a fresh navigation came
+  back washed-out/low-contrast even though every computed style read correctly underneath
+  (`document.hidden:false`, `body{opacity:1}`, all 28 `.reveal` nodes already `.is-visible`) — a second
+  screenshot one second later rendered crisp and correct, confirming it was a capture-pipeline timing
+  artifact, not a real rendering defect.
+
+### Files changed this version
+- `index.html` — sticky focus-index column + fraction suffix (CSS + markup + `initFocusRail()` JS), the new
+  `initTilt()` scroll-tilt on the conference photo, the new `#moments` section (markup + CSS + the new
+  `initMoments()` JS).
+- `HANDOFF.md` — this entry.
+
+No new media assets — `#moments` reuses four existing self-hosted poster JPGs that were already in the
+repo but never rendered as static, standalone images before this pass.
+
+---
+
+## VERSIONS 10–11 — floating WhatsApp icon, two follow-up fixes (2026-08-30, shipped without a HANDOFF entry at the time)
+
+Backfilled here for continuity — both shipped as code-only commits. **v10**: checked De Praxes' actual
+`#wabubble` source directly (not a paraphrase) and found v9's gold-fill-plus-pulsing-ring was an invented
+flourish, not a match — reverted `.wa-float` to mirror the real reference plainly: dark ink circle, cream
+icon, plain shadow, hover shifts toward gold-deep. **v11**: the button icon's SVG carried a second
+bubble-outline `<path>` on top of an already-solid circular button, rendering as two overlapping
+circular/rounded shapes at 26px that read as a scribble per a client screenshot — dropped to just the
+handset glyph, matching how WhatsApp's own real app icon actually works (a solid colored circle + a white
+phone silhouette, nothing layered on top).
+
+---
+
 ## VERSION 9 — floating WhatsApp button, real design fix not another bug hunt (2026-08-30)
 
 **Why this needed a different approach:** three prior versions (v6, v7, v8) each found and fixed a
