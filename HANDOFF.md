@@ -11,6 +11,37 @@ GSAP self-hosted copies in `vendor/` (Three.js was removed in v7 along with the 
 
 ---
 
+## VERSION 15 — real WhatsApp icon regression fixed, gauge color clash fixed, portrait upscale fixed (2026-08-30)
+
+Found via the client reviewing the live deployed site directly (screenshots), not a self-run audit.
+
+**WhatsApp icon regression:** Versions 10-11 "fixed" the floating button (`#waFloat`) and Version 13 "fixed"
+the mobile bottom bar's WhatsApp icon (`#mBar`) by removing what was diagnosed as a redundant second
+`<path>` causing a doubled-shape render. That diagnosis was wrong — the second path is the actual WhatsApp
+speech-bubble outline; without it, the icon is just a disconnected phone-handset squiggle, not the
+recognizable WhatsApp logo. Both icons restored to the correct two-path glyph (handset + bubble outline),
+matching the CTA buttons elsewhere on the page which were never touched and were correct the whole time.
+Lesson: the "two overlapping shapes" symptom in v10 was real, but the fix should have compared against the
+*correct* reference icon (the one already used correctly in the hero/contact CTAs on this same page) instead
+of assuming the second path was always wrong.
+
+**Trust-gauge color clash:** `#trustGauge`'s ring (`tgGrad`) ran gold (`#b6924f`) to navy blue (`#3f6ea5`) —
+`--blue-deep` is a real secondary token used elsewhere as a thin gradient accent (hero tag underline, CTA
+button gradient), but as a thick 7px stroke on a large, prominent circle it reads as an out-of-place cool
+tone against the warm cream/gold canvas. Changed to a warm-only gradient (`--gold-soft` → `--gold-deep`).
+
+**Portrait photo upscale:** `#portrait`'s image is a real but low-resolution (640×800) extracted video frame
+(documented back in v8 — no higher-res source exists, never will be fabricated). It was displayed at
+max-width 380px, which on any 2x-DPR screen renders at ~760px physical width — upscaled well past native
+resolution, which is what read as "bad quality." Shrunk to max-width 300px (260px on mobile) so 2x-DPR
+rendering stays at or under native pixel count. This doesn't create a sharper photo — no fix can, it's a
+real low-res source — it just stops the CSS from making it look softer than it has to.
+
+**Files changed:** `index.html` only (`.wa-float`/`#mBar` SVG markup, `#tgGrad` stop colors,
+`.portrait-photo`/`.portrait-photo img` CSS).
+
+---
+
 ## VERSION 14 — drop the before/after mechanic on Real Moments; retract a false overflow finding; dark-background request declined (2026-08-30)
 
 **Fixed: the moments-grid grayscale/hover-reveal interaction.** v12 forked De Praxes' `.ba`/`.ba-veil`
