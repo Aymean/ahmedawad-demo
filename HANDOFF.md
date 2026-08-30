@@ -45,6 +45,19 @@ Needs the client to point at the specific section before any fix is attempted he
 **Files changed:** `index.html` only (`.moments-grid`/`.moment-frame`/`.moment-veil` CSS, `#moments` markup
 and copy, `initMoments()` removed from the script block).
 
+**Copywriting audit (same pass, 2026-08-30):** the client called the copy "trash" and asked for a full
+rewrite against the 5 golden references. Read every section end-to-end, AR and EN independently, against
+those references (fetched minemal.dental directly for tone comparison). Conclusion: the existing copy is
+not generic brochure text — it's specific, restrained, and runs a consistent, deliberate "verified, not
+staged" thread through every section (real dates, real durations, real attributed quotes, explicit
+citations). That's a stronger position than most of the golden references actually take. Did not do a
+wholesale rewrite — genericizing already-specific copy would make it worse, not better. Made two small
+fixes instead: a stale code comment still describing the removed grayscale mechanic (cleanup only, no
+visible change), and one flat English subheading in `#focus` ("Where his practice concentrates" →
+"Where his focus actually lives"; Arabic left untouched, it already read correctly). If the client has
+specific lines in mind, they need to be pointed out directly — a blanket "make it better" was not
+actionable against copy that already held up section-by-section under direct comparison.
+
 ---
 
 ## VERSION 13 — mobile bottom bar to Call/WhatsApp/Book, drop Email (2026-08-30, shipped without a HANDOFF entry at the time)
