@@ -11,6 +11,19 @@ GSAP self-hosted copies in `vendor/` (Three.js was removed in v7 along with the 
 
 ---
 
+## VERSION 20 — tightened the gap between the role line and the hero video on mobile (2026-08-30)
+
+Client flagged "so much empty space" via a screenshot at a narrow width, right between the role line and
+the video. Cause: `.hero-role`'s 28px `margin-bottom` was sized for desktop, where the bio paragraph
+continues immediately in the same column — v19 put the video right after the role line on mobile instead,
+so that margin plus `.hero-split`'s 32px grid gap stacked into a much bigger gap than intended. Cut the
+mobile grid gap to 18px and added a mobile-only override dropping `.hero-role`'s margin-bottom to 8px.
+Verified at 350×800 — gap between role text and video is now tight, no other spacing regressed.
+
+**Files changed:** `index.html` only (`.hero-split`/`.hero-stage`/`.hero-role` mobile media block).
+
+---
+
 ## VERSION 19 — hero video repositioned to right after the role line, not above/below everything (2026-08-30)
 
 V18's fix put the video first on mobile, above the name entirely — client clarified that's not what he

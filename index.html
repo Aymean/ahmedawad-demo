@@ -683,8 +683,14 @@ footer{padding:48px 0; border-top:1px solid var(--line); font-size:13px; color:v
      split into .hero-top (eyebrow/name/role) and .hero-bottom (bio onward)
      specifically so grid-template-areas can place the video between them
      without touching DOM/reading order. */
-  .hero-split{grid-template-columns:1fr; grid-template-areas:"top" "stage" "bottom"; gap:32px;}
-  .hero-stage{min-height:0; padding:8px 0;}
+  .hero-split{grid-template-columns:1fr; grid-template-areas:"top" "stage" "bottom"; gap:18px;}
+  .hero-stage{min-height:0; padding:0;}
+  /* v20: client called the gap between the role line and the video "so much
+     empty space" — .hero-role's 28px margin-bottom was sized for desktop,
+     where the bio paragraph continues in the same column; on mobile the
+     video sits right after it now, so the same margin plus the grid gap
+     above stacked into a bigger-than-intended gap. Tightened for mobile only. */
+  .hero-role{margin-bottom:8px;}
 }
 .hero-stage::before{
   content:""; position:absolute; width:520px; height:520px; border-radius:50%;
